@@ -1,0 +1,325 @@
+/**
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+package ru.caffeineim.protocols.icq.contacts;
+
+import java.util.Iterator;
+
+import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.packet.sent.buddylist.AddToContactList;
+import ru.caffeineim.protocols.icq.packet.sent.buddylist.RemoveFromContactList;
+import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiAddItem;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiBeginEdit;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiContactListRequest;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiEndEdit;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiRemoveItem;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiRemoveYourself;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendAuthReplyMessage;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendAuthRequestMessage;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendYouWereAdded;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiUpdateGroupHeader;
+
+/**
+ * <p>Created by 15.08.2007
+ *   @author Samolisov Pavel 
+ */
+public class ContactList {
+	// TODO жесткий рефакторинг класса!	
+	private short maxGroupId = 0;	
+	private short maxContactId = 0;
+	private Group rootGroup;	
+	private static ContactList impl = null;
+		
+	/**
+	 * private constructor - implements pattern singleton
+	 * 
+	 * @param rootGroup
+	 */
+	private ContactList(Group rootGroup) {
+		this.rootGroup = rootGroup;		
+		// load maxGroupId and maxContactId		
+		
+    	for (Iterator<ContactListItem> iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
+    	    ContactListItem item = iter.next();
+    		if (item instanceof Group) {
+    			Group grp = (Group) item;
+    			
+    			if (grp.getGroupId() > maxGroupId)
+    				maxGroupId = grp.getGroupId();
+    			    			
+    			for (Iterator<ContactListItem> grpiter = rootGroup.getContainedItems().iterator(); grpiter.hasNext();) {
+    			    ContactListItem cntct = grpiter.next();
+    				if (cntct instanceof Contact) {
+    	    			Contact cnt = (Contact) cntct;
+    	    			if (cnt.getItemId() > maxContactId)
+    	    				maxContactId = cnt.getItemId();
+    	    		}
+    			}
+    		}
+    	}
+	}
+	
+	private ContactList() {}
+	
+	/**
+	 * Add new contact to contact's list
+	 * 
+	 * @param connection
+	 * @param uin
+	 * @param grp
+	 */
+	public void addContact(OscarConnection connection, String uin, Group grp) {		
+		Contact cnt = new Contact(++maxContactId, grp.getGroupId(), uin);
+		addContact(connection, cnt, grp);
+	}
+	
+	/**
+	 * Add new contact to contact's list
+	 * 
+	 * @param connection
+	 * @param contact
+	 * @param grp
+	 */
+	public void addContact(OscarConnection connection, Contact contact, Group grp) {
+		grp.addItem(contact);
+		
+		connection.sendFlap(new SsiBeginEdit());
+    	connection.sendFlap(new SsiAddItem(contact));    	
+    	connection.sendFlap(new SsiUpdateGroupHeader(grp));        	
+    	connection.sendFlap(new SsiEndEdit());
+    	
+    	connection.sendFlap(new AddToContactList(contact.getId()));
+    	
+    	if (contact.getNickName() != null && contact.getNickName() != "") {
+    		connection.sendFlap(new RequestShortUserInfo(contact.getId(), connection.getUserId()));
+    	}		
+	}
+		
+	
+	/**
+	 * Remove contact from contact's list
+	 * 
+	 * @param connection
+	 * @param uin contact uin
+	 */
+	public void removeContact(OscarConnection connection, String uin) {
+		Contact cnt = getContactByUIN(uin);
+		if (cnt != null) {
+			removeContact(connection, cnt);
+		}
+	}
+	
+	/**
+	 * Remove contact from contact's list
+	 * 
+	 * @param connection
+	 * @param contact
+	 */
+	public void removeContact(OscarConnection connection, Contact contact) {
+		Group grp = getGroupById(contact.getGroupId());
+		if (grp != null)
+			grp.removeItem(contact);
+		
+		connection.sendFlap(new SsiBeginEdit());
+    	connection.sendFlap(new SsiRemoveItem(contact));    	
+    	connection.sendFlap(new SsiUpdateGroupHeader(grp));        	
+    	connection.sendFlap(new SsiEndEdit());
+    	
+    	connection.sendFlap(new RemoveFromContactList(contact.getId()));    			
+	}
+	
+	/**
+	 * Add group to contact's list
+	 * 
+	 * @param connection
+	 * @param grpName name of group
+	 */
+	public void addGroup(OscarConnection connection, String grpName) {
+		addGroup(connection, new Group(++maxGroupId, grpName)); 
+	}
+	
+	/**
+	 * Add group to contact's list
+	 * 
+	 * @param connection
+	 * @param grp
+	 */
+	public void addGroup(OscarConnection connection, Group grp) {
+		rootGroup.addItem(grp);
+		
+		connection.sendFlap(new SsiBeginEdit());
+    	connection.sendFlap(new SsiAddItem(grp));        	
+    	connection.sendFlap(new SsiEndEdit());    	    			
+	}
+	
+	/**
+	 * Remove group from contact's list
+	 * 
+	 * @param connection
+	 * @param grp
+	 */
+	public void removeGroup(OscarConnection connection, Group grp) {
+		rootGroup.removeItem(grp);
+		
+		connection.sendFlap(new SsiBeginEdit());
+    	connection.sendFlap(new SsiRemoveItem(grp));        	
+    	connection.sendFlap(new SsiEndEdit());    	    			
+	}
+	
+	@Override
+	public String toString() {				
+	    StringBuffer sb = new StringBuffer();
+    	for (Iterator<ContactListItem> iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
+    	    ContactListItem item = iter.next();
+    		sb.append(item.getId() + ":\n");
+    		if (item instanceof Group) {
+    			Group grp = (Group) item;    			
+    			for (Iterator<ContactListItem> grpiter = grp.getContainedItems().iterator(); grpiter.hasNext();) {
+    			    ContactListItem grpitem = grpiter.next();
+    				if (grpitem instanceof Contact) {
+    	    			Contact cnt = (Contact) grpitem;
+    	    			sb.append("   " + cnt.getNickName() + " (" + cnt.getId() + ")\n");
+    	    		}		
+    			}
+    		}
+    	}
+    	
+		return sb.toString();
+	}
+	
+	/**
+	 * Find grup by group id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	private Group getGroupById(short id) {
+    	for (Iterator<ContactListItem> iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
+    	    ContactListItem item = iter.next();
+    		if (item.getGroupId() == id) {
+    			return (Group) item;
+    		}
+    	}
+    	
+    	return null;
+	}
+	
+	/**
+	 * Find contact by uin
+	 * 
+	 * @param uin
+	 * @return
+	 */
+	private Contact getContactByUIN(String uin) {
+    	for (Iterator<ContactListItem> iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
+    	    ContactListItem item = iter.next();
+    		if (item instanceof Group) {    		    	
+    			Group grp = (Group) item;    			    			
+    			for (Iterator<ContactListItem> grpiter = grp.getContainedItems().iterator(); grpiter.hasNext();) {
+    			    ContactListItem cntct = grpiter.next();
+    				if (cntct.getId().equals(uin))
+    					return (Contact) cntct; 
+    			}
+    		}
+    	}
+    	
+    	return null;
+	}
+	
+	
+	/**
+	 * return instance of ContactList
+	 * if instance not exists - create new
+	 * 
+	 * @param rootGroup
+	 * @return
+	 */
+	public static ContactList getInstance(Group rootGroup) {
+		if (impl == null) {
+			impl = new ContactList(rootGroup);
+		}		
+		return impl;
+	}
+	
+	/**
+	 * return created instance of ContactList
+	 * if instance not exists - return null!
+	 * 
+	 * @return
+	 */
+	public static ContactList getInstance() {
+		return impl;
+	}
+	
+	/**
+	 * Remove me from uin's contact's list
+	 * 
+	 * @param connection
+	 * @param uin
+	 */
+	public static void removeYourself(OscarConnection connection, String uin) {
+		connection.sendFlap(new SsiRemoveYourself(uin));
+	}
+	
+	/**
+	 * Send Authorization Request message
+	 * 
+	 * @param connection
+	 * @param uin
+	 * @param message
+	 */
+	public static void sendAuthRequestMessage(OscarConnection connection, String uin, String message) {
+		connection.sendFlap(new SsiSendAuthRequestMessage(uin, message));
+	}
+	
+	/**
+	 * Send Authorization Reply message
+	 * 
+	 * @param connection
+	 * @param uin
+	 * @param message
+	 * @param auth - auth flag
+	 */
+	public static void sendAuthReplyMessage(OscarConnection connection, String uin, String message, boolean auth) {
+		connection.sendFlap(new SsiSendAuthReplyMessage(uin, message, auth));
+	}
+	
+	/**
+	 * Send "You were added" message
+	 * 
+	 * @param connection
+	 * @param uin
+	 */
+	public static void sendYouWereAdded(OscarConnection connection, String uin) {
+		connection.sendFlap(new SsiSendYouWereAdded(uin));
+	}
+	
+	/**
+	 * Send contact's list request
+	 * 
+	 * @param connection
+	 */
+	public static void sendContatListRequest(OscarConnection connection) {
+		connection.sendFlap(new SsiContactListRequest());
+	}
+	
+	public static Group getRootGroup() {
+		if (impl != null)
+			return impl.rootGroup;
+		
+		return null;
+	}
+}
