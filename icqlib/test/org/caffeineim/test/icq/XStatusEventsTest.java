@@ -32,6 +32,7 @@ import ru.caffeineim.protocols.icq.integration.listeners.XStatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 22.03.2008
@@ -69,7 +70,7 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     
     public void onIncomingMessage(IncomingMessageEvent e) {
         // В ответ на входящее сообщение запросим расширенный статус пославшего
-    	System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+    	System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()));
         OscarInterface.sendXStatusRequest(connection, e.getSenderID());
     }
     
@@ -78,7 +79,7 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+        System.out.println(e.getSenderUin() + " sent : " + StringTools.stringCP1251ToUTF8(e.getMessage()) + " while i was offline");
     }
     
     public void onMessageError(MessageErrorEvent e) {
