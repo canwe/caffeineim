@@ -2,7 +2,7 @@
 <project name="icqlib" default="build" basedir=".">
     
     <property name="src.dir" value="src"/>
-	<property name="test.dir" value="tests"/>
+	<property name="test.dir" value="test"/>
 	<property name="build.dir" value="dist"/>
     
     <target name="build-lib">
