@@ -74,10 +74,9 @@ public class StringTools {
 	 * @param len
 	 * @return
 	 */
-    public static String ucs2beByteArrayToString(byte[] arr, int off, int len) {
-        // Length check
-        if ((off + len > arr.length) || (arr.length % 2 != 0))
-        {
+    public static String ucs2beByteArrayToString(byte[] arr, int off, int len) {        
+    	// Length check
+        if ((off + len > arr.length) || (len % 2 != 0)) {
             return "";
         }
 
@@ -90,6 +89,24 @@ public class StringTools {
             sb.append(ch);
         }        
         return sb.toString();
+    }
+    
+    /**
+     * Convert not UCS-2BE and not UTF-8 byte array to UTF-8 String
+     * 
+     * @param arr
+     * @param off
+     * @param len
+     * @return
+     */
+    public static String byteArrayToString(byte[] arr, int off, int len) {
+    	// Length check
+        if (off + len > arr.length) {
+            return "";
+        }
+        
+        // TODO разобраться с определением кодировки. Пока считаем что если не юникод, то cp1251
+        return stringCP1251ToUTF8(new String(arr, off, len));
     }
 	
 	/**

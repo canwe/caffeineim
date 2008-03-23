@@ -31,6 +31,7 @@ import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 22.03.2008
@@ -63,15 +64,16 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
     }
     
     public void onIncomingMessage(IncomingMessageEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+        System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()));
     }
     
     public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
+        System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getUrl()));
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+        System.out.println(e.getSenderUin() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage())
+        		+ " while i was offline");
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {
