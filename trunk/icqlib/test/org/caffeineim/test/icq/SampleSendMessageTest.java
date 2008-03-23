@@ -19,7 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
@@ -53,7 +53,7 @@ public class SampleSendMessageTest implements Observer {
 			//OscarInterface.changeXStatus(con, new XStatusModeEnum(XStatusModeEnum.THINKING));
 			OscarInterface.sendBasicMessage(con, receiver, BASIC_MESSAGE);
 			OscarInterface.sendExtendedMessage(con, receiver, EXTENDS_MESSAGE);
-		} catch (StringToByteArrayException ex) {
+		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());	
 		}		
 	}

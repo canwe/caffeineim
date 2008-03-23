@@ -21,7 +21,7 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.Contact;
 import ru.caffeineim.protocols.icq.contacts.Group;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -32,9 +32,9 @@ public class SsiAddItem extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiAddNewItem - add User 
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
-	public SsiAddItem(Contact cnt) throws StringToByteArrayException {
+	public SsiAddItem(Contact cnt) throws ConvertStringException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x08, 0x00, 0x00, 0x00000008);	
 		
@@ -80,9 +80,9 @@ public class SsiAddItem extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiAddNewItem - add Group 
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
-	public SsiAddItem(Group grp) throws StringToByteArrayException {
+	public SsiAddItem(Group grp) throws ConvertStringException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x08, 0x00, 0x00, 0x00000008);	
 		

@@ -21,7 +21,7 @@ import java.util.Observer;
 import ru.caffeineim.protocols.icq.contacts.ContactList;
 import ru.caffeineim.protocols.icq.contacts.Group;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
@@ -42,6 +42,7 @@ import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.SsiResultModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p> Created by 22.03.2008
@@ -91,7 +92,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 			System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
 		}
 		if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
-			System.out.println(ContactList.getInstance());
+			System.out.println(StringTools.UTF8ToStringCP1251(ContactList.getInstance().toString()));
 		}
 	}
 
@@ -102,9 +103,12 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 
 	/* This is executed when you receive a message */
 	public void onIncomingMessage(IncomingMessageEvent e) {
-		System.out.println(e.getSenderID() + " sent : " + e.getMessage());
-
+		System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()));
+		
 		try {
+			System.out.println(e.getMessage());
+			OscarInterface.sendBasicMessage(connection, e.getSenderID(), e.getMessage());
+			
 			String[] params = e.getMessage().split(" ");
 			if (params[0].equals("add")) {
 				System.out.println("Add new user!");
@@ -122,18 +126,16 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 						+ ContactList.getRootGroup().getContainedItems().get(0).getId() + "!");
 				ContactList.getInstance().removeGroup(connection, 
 						(Group) ContactList.getRootGroup().getContainedItems().get(0));
-			} else if (params[0].equals("remme")) {
-				System.out.println("Remove Yourself!");
+			} else if (params[0].equals("remme")) {			
 				ContactList.removeYourself(connection, params[1]);
-			} else if (params[0].equals("auth")) {
-				System.out.println("Send Auth Request!");
+			} else if (params[0].equals("auth")) {				
 				ContactList.sendAuthRequestMessage(connection, params[1], "Авторизуй меня!");
-			} else if (params[0].equals("msge")) {
+			} else if (params[0].equals("msge")) {								
 				OscarInterface.sendExtendedMessage(connection, "217709", params[1]);
 			} else if (params[0].equals("msgb")) {
 				OscarInterface.sendBasicMessage(connection, "217709", params[1]);
 			}
-		} catch (StringToByteArrayException ex) {
+		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());
 		}
 	}
@@ -178,7 +180,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		try {
 			System.out.println("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
 			ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
-		} catch (StringToByteArrayException ex) {	
+		} catch (ConvertStringException ex) {	
 			System.out.println(ex.getMessage());
 		}
 	}

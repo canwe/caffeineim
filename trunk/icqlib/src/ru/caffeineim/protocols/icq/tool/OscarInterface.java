@@ -16,7 +16,7 @@
 package ru.caffeineim.protocols.icq.tool;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.sent.generic.SetICQStatus;
 import ru.caffeineim.protocols.icq.packet.sent.generic.SetIdleTime;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.SendType1Message;
@@ -41,10 +41,10 @@ public class OscarInterface {
 	 * @param connection соединение
 	 * @param userId UIN получателя
 	 * @param message сообщение
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public static void sendBasicMessage(OscarConnection connection, String userId, String message) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		connection.sendFlap(new SendType1Message(userId, message));
 	}
 
@@ -54,10 +54,10 @@ public class OscarInterface {
 	 * @param connection соединение
 	 * @param userId UIN получателя
 	 * @param message сообщение
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public static void sendExtendedMessage(OscarConnection connection, String userId, String message) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		// WARNING: Extended Messages will NOT be delivered to offline contacts
 		// and on AIM, only Basic Messages
 		connection.sendFlap(new SendType2Message(userId, message));
@@ -109,10 +109,10 @@ public class OscarInterface {
 	 * @param msgId Id сообщение с запросом
 	 * @param userId Id пользователя запросившего статус
 	 * @param tcpVersion версия TCP протокола
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public static void sendXStatus(OscarConnection connection, XStatusModeEnum xstatus, String title, 
-			String description, int time, int msgId, String userId, int tcpVersion) throws StringToByteArrayException {
+			String description, int time, int msgId, String userId, int tcpVersion) throws ConvertStringException {
 		connection.sendFlap(new SendXStatus(time, msgId, userId, connection.getUserId(), tcpVersion, xstatus, title, description));
 	}
 	

@@ -19,7 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
@@ -51,8 +51,7 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
 
     public XStatusEventsTest(String uin, String password) {       
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-		connection.getPacketAnalyser().setDebug(true);
-		connection.getPacketAnalyser().setDump(true);
+		connection.getPacketAnalyser().setDebug(true);		
                
         connection.addMessagingListener(this);
         connection.addXStatusListener(this);
@@ -98,7 +97,7 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     		OscarInterface.sendXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE), 
     				XSTATUS_BASE_STRING, XSTATUS_EXT_STRING, e.getTime(), e.getMsgID(), e.getSenderID(), e.getSenderTcpVersion());
     	}
-    	catch(StringToByteArrayException ex) {
+    	catch(ConvertStringException ex) {
     		System.out.println(ex.getMessage());
     	}
     }
@@ -106,10 +105,10 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     public void onXStatusChange(XStatusResponseEvent e) {
     	// Если человек присылает статус - пошлем ему его собственный статус как сообщение
     	// Да, да, вот такие мы коварные
-    	try {
+    	try {    		
     		OscarInterface.sendExtendedMessage(connection, e.getSenderID(), "Title = " + e.getTitle() + " Description = " + e.getDescription() + " XStatus = " + e.getXStatus().toString());    		
     	}
-    	catch (StringToByteArrayException ex) {
+    	catch (ConvertStringException ex) {
     		System.out.println(ex.getMessage());
 		}
     }

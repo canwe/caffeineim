@@ -21,7 +21,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 
 /**
  * <p>Created by 15.08.07
@@ -40,12 +40,12 @@ public class StringTools {
 	 * @param s source string  
 	 * @return byte array for sended
 	 */
-	public static byte[] stringToByteArray(String s) throws StringToByteArrayException {
+	public static byte[] stringToByteArray(String s) throws ConvertStringException {
 		try {
 			return s.getBytes(UTF8_ENCODING);
 		}
 		catch (UnsupportedEncodingException e) {
-			throw new StringToByteArrayException(UTF8_ENCODING + " not supported in your system");
+			throw new ConvertStringException(UTF8_ENCODING + " not supported in your system");
 		}
 	}
 	
