@@ -15,27 +15,38 @@
  */
 package ru.caffeineim.protocols.icq.integration.events;
 
+import java.util.Date;
 import java.util.EventObject;
 
-import ru.caffeineim.protocols.icq.packet.received.meta.ServerMetaReply__21_3;
+import ru.caffeineim.protocols.icq.metainfo.OfflineMessageParser;
+import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel 
  */
 public class OfflineMessageEvent extends EventObject {
 	
     private static final long serialVersionUID = -1783900296942284591L;
 
-    public OfflineMessageEvent(ServerMetaReply__21_3 msg) {
-		super(msg);
+    public OfflineMessageEvent(OfflineMessageParser parser) {
+		super(parser);
 	}
 
 	public String getSenderUin() {
-		return ( (ServerMetaReply__21_3) getSource()).getSenderUin();
+		return ((OfflineMessageParser) getSource()).getSenderUin();
+	}
+	
+	public Date getSendDate() {
+		return ((OfflineMessageParser) getSource()).getSendDate();
 	}
 
 	public String getMessage() {
-		return ( (ServerMetaReply__21_3) getSource()).getMessage();
+		return ((OfflineMessageParser) getSource()).getMessage();
+	}
+	
+	public MessageTypeEnum getMessageType() {
+		return ((OfflineMessageParser) getSource()).getMessageType();
 	}
 }

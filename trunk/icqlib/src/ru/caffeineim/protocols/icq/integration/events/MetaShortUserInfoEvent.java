@@ -17,60 +17,38 @@ package ru.caffeineim.protocols.icq.integration.events;
 
 import java.util.EventObject;
 
-import ru.caffeineim.protocols.icq.packet.received.meta.ServerMetaReply__21_3;
-import ru.caffeineim.protocols.icq.setting.enumerations.GenderEnum;
-import ru.caffeineim.protocols.icq.setting.enumerations.MetaSubTypeEnum;
-import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
+import ru.caffeineim.protocols.icq.metainfo.ShortUserInfoParser;
 
 /**
  * <p>Created by
  *   @author Lo�c Broquet
  *   @author Samolisov Pavel 
  */
-public class MetaInfoEvent extends EventObject {
+public class MetaShortUserInfoEvent extends EventObject {
 		
     private static final long serialVersionUID = -397005868703632983L;
-
-    /** 
-	 * Creates a new instance of MetaInfoEvent 
-	 */
-	public MetaInfoEvent(ServerMetaReply__21_3 source) {
+    
+	public MetaShortUserInfoEvent(ShortUserInfoParser source) {
 		super(source);
-	}
-	
-	public String getUin() {
-		return ((ServerMetaReply__21_3)getSource()).getSenderUin();
-	}
+	}	
 	
 	public String getNickName() {
-		return ((ServerMetaReply__21_3)getSource()).getNickName();
+		return ((ShortUserInfoParser) getSource()).getNickName();
 	}
 	
 	public String getFirstName() {
-		return ((ServerMetaReply__21_3)getSource()).getFirstName();
+		return ((ShortUserInfoParser) getSource()).getFirstName();
 	}
 	
 	public String getLastName() {
-		return ((ServerMetaReply__21_3)getSource()).getLastName();
+		return ((ShortUserInfoParser) getSource()).getLastName();
 	}
 	
 	public String getEmail() {
-		return ((ServerMetaReply__21_3)getSource()).getEmail();
+		return ((ShortUserInfoParser) getSource()).getEmail();
 	}
 	
 	public boolean getAuthFlag() {
-		return ((ServerMetaReply__21_3)getSource()).getAuthFlag();
-	}
-	
-	public GenderEnum getGender() {
-		return ((ServerMetaReply__21_3)getSource()).getGender();
-	}
-	
-	public MetaTypeEnum getMetaType() {
-		return ((ServerMetaReply__21_3)getSource()).getMetaType();
-	}
-	
-	public MetaSubTypeEnum getMetaSubType() {
-		return ((ServerMetaReply__21_3)getSource()).getMetaSubType();
+		return ((ShortUserInfoParser) getSource()).isAuthFlag();
 	}
 }
