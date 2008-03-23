@@ -13,18 +13,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.integration.listeners;
+package ru.caffeineim.protocols.icq.metainfo;
 
-import java.util.EventListener;
-
-import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
+import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
+import ru.caffeineim.protocols.icq.packet.sent.meta.ClientMeta;
 
 /**
- * <p>Created by
- *   @author Fabrice Michellonet
- *   @author Samolisov Pavel 
+ * <p>Created by 24.03.2008
+ *   @author Samolisov Pavel
  */
-public interface MetaInfoListener extends EventListener {	
-	
-	public void onShortUserInfo(MetaShortUserInfoEvent e);
+public class ServerEndOfOflineMessageParser implements IMetaInfoParser {
+
+	@Override
+	public void execute(OscarConnection connection) {
+		connection.sendFlap(ClientMeta.ackOfflineMessages(connection));	
+	}
+
+	@Override
+	public void notifyEvent(OscarConnection connection) {		
+	}
+
+	@Override
+	public void parse(byte[] data, int position) throws ConvertStringException {				
+	}
 }

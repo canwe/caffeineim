@@ -19,7 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.integration.events.MetaInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
 
@@ -32,34 +32,36 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
     
-    private static final String UIN1 = "349727008";
-    private static final String UIN2 = "201919510";
+    private static final String UIN1 = "213536590";
+    private static final String UIN2 = "205717272";
     
     private OscarConnection connection;
 
     public MetaInfoEventsTest(String uin, String password) {       
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
+        connection.getPacketAnalyser().setDebug(true);        
                         
         connection.addMetaInfoListener(this);
                 
         connection.addObserver(this);
     }
     
+    @Override
     public void update(Observable obs, Object obj) {
     	System.out.println("Send meta request");
     	connection.sendFlap(new RequestShortUserInfo(UIN1, connection.getUserId()));
     	connection.sendFlap(new RequestShortUserInfo(UIN2, connection.getUserId()));
     }
-        
-    public void updateContactMetaInfo(MetaInfoEvent event) {
-    	System.out.println("User MetaInfo: ");
-    	System.out.println("  Nick Name = " + event.getNickName());
-    	System.out.println("  First Name = " + event.getFirstName());
-    	System.out.println("  Last Name = " + event.getLastName());
-    	System.out.println("  Email = " + event.getEmail());
-    	System.out.println("  Auth = " + event.getAuthFlag());    	
-    }
+    
+	@Override
+	public void onShortUserInfo(MetaShortUserInfoEvent e) {
+		System.out.println("Short User Info: ");
+    	System.out.println("  Nick Name = "  + e.getNickName());
+    	System.out.println("  First Name = " + e.getFirstName());
+    	System.out.println("  Last Name = "  + e.getLastName());
+    	System.out.println("  Email = "      + e.getEmail());
+    	System.out.println("  Auth = "       + e.getAuthFlag());		
+	}    
         
     public static void main(String[] args) {
         if (args.length < 2) {

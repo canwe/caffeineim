@@ -30,7 +30,6 @@ import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageAckEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageMissedEvent;
-import ru.caffeineim.protocols.icq.integration.events.MetaInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.SsiAuthReplyEvent;
@@ -90,7 +89,9 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		for (int i = 0; i < e.getResults().length; i++) {
 			System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
 		}
+		
 		if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
+			System.out.println("\nMy Contact List");
 			System.out.println(ContactList.getInstance().toString());
 		}
 	}
@@ -136,13 +137,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());
 		}
-	}
-
-	// !!!
-	public void updateContactMetaInfo(MetaInfoEvent e) {
-		System.out.println("updateContactMetaInfo: type = " + e.getMetaType() 
-				+ " subType = " + e.getMetaSubType() + " nick = " + e.getNickName());
-	}
+	}	
 
 	/* This is executed when you receive an url */
 	public void onIncomingUrl(IncomingUrlEvent e) {
