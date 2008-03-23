@@ -18,7 +18,7 @@ package ru.caffeineim.protocols.icq.packet.sent.ssi;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -29,10 +29,10 @@ public class SsiSendAuthRequestMessage extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiSendAuthRequestMessage 
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public SsiSendAuthRequestMessage(String uin, String message) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x18, 0x00, 0x00, 0x00000018);	
 		

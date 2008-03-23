@@ -24,7 +24,7 @@ import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.Contact;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -41,7 +41,7 @@ public class SsiRemoveItem extends Flap {
 		addSnac(snac);
 	}
 	
-	public SsiRemoveItem(Group grp) throws StringToByteArrayException {
+	public SsiRemoveItem(Group grp) throws ConvertStringException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
 		

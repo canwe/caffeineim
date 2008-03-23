@@ -23,7 +23,7 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -34,9 +34,9 @@ public class SsiUpdateGroupHeader extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiUpdateGroupHeader
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
-	public SsiUpdateGroupHeader(Group grp) throws StringToByteArrayException {
+	public SsiUpdateGroupHeader(Group grp) throws ConvertStringException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x09, 0x00, 0x00, 0x00000009);
 		

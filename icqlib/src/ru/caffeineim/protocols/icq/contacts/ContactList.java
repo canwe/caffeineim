@@ -18,7 +18,7 @@ package ru.caffeineim.protocols.icq.contacts;
 import java.util.Iterator;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.sent.buddylist.AddToContactList;
 import ru.caffeineim.protocols.icq.packet.sent.buddylist.RemoveFromContactList;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
@@ -81,10 +81,10 @@ public class ContactList {
 	 * @param connection
 	 * @param uin
 	 * @param grp
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void addContact(OscarConnection connection, String uin, Group grp) 
-			throws StringToByteArrayException {		
+			throws ConvertStringException {		
 		Contact cnt = new Contact(++maxContactId, grp.getGroupId(), uin);
 		addContact(connection, cnt, grp);
 	}
@@ -95,10 +95,10 @@ public class ContactList {
 	 * @param connection
 	 * @param contact
 	 * @param grp
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void addContact(OscarConnection connection, Contact contact, Group grp) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		grp.addItem(contact);
 		
 		connection.sendFlap(new SsiBeginEdit());
@@ -119,10 +119,10 @@ public class ContactList {
 	 * 
 	 * @param connection
 	 * @param uin contact uin
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void removeContact(OscarConnection connection, String uin) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		Contact cnt = getContactByUIN(uin);
 		if (cnt != null) {
 			removeContact(connection, cnt);
@@ -134,10 +134,10 @@ public class ContactList {
 	 * 
 	 * @param connection
 	 * @param contact
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void removeContact(OscarConnection connection, Contact contact) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		Group grp = getGroupById(contact.getGroupId());
 		if (grp != null)
 			grp.removeItem(contact);
@@ -155,9 +155,9 @@ public class ContactList {
 	 * 
 	 * @param connection
 	 * @param grpName name of group
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
-	public void addGroup(OscarConnection connection, String grpName) throws StringToByteArrayException {
+	public void addGroup(OscarConnection connection, String grpName) throws ConvertStringException {
 		addGroup(connection, new Group(++maxGroupId, grpName)); 
 	}
 	
@@ -166,10 +166,10 @@ public class ContactList {
 	 * 
 	 * @param connection
 	 * @param grp
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void addGroup(OscarConnection connection, Group grp) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		rootGroup.addItem(grp);
 		
 		connection.sendFlap(new SsiBeginEdit());
@@ -182,10 +182,10 @@ public class ContactList {
 	 * 
 	 * @param connection
 	 * @param grp
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public void removeGroup(OscarConnection connection, Group grp) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		rootGroup.removeItem(grp);
 		
 		connection.sendFlap(new SsiBeginEdit());
@@ -294,10 +294,10 @@ public class ContactList {
 	 * @param connection
 	 * @param uin
 	 * @param message
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public static void sendAuthRequestMessage(OscarConnection connection, String uin, String message) 
-			throws StringToByteArrayException {
+			throws ConvertStringException {
 		connection.sendFlap(new SsiSendAuthRequestMessage(uin, message));
 	}
 	
@@ -308,10 +308,10 @@ public class ContactList {
 	 * @param uin
 	 * @param message
 	 * @param auth - auth flag
-	 * @throws StringToByteArrayException 
+	 * @throws ConvertStringException 
 	 */
 	public static void sendAuthReplyMessage(OscarConnection connection, String uin, String message, 
-			boolean auth) throws StringToByteArrayException {
+			boolean auth) throws ConvertStringException {
 		connection.sendFlap(new SsiSendAuthReplyMessage(uin, message, auth));
 	}
 	

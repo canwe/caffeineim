@@ -18,7 +18,7 @@ package ru.caffeineim.protocols.icq.packet.sent.icbm;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
@@ -51,7 +51,7 @@ public class SendXStatus extends Flap {
 					0x00, 0x00, 0x00, 0x00, 0x00};
 	
 	public SendXStatus(int Time, int msgID, String userId, String myId, int senderTcpVersion, 
-				XStatusModeEnum xstatus, String msg, String extmsg) throws StringToByteArrayException {
+				XStatusModeEnum xstatus, String msg, String extmsg) throws ConvertStringException {
 		super(2);
 		snac = new Snac(0x04, 0x0B, 0x00, 0x00, 0x00);
 	    

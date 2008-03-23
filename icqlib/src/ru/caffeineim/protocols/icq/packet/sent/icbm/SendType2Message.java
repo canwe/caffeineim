@@ -17,7 +17,7 @@ package ru.caffeineim.protocols.icq.packet.sent.icbm;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
-import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageChannelEnum;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
@@ -52,7 +52,7 @@ public class SendType2Message extends SendMessage {
 										(byte) 0x33, (byte) 0x35, (byte) 0x34, (byte) 0x30, (byte) 0x30, 
 										(byte) 0x30, (byte) 0x30, (byte) 0x7D};
 
-	public SendType2Message(String uin, String message) throws StringToByteArrayException {
+	public SendType2Message(String uin, String message) throws ConvertStringException {
 		super(uin, new MessageChannelEnum(MessageChannelEnum.MESSAGE_CHANNEL_2));
 
 		// Acktype 

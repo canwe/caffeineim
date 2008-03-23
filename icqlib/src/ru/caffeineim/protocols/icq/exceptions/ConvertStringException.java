@@ -19,15 +19,15 @@ package ru.caffeineim.protocols.icq.exceptions;
  * <p>Created by 23.03.2008
  *   @author Samolisov Pavel
  */
-public class StringToByteArrayException extends Exception {
+public class ConvertStringException extends Exception {
 	
 	private static final long serialVersionUID = -1762433449639556815L;
 
-	public StringToByteArrayException() {
+	public ConvertStringException() {
 		this("Could not convert string to bytes array");
 	}
 	
-	public StringToByteArrayException(String message) {
+	public ConvertStringException(String message) {
 		super(message);
 	}
 }
