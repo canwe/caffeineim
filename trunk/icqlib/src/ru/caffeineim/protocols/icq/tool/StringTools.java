@@ -50,6 +50,36 @@ public class StringTools {
 	}
 	
 	/**
+	 * Create String from UTF-8 byte-array
+	 * 
+	 * @param arr
+	 * @param off
+	 * @param len
+	 * @return
+	 * @throws ConvertStringException
+	 */
+	public static String utf8ByteArrayToString(byte[] arr, int off, int len) 
+			throws ConvertStringException {        
+    	// Length check
+        if (off + len > arr.length) {
+            return "";
+        }
+        
+        // Remove \0's at the end
+        while ((len > 0) && (arr[off + len - 1] == 0x00))
+        {
+            len--;
+        }
+        
+        try {
+        	return new String(arr, off, len, UTF8_ENCODING);
+        }
+        catch (UnsupportedEncodingException e) {
+        	throw new ConvertStringException(UTF8_ENCODING + " not supported in your system");
+		}
+	}
+	
+	/**
 	 * Convert String to bytes in UCS2 BE encoding
 	 * 
 	 * @param s source string
@@ -88,7 +118,8 @@ public class StringTools {
         	char ch = (char) ((((int) arr[i]) << 8) & 0x0000FF00 | (((int) arr[i+1])) & 0x000000FF);
             sb.append(ch);
         }        
-        return sb.toString();
+        
+        return sb.toString();        
     }
     
     /**
@@ -98,8 +129,9 @@ public class StringTools {
      * @param off
      * @param len
      * @return
+     * @throws ConvertStringException 
      */
-    public static String byteArrayToString(byte[] arr, int off, int len) {
+    public static String byteArrayToString(byte[] arr, int off, int len) throws ConvertStringException {
     	// Length check
         if (off + len > arr.length) {
             return "";
@@ -150,8 +182,9 @@ public class StringTools {
 	 * 
 	 * @param s source string
 	 * @return string in UTF8 Encoding
+	 * @throws ConvertStringException 
 	 */
-    public static String stringCP1251ToUTF8(String s) {        
+    public static String stringCP1251ToUTF8(String s) throws ConvertStringException {        
         String res = "";                
         
     	try {
@@ -174,7 +207,12 @@ public class StringTools {
             e.printStackTrace();
         }		
         
-        return res;
+        try {
+        	return new String(res.getBytes(), UTF8_ENCODING);
+        }
+        catch (UnsupportedEncodingException e) {
+        	throw new ConvertStringException(UTF8_ENCODING + " not supported in your system");
+		}
     }
     
     /**

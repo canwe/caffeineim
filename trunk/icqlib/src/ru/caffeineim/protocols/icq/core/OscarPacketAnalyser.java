@@ -16,6 +16,7 @@
 package ru.caffeineim.protocols.icq.core;
 
 import ru.caffeineim.protocols.icq.core.exceptions.LoginException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.received.AuthorizationReply;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPackedRegistry;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
@@ -103,6 +104,9 @@ public class OscarPacketAnalyser {
 
 				receivedFlap.execute(connection);
 				receivedFlap.notifyEvent(connection);
+			}
+			catch (ConvertStringException e) {
+				throw new ConvertStringException(e.getMessage());
 			}
 			catch (Exception ex) {
 				System.out.println("Could not parse packet!");

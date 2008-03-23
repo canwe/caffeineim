@@ -18,6 +18,7 @@ package ru.caffeineim.protocols.icq.packet.received.icbm;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.XStatusRequestEvent;
@@ -65,7 +66,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	private boolean isFileAckOrFileOk = false;
 
 	// TODO must normal recive RTF messages!
-	public IncomingMessage__4_7(byte[] array) {
+	public IncomingMessage__4_7(byte[] array) throws ConvertStringException {
 		super(array, true);
 
 		int position = 0;
@@ -180,8 +181,9 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	 *
 	 * @param position The position where we must start to parse.
 	 * @param data The packet we must parse.
+	 * @throws ConvertStringException 
 	 */
-	private void parseType1(int position, byte[] data) {
+	private void parseType1(int position, byte[] data) throws ConvertStringException {
 		/* Setting up the msgType property to NORMAL MESSAGE */
 		msgType = new RawData(0x01);
 
@@ -210,7 +212,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 			message = StringTools.byteArrayToString(data, position, msgLen);
 	}
 
-	private void parseType2(int position, byte[] data) {
+	private void parseType2(int position, byte[] data) throws ConvertStringException {
 
 		/* skipping the first 4 bytes of the TLV(5) */
 		position += 4;
@@ -281,7 +283,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		}
 	}
 
-	private void parseType2Message(int position, byte[] data) {
+	private void parseType2Message(int position, byte[] data) throws ConvertStringException {
 		/* Skipping 4 bytes till message (finally !)[i guess you could make it a lil bit more complicated mr AOL !] */
 		position += 4;
 
@@ -291,7 +293,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		position += 2;
 
 		/* Retreiving message */
-		message = new String(data, position, msgLen.getValue() - 1);
+		message = StringTools.utf8ByteArrayToString(data, position, msgLen.getValue() - 1);
 		position += message.length();
 
 		/* Retreiving foreground info */

@@ -17,6 +17,7 @@ package ru.caffeineim.protocols.icq.packet.received.meta;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
@@ -27,6 +28,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.GenderEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MetaSubTypeEnum;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
@@ -55,7 +57,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 	private boolean auth;
 	private GenderEnum gender;
 
-	public ServerMetaReply__21_3(byte[] array) {
+	public ServerMetaReply__21_3(byte[] array) throws ConvertStringException {
 		super(array, true);
 
 		int position = 0;
@@ -127,7 +129,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		}		
 	}
 
-	private void parseOfflineMessage(byte[] data, int position) {
+	private void parseOfflineMessage(byte[] data, int position) throws ConvertStringException {
 		/* Retreiving sender uin */
 		senderUin = new RawData(data, position, 4);
 		senderUin.invertIndianness();
@@ -168,11 +170,11 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 2;
 
 		/* Retreiving message */
-		message = new String(data, position, msgLen.getValue() - 1);
+		message = StringTools.utf8ByteArrayToString(data, position, msgLen.getValue() - 1);
 		isOfflineMessage = true;
 	}
 
-  	private void parseUserFound(byte[] data, int position) {
+  	private void parseUserFound(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip success byte (always 0x0A) and data size.
 		
 		/* Found UIN */
@@ -185,7 +187,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		rStrLen.invertIndianness();
 		position += 2;
 		
-		nick = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		nick = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		/* First Name */
@@ -193,7 +195,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		rStrLen.invertIndianness();
 		position += 2;
 		
-		firstName = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		firstName = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		/* Last Name */
@@ -201,7 +203,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		rStrLen.invertIndianness();
 		position += 2;
 		
-		lastName = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		lastName = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		/* email */
@@ -209,11 +211,11 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		rStrLen.invertIndianness();
 		position += 2;
 		
-		email = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		email = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 	}
   	
-  	private void parseShortUserInfo(byte[] data, int position) {
+  	private void parseShortUserInfo(byte[] data, int position) throws ConvertStringException {
 		position += 1; // skip success byte (always 0x0A) and data size.
 				
 		// Nickname lenght
@@ -222,7 +224,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 2;
 		
 		// Nickname
-		nick = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		nick = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		// First Name lenght
@@ -231,7 +233,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 2;
 		
 		// First Name
-		firstName = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		firstName = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		// Last Name lenght
@@ -240,7 +242,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 2;
 		
 		// Last Name
-		lastName = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		lastName = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
 		
 		// Email lenght 
@@ -249,7 +251,7 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 2;
 		
 		// Email
-		email = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+		email = StringTools.utf8ByteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();		
 		
 		// Auth Flag
@@ -261,10 +263,9 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 1;
 		
 		// Gender
-		RawData genderdata = new RawData(data, position, RawData.BYTE_LENGHT);
-		System.out.println("Gender = " + genderdata.getValue());
-		
 		// TODO Дописать реализацию разбора Gender
+		RawData genderdata = new RawData(data, position, RawData.BYTE_LENGHT);
+		System.out.println("Gender = " + genderdata.getValue());		
 	}
 	
   	public MetaTypeEnum getMetaType() {

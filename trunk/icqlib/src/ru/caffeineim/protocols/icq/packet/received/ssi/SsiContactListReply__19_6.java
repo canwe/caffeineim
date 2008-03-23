@@ -24,6 +24,7 @@ import ru.caffeineim.protocols.icq.Item;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
@@ -39,7 +40,7 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
 	
 	private SortedMap<Integer, Item> items = new TreeMap<Integer, Item>();
 	
-	public SsiContactListReply__19_6(byte array[]) {
+	public SsiContactListReply__19_6(byte array[]) throws ConvertStringException {
 		super(array, true);
 		int position = 8;
 		byte data[] = getSnac().getDataFieldByteArray();

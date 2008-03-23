@@ -17,11 +17,13 @@ package ru.caffeineim.protocols.icq.packet.received.icbm;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.XStatusResponseEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.XStatusListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
@@ -78,7 +80,7 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 		}
 	}
 	
-	private void getChannel1Msg(byte[] data, int index) {
+	private void getChannel1Msg(byte[] data, int index) throws ConvertStringException {
 		// 1st fragment
 		RawData id1 = new RawData(data, index++, RawData.BYTE_LENGHT);
 		RawData ver1 = new RawData(data, index++, RawData.BYTE_LENGHT);
@@ -96,7 +98,7 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 		message = parseMessageType1(data, index, frag2Lg.getValue());
 	}
 	
-	private void getChannel2Msg(byte[] data, int index) {
+	private void getChannel2Msg(byte[] data, int index) throws ConvertStringException {
 		// 1st part
 		RawData part1Lg = new RawData(data, index, RawData.WORD_LENGHT); // Little endian !
 		index += RawData.WORD_LENGHT;
@@ -123,18 +125,17 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 		message = parseMessageType2(data, index);
 	}
 	
-	private String parseMessageType1(byte[] data, int index, int length) {
+	private String parseMessageType1(byte[] data, int index, int length) throws ConvertStringException {
 		RawData charset = new RawData(data, index, RawData.WORD_LENGHT);
 		index += RawData.WORD_LENGHT;
     	RawData language = new RawData(data, index, RawData.WORD_LENGHT);
 		index += RawData.WORD_LENGHT;
 		length -= 2*RawData.WORD_LENGHT;
 		
-		String message = new RawData(data, index, length).getStringValue();
-		return message;
+		return StringTools.utf8ByteArrayToString(data, index, length);		
 	}
 
-	private String parseMessageType2(byte[] data, int index) {	
+	private String parseMessageType2(byte[] data, int index) throws ConvertStringException {	
 		messageType = new MessageTypeEnum(data[index++]);
 		MessageFlagsEnum msgFlag = new MessageFlagsEnum(data[index++]);
 		RawData status = new RawData(data, index, RawData.WORD_LENGHT); // Little endian !
@@ -146,14 +147,14 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 		
 		// Message string ASCIIZ
 		msgLg.invertIndianness();
-		message = new RawData(data, index, msgLg.getValue()).getStringValue();		
+		message = StringTools.utf8ByteArrayToString(data, index, msgLg.getValue());		
 				
 		if (messageType.getType() == MessageTypeEnum.XSTATUS_MESSAGE) {
 			// Пропускаем 66 байт - информация о плагине
 			index += 66;
 			// Пропускаем 22 байта - заголовок вложенного Type 1 сообщения
 			index += 24;
-			message = new RawData(data, index, data.length - index).getStringValue();
+			message = StringTools.utf8ByteArrayToString(data, index, data.length - index);
 		}
 			
 		if (messageType.getType() == MessageTypeEnum.PLAIN_MESSAGE) {

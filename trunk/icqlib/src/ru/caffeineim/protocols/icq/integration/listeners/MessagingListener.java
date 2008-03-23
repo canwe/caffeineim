@@ -21,6 +21,7 @@ import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageAckEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.MessageMissedEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 
 /**
@@ -29,13 +30,15 @@ import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
  */
 public interface MessagingListener extends EventListener {
 
-	public abstract void onIncomingMessage(IncomingMessageEvent e);
+	public void onIncomingMessage(IncomingMessageEvent e);
 
-	public abstract void onIncomingUrl(IncomingUrlEvent e);
+	public void onIncomingUrl(IncomingUrlEvent e);
 
-	public abstract void onOfflineMessage(OfflineMessageEvent e);
+	public void onOfflineMessage(OfflineMessageEvent e);
 
 	public void onMessageAck(final MessageAckEvent e);
 
-	public abstract void onMessageError(MessageErrorEvent e);
+	public void onMessageError(MessageErrorEvent e);
+	
+	public void onMessageMissed(MessageMissedEvent e);
 }

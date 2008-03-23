@@ -25,6 +25,7 @@ import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageAckEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.MessageMissedEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.XStatusRequestEvent;
 import ru.caffeineim.protocols.icq.integration.events.XStatusResponseEvent;
@@ -33,7 +34,6 @@ import ru.caffeineim.protocols.icq.integration.listeners.XStatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
-import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 22.03.2008
@@ -60,9 +60,9 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     }
         
     public void update(Observable obs, Object obj) {
-    	// Устанавливаем себе расширенный статус
+    	// Устанавливаем себе расширенный статус    	
+    	OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
     	OscarInterface.changeXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE));
-    	OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));           	    	
     }
     
     public void onAuthorizationFailed(LoginErrorEvent e) {
@@ -71,8 +71,8 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     
     public void onIncomingMessage(IncomingMessageEvent e) {
         // В ответ на входящее сообщение запросим расширенный статус пославшего
-    	System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()));
-        OscarInterface.sendXStatusRequest(connection, e.getSenderID());
+    	System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+        OscarInterface.sendXStatusRequest(connection, e.getSenderID());    	
     }
     
     public void onIncomingUrl(IncomingUrlEvent e) {
@@ -80,8 +80,12 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()) + " while i was offline");
+        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
     }
+    
+    public void onMessageMissed(MessageMissedEvent e) {
+		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
+	}
     
     public void onMessageError(MessageErrorEvent e) {
         System.out.println("Message error code " + e.getErrorCode() + " occurred");        
