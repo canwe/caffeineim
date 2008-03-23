@@ -18,6 +18,8 @@ package ru.caffeineim.protocols.icq.packet.sent.ssi;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -27,8 +29,10 @@ public class SsiSendAuthRequestMessage extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiSendAuthRequestMessage 
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiSendAuthRequestMessage(String uin, String message) {
+	public SsiSendAuthRequestMessage(String uin, String message) 
+			throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x18, 0x00, 0x00, 0x00000018);	
 		
@@ -38,11 +42,13 @@ public class SsiSendAuthRequestMessage extends Flap {
 		// uin
 		snac.addRawDataToSnac(new RawData(uin));
 		
+		byte[] msg = StringTools.stringToByteArray(message);
+		
 		// reason message len
-		snac.addRawDataToSnac(new RawData(message.length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(msg.length, RawData.WORD_LENGHT));
 		
 		// reason message
-		snac.addRawDataToSnac(new RawData(message.getBytes()));
+		snac.addRawDataToSnac(new RawData(msg));
 		
 		// unknown
 		snac.addRawDataToSnac(new RawData(0x00, RawData.WORD_LENGHT));

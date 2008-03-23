@@ -21,6 +21,8 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.Contact;
 import ru.caffeineim.protocols.icq.contacts.Group;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -30,8 +32,9 @@ public class SsiAddItem extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiAddNewItem - add User 
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiAddItem(Contact cnt) {
+	public SsiAddItem(Contact cnt) throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x08, 0x00, 0x00, 0x00000008);	
 		
@@ -50,12 +53,14 @@ public class SsiAddItem extends Flap {
 		// type of item
 		snac.addRawDataToSnac(new RawData(0x0000, RawData.WORD_LENGHT));
 
+		byte[] nick = StringTools.stringToByteArray(cnt.getNickName());
+		
 		// addition data
-		snac.addRawDataToSnac(new RawData(20+cnt.getNickName().length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(20 + nick.length, RawData.WORD_LENGHT));
 
 		// nick name
 		Tlv tlv1 = new Tlv(0x0131);		
-		tlv1.appendRawDataToTlv(new RawData(cnt.getNickName().getBytes()));
+		tlv1.appendRawDataToTlv(new RawData(nick));
 		snac.addTlvToSnac(tlv1);
 			
 		// email		
@@ -75,16 +80,19 @@ public class SsiAddItem extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiAddNewItem - add Group 
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiAddItem(Group grp) {
+	public SsiAddItem(Group grp) throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x08, 0x00, 0x00, 0x00000008);	
 		
+		byte[] groupId = StringTools.stringToByteArray(grp.getId());
+		
 		// group name lenght
-		snac.addRawDataToSnac(new RawData(grp.getId().length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(groupId.length, RawData.WORD_LENGHT));
 		
 		// group name
-		snac.addRawDataToSnac(new RawData(grp.getId().getBytes()));
+		snac.addRawDataToSnac(new RawData(groupId));
 		
 		// group id
 		snac.addRawDataToSnac(new RawData(grp.getGroupId(), RawData.WORD_LENGHT));

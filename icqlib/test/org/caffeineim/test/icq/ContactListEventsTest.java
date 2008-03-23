@@ -21,6 +21,7 @@ import java.util.Observer;
 import ru.caffeineim.protocols.icq.contacts.ContactList;
 import ru.caffeineim.protocols.icq.contacts.Group;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
@@ -43,150 +44,155 @@ import ru.caffeineim.protocols.icq.setting.enumerations.SsiResultModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
- * <p>Created by 22.03.2008
- *   @author Samolisov Pavel 
+ * <p> Created by 22.03.2008
+ *   @author Samolisov Pavel
  */
-public class ContactListEventsTest implements MessagingListener, StatusListener, ContactListListener, Observer  {
-	
+public class ContactListEventsTest implements MessagingListener, StatusListener, ContactListListener, Observer {
+
 	private static final String SERVER = "login.icq.com";
-    private static final int PORT = 5190;
-    
-    private OscarConnection connection;        
+	private static final int PORT = 5190;
 
-    public ContactListEventsTest(String uin, String password) {        
-        connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);      
-        connection.getPacketAnalyser().setDump(true);                       
-        connection.addMessagingListener(this);
-        connection.addStatusListener(this);
-        connection.addContactListListener(this);        
-        
-        /* to be notify when connection is ready. */
-        connection.addObserver(this);
-    }
+	private OscarConnection connection;
 
-    /* This is executed when connection is ready. */
-    public void update(Observable obs, Object obj) {
-    	ContactList.sendContatListRequest(connection);
-    }
-    
-    // !!!
-    public void onOffgoingUser(OffgoingUserEvent e) {
-        System.out.println(e.getOffgoingUserId() + " went offline.");
-    }
+	public ContactListEventsTest(String uin, String password) {
+		connection = new OscarConnection(SERVER, PORT, uin, password);
+		connection.getPacketAnalyser().setDebug(true);
+		connection.getPacketAnalyser().setDump(true);
+		
+		connection.addMessagingListener(this);
+		connection.addStatusListener(this);
+		connection.addContactListListener(this);
+		
+		connection.addObserver(this);
+	}
 
-    // !!!
-    public void onIncomingUser(IncomingUserEvent e) {
-        System.out.println(e.getIncomingUserId() + " has just signed on.");
-    }
-    
-    // !!!
-    public void updateContactList(ContactListEvent e) {
-        System.out.println("\nMy Contact List");       
-        System.out.println(ContactList.getInstance(e.getRoot()));        
-    }
-    
-    public void onSsiModifyingAck(SsiModifyingAckEvent e) {    
-        for (int i = 0; i<e.getResults().length; i++) {
-            System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
-        }   
-        if (e.getResults()[e.getResults().length-1].getResult() == SsiResultModeEnum.NO_ERRORS) {
-            System.out.println(ContactList.getInstance());
-        }
-    }
-    
-    // !!!
-    public void onStatusChange(StatusEvent e) {
-        System.out.println("StatusEvent: " + e.getStatusMode());
-    }
-    
-    /* This is executed when you receive a message */
-    public void onIncomingMessage(IncomingMessageEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getMessage());
-        
-        String[] params = e.getMessage().split(" ");
-        if (params[0].equals("add")) {
-            System.out.println("Add new user!");
-            ContactList.getInstance().addContact(connection, params[1], (Group)ContactList.getRootGroup().getContainedItems().get(0));
-            ContactList.sendYouWereAdded(connection, params[1]);
-        }
-        else if (params[0].equals("addgrp")) {
-            System.out.println("Add new group!");
-            ContactList.getInstance().addGroup(connection, params[1]);            
-        }
-        else if (params[0].equals("remove")) {
-            System.out.println("Remove contact!");
-            ContactList.getInstance().removeContact(connection, params[1]);
-        }
-        else if (params[0].equals("remgrp")) {
-            System.out.println("Remove group " + ContactList.getRootGroup().getContainedItems().get(0).getId() + "!");
-            ContactList.getInstance().removeGroup(connection, (Group)ContactList.getRootGroup().getContainedItems().get(0));
-        }
-        else if (params[0].equals("remme")) {
-            System.out.println("Remove Yourself!");
-            ContactList.removeYourself(connection, params[1]);
-        }
-        else if (params[0].equals("auth")) {
-            System.out.println("Send Auth Request!");
-            ContactList.sendAuthRequestMessage(connection, params[1], "Авторизуй меня!");
-        }
-        else if (params[0].equals("msge")) {            
-            OscarInterface.sendExtendedMessage(connection, "217709", params[1]);
-        }
-        else if (params[0].equals("msgb")) {
-            OscarInterface.sendBasicMessage(connection, "217709", params[1]);
-        }
-    }
-    
-    //!!!
-    public void updateContactMetaInfo(MetaInfoEvent e) {
-        System.out.println("updateContactMetaInfo: type = " + e.getMetaType() + " subType = " + e.getMetaSubType() + " nick = " + e.getNickName());
-    }
-    
-    /* This is executed when you receive an url */
-    public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
-    }
+	public void update(Observable obs, Object obj) {
+		ContactList.sendContatListRequest(connection);
+	}
 
-    /* This is executed when you receive an offline message */
-    public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
-    }
+	// !!!
+	public void onOffgoingUser(OffgoingUserEvent e) {
+		System.out.println(e.getOffgoingUserId() + " went offline.");
+	}
 
-    public void onMessageError(MessageErrorEvent e) {
-        System.out.println("Message error code " + e.getErrorCode() + " occurred");
-    }
+	// !!!
+	public void onIncomingUser(IncomingUserEvent e) {
+		System.out.println(e.getIncomingUserId() + " has just signed on.");
+	}
 
-    public void onLogout() {
-        System.out.println("Logged out (possibly due to error)");
-    }
-    
-    public void onMessageAck(MessageAckEvent e) {
+	// !!!
+	public void updateContactList(ContactListEvent e) {
+		System.out.println("\nMy Contact List");
+		System.out.println(ContactList.getInstance(e.getRoot()));
+	}
 
-    }               
-        
-    public void onAuthorizationFailed(LoginErrorEvent e) {
-        System.out.println("Login Error " + e.getErrorMessage());
-    }
-    
-    public void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent e) {
-        System.out.println("FutureAuthGrant UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
-    }
-    
-    public void onSsiAuthRequest(SsiAuthRequestEvent e) {
-        System.out.println("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
-        ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
-    }
-    
-    public void onSsiAuthReply(SsiAuthReplyEvent e) {
-        System.out.println("AuthReply UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage() + " Flag: " + e.getAuthFlag());
-    }
-    
-    public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.println("Use : ContactListEventsTest MY_UIN MY_PASSWORD");
-        } else {
-            new ContactListEventsTest(args[0], args[1]);
-        }
-    }
+	public void onSsiModifyingAck(SsiModifyingAckEvent e) {
+		for (int i = 0; i < e.getResults().length; i++) {
+			System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
+		}
+		if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
+			System.out.println(ContactList.getInstance());
+		}
+	}
+
+	// !!!
+	public void onStatusChange(StatusEvent e) {
+		System.out.println("StatusEvent: " + e.getStatusMode());
+	}
+
+	/* This is executed when you receive a message */
+	public void onIncomingMessage(IncomingMessageEvent e) {
+		System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+
+		try {
+			String[] params = e.getMessage().split(" ");
+			if (params[0].equals("add")) {
+				System.out.println("Add new user!");
+				ContactList.getInstance().addContact(connection, params[1], 
+						(Group) ContactList.getRootGroup().getContainedItems().get(0));
+				ContactList.sendYouWereAdded(connection, params[1]);
+			} else if (params[0].equals("addgrp")) {
+				System.out.println("Add new group!");
+				ContactList.getInstance().addGroup(connection, params[1]);
+			} else if (params[0].equals("remove")) {
+				System.out.println("Remove contact!");
+				ContactList.getInstance().removeContact(connection, params[1]);
+			} else if (params[0].equals("remgrp")) {
+				System.out.println("Remove group " 
+						+ ContactList.getRootGroup().getContainedItems().get(0).getId() + "!");
+				ContactList.getInstance().removeGroup(connection, 
+						(Group) ContactList.getRootGroup().getContainedItems().get(0));
+			} else if (params[0].equals("remme")) {
+				System.out.println("Remove Yourself!");
+				ContactList.removeYourself(connection, params[1]);
+			} else if (params[0].equals("auth")) {
+				System.out.println("Send Auth Request!");
+				ContactList.sendAuthRequestMessage(connection, params[1], "Авторизуй меня!");
+			} else if (params[0].equals("msge")) {
+				OscarInterface.sendExtendedMessage(connection, "217709", params[1]);
+			} else if (params[0].equals("msgb")) {
+				OscarInterface.sendBasicMessage(connection, "217709", params[1]);
+			}
+		} catch (StringToByteArrayException ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	// !!!
+	public void updateContactMetaInfo(MetaInfoEvent e) {
+		System.out.println("updateContactMetaInfo: type = " + e.getMetaType() 
+				+ " subType = " + e.getMetaSubType() + " nick = " + e.getNickName());
+	}
+
+	/* This is executed when you receive an url */
+	public void onIncomingUrl(IncomingUrlEvent e) {
+		System.out.println(e.getSenderID() + " sent : " + e.getUrl());
+	}
+
+	/* This is executed when you receive an offline message */
+	public void onOfflineMessage(OfflineMessageEvent e) {
+		System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+	}
+
+	public void onMessageError(MessageErrorEvent e) {
+		System.out.println("Message error code " + e.getErrorCode() + " occurred");
+	}
+
+	public void onLogout() {
+		System.out.println("Logged out (possibly due to error)");
+	}
+
+	public void onMessageAck(MessageAckEvent e) {
+
+	}
+
+	public void onAuthorizationFailed(LoginErrorEvent e) {
+		System.out.println("Login Error " + e.getErrorMessage());
+	}
+
+	public void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent e) {
+		System.out.println("FutureAuthGrant UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
+	}
+
+	public void onSsiAuthRequest(SsiAuthRequestEvent e) {						
+		try {
+			System.out.println("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
+			ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
+		} catch (StringToByteArrayException ex) {	
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	public void onSsiAuthReply(SsiAuthReplyEvent e) {
+		System.out.println("AuthReply UIN: " + e.getSenderUin() + " Mesage: " 
+				+ e.getMessage() + " Flag: " + e.getAuthFlag());
+	}
+
+	public static void main(String[] args) {
+		if (args.length < 2) {
+			System.out.println("Use : ContactListEventsTest MY_UIN MY_PASSWORD");
+		} else {
+			new ContactListEventsTest(args[0], args[1]);
+		}
+	}
 }

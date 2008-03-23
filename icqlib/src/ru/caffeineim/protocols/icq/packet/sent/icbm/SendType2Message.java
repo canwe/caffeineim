@@ -17,7 +17,9 @@ package ru.caffeineim.protocols.icq.packet.sent.icbm;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageChannelEnum;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
@@ -50,7 +52,7 @@ public class SendType2Message extends SendMessage {
 										(byte) 0x33, (byte) 0x35, (byte) 0x34, (byte) 0x30, (byte) 0x30, 
 										(byte) 0x30, (byte) 0x30, (byte) 0x7D};
 
-	public SendType2Message(String uin, String message) {
+	public SendType2Message(String uin, String message) throws StringToByteArrayException {
 		super(uin, new MessageChannelEnum(MessageChannelEnum.MESSAGE_CHANNEL_2));
 
 		// Acktype 
@@ -107,14 +109,15 @@ public class SendType2Message extends SendMessage {
 		// ?? prio
 		tlv2711.appendRawDataToTlv(new RawData(0x2100, RawData.WORD_LENGHT));
     
-		/* Message [finally !] */
+		
 		// message length
-		RawData rLen = new RawData(message.length() + 1, RawData.WORD_LENGHT);
+		byte[] msg = StringTools.stringToByteArray(message);
+		RawData rLen = new RawData(msg.length + 1, RawData.WORD_LENGHT);
 		rLen.invertIndianness();
 		tlv2711.appendRawDataToTlv(rLen);
     
 		// message UTF8
-		tlv2711.appendRawDataToTlv(new RawData(message.getBytes()));
+		tlv2711.appendRawDataToTlv(new RawData(msg));
 		tlv2711.appendRawDataToTlv(new RawData(0x00, RawData.BYTE_LENGHT));
     
 		// Foreground color

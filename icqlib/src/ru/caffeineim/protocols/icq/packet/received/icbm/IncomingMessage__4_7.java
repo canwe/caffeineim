@@ -15,6 +15,8 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
+import java.io.UnsupportedEncodingException;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -28,6 +30,7 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.MessageType2Ack;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
+import ru.caffeineim.protocols.icq.tool.Dumper;
 
 /**
  * <p>Created by
@@ -194,8 +197,8 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		/* skipping TLV(0x0101) header + the encoding field + unknown field */
 		position += 8;
 
-		/* retreiving the message itself */
-		message = new String(data, position, msgLen);
+		/* retreiving the message itself */		
+		message = new String(data, position, msgLen);		
 	}
 
 	private void parseType2(int position, byte[] data) {

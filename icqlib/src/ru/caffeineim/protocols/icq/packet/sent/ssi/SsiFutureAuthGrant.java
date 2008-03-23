@@ -18,6 +18,7 @@ package ru.caffeineim.protocols.icq.packet.sent.ssi;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -28,8 +29,9 @@ public class SsiFutureAuthGrant extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiFutureAuthGrant 
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiFutureAuthGrant(String uin, String message) {
+	public SsiFutureAuthGrant(String uin, String message) throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x14, 0x00, 0x00, 0x00000014);	
 		
@@ -43,7 +45,7 @@ public class SsiFutureAuthGrant extends Flap {
 		snac.addRawDataToSnac(new RawData(message.length(), RawData.WORD_LENGHT));
 		
 		// reason message
-		snac.addRawDataToSnac(new RawData(StringTools.stringToByteArray1251(message)));
+		snac.addRawDataToSnac(new RawData(StringTools.stringToByteArray(message)));
 		
 		// unknown
 		snac.addRawDataToSnac(new RawData(0x00, RawData.WORD_LENGHT));

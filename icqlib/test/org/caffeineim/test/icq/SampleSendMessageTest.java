@@ -19,6 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
@@ -35,7 +36,7 @@ public class SampleSendMessageTest implements Observer {
 		"Channel1 message - Привет! Я - базовое сообщение";
 	
 	private static final String EXTENDS_MESSAGE = 
-		"Channel2 message - Привет! Я - расширенное сообщение";
+		"Channel2 message\r\nПривет! Я - расширенное сообщение";
 
 	private OscarConnection con;
 	private String receiver;
@@ -48,10 +49,14 @@ public class SampleSendMessageTest implements Observer {
 		con.addObserver(this);
 	}
 
-	public void update(Observable obs, Object obj) {
-		OscarInterface.changeXStatus(con, new XStatusModeEnum(XStatusModeEnum.THINKING));
-		OscarInterface.sendBasicMessage(con, receiver, BASIC_MESSAGE);
-		OscarInterface.sendExtendedMessage(con, receiver, EXTENDS_MESSAGE);
+	public void update(Observable obs, Object obj) {		
+		try {
+			OscarInterface.changeXStatus(con, new XStatusModeEnum(XStatusModeEnum.THINKING));
+			OscarInterface.sendBasicMessage(con, receiver, BASIC_MESSAGE);
+			OscarInterface.sendExtendedMessage(con, receiver, EXTENDS_MESSAGE);
+		} catch (StringToByteArrayException ex) {
+			System.out.println(ex.getMessage());	
+		}		
 	}
 
 	public static void main(String[] args) {
