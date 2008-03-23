@@ -111,8 +111,7 @@ public class ContactList {
     	if (contact.getNickName() != null && contact.getNickName() != "") {
     		connection.sendFlap(new RequestShortUserInfo(contact.getId(), connection.getUserId()));
     	}		
-	}
-		
+	}		
 	
 	/**
 	 * Remove contact from contact's list
@@ -215,7 +214,7 @@ public class ContactList {
 	}
 	
 	/**
-	 * Find grup by group id
+	 * Find group by group id
 	 * 
 	 * @param id
 	 * @return
