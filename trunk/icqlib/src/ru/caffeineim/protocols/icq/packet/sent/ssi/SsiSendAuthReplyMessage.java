@@ -18,6 +18,8 @@ package ru.caffeineim.protocols.icq.packet.sent.ssi;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -27,8 +29,10 @@ public class SsiSendAuthReplyMessage extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiSendAuthReplyMessage 
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiSendAuthReplyMessage(String uin, String message, boolean auth) {
+	public SsiSendAuthReplyMessage(String uin, String message, boolean auth) 
+			throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x1A, 0x00, 0x00, 0x0000001A);	
 		
@@ -38,19 +42,16 @@ public class SsiSendAuthReplyMessage extends Flap {
 		// uin
 		snac.addRawDataToSnac(new RawData(uin));
 		
-		// auth flag
-		if (auth) {
-			snac.addRawDataToSnac(new RawData(0x01, RawData.BYTE_LENGHT));
-		}
-		else {
-			snac.addRawDataToSnac(new RawData(0x00, RawData.BYTE_LENGHT));
-		}
+		// auth flag		
+		snac.addRawDataToSnac(new RawData(auth ? 0x01 : 0x00, RawData.BYTE_LENGHT));
+		
+		byte[] msg = StringTools.stringToByteArray(message);
 		
 		// reason message len
-		snac.addRawDataToSnac(new RawData(message.length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(msg.length, RawData.WORD_LENGHT));
 		
 		// reason message
-		snac.addRawDataToSnac(new RawData(message.getBytes()));
+		snac.addRawDataToSnac(new RawData(msg));
 		
 		// unknown
 		snac.addRawDataToSnac(new RawData(0x00, RawData.WORD_LENGHT));

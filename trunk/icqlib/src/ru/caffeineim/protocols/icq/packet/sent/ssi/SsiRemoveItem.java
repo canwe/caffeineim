@@ -24,6 +24,8 @@ import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.Contact;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
@@ -39,15 +41,17 @@ public class SsiRemoveItem extends Flap {
 		addSnac(snac);
 	}
 	
-	public SsiRemoveItem(Group grp) {
+	public SsiRemoveItem(Group grp) throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
 		
+		byte[] groupId = StringTools.stringToByteArray(grp.getId());
+		
 		// name lenght
-		snac.addRawDataToSnac(new RawData(grp.getId().length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(groupId.length, RawData.WORD_LENGHT));
 		
 		// name
-		snac.addRawDataToSnac(new RawData(grp.getId().getBytes()));
+		snac.addRawDataToSnac(new RawData(groupId));
 		
 		// group id
 		snac.addRawDataToSnac(new RawData(grp.getGroupId(), RawData.WORD_LENGHT));

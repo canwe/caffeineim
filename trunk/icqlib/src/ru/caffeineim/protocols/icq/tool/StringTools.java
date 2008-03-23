@@ -19,68 +19,114 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.UnsupportedEncodingException;
+
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 
 /**
  * <p>Created by 15.08.07
  *   @author Samolisov Pavel
+ *   @author Andreas Rossbacher
+ *   @author Artyomov Denis
+ *   @author Dmitry Tunin
  */
 public class StringTools {	
+	
+	public static final String UTF8_ENCODING = "UTF-8";
+		
 	/**
-	 * Convert String to Byte Array in Windows-1251 encoding
+	 * Convert String to Array of bytes in UTF-8 encoding
 	 * 
 	 * @param s source string  
 	 * @return byte array for sended
 	 */
-	public static byte[] stringToByteArray1251(String s) {
-		byte abyte0[] = s.getBytes();
-		for(int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			switch (c) {
-				case 1025:
-					abyte0[i] = -88;
-					break;
-				case 1105:
-					abyte0[i] = -72;
-					break;
-
-				/* Ukrainian CP1251 chars section */
-				case 1168:
-					abyte0[i] = -91;
-					break;
-				case 1028:
-					abyte0[i] = -86;
-					break;
-				case 1031:
-					abyte0[i] = -81;
-					break;
-				case 1030:
-					abyte0[i] = -78;
-					break;
-				case 1110:
-					abyte0[i] = -77;
-					break;
-				case 1169:
-					abyte0[i] = -76;
-					break;
-				case 1108:
-					abyte0[i] = -70;
-					break;
-				case 1111:
-					abyte0[i] = -65;
-					break;
-				/* end of section */
-
-				default:
-					char c1 = c;
-					if (c1 >= '\u0410' && c1 <= '\u044F') {
-						abyte0[i] = (byte) ((c1 - 1040) + 192);
-					}
-					break;
-			}
+	public static byte[] stringToByteArray(String s) throws StringToByteArrayException {
+		try {
+			return s.getBytes(UTF8_ENCODING);
 		}
-		
-		return abyte0;
-	}	
+		catch (UnsupportedEncodingException e) {
+			throw new StringToByteArrayException(UTF8_ENCODING + " not supported in your system");
+		}
+	}
+	
+	/**
+	 * Convert String to bytes in UCS2 BE encoding
+	 * 
+	 * @param s source string
+	 * @return byte array for sended
+	 */
+	public static byte[] stringToUcs2beByteArray(String s) {
+		String str = restoreCrLf(s);
+        byte[] ucs2be = new byte[str.length() * 2];
+        for (int i = 0; i < str.length(); i++) {
+           ucs2be[i*2] = (byte) (((int) str.charAt(i) >> 8) & 0x000000FF);
+           ucs2be[i*2+1] = (byte) (((int) str.charAt(i)) & 0x000000FF);
+        }
+        
+        return ucs2be;
+    }
+
+	/**
+	 * Extract a UCS-2BE string from the Array of bytes
+	 * 
+	 * @param arr
+	 * @param off
+	 * @param len
+	 * @return
+	 */
+    public static String ucs2beByteArrayToString(byte[] arr, int off, int len) {
+        // Length check
+        if ((off + len > arr.length) || (arr.length % 2 != 0))
+        {
+            return "";
+        }
+
+        // Convert from byte array to string
+        StringBuffer sb = new StringBuffer();
+        
+        for (int i = off; i < off+len; i += 2)
+        {
+        	char ch = (char) ((((int) arr[i]) << 8) & 0x0000FF00 | (((int) arr[i+1])) & 0x000000FF);
+            sb.append(ch);
+        }        
+        return sb.toString();
+    }
+	
+	/**
+	 * Restore the simbols of string end.
+	 * 
+	 * @param s source string
+	 * @returne
+	 */
+	public static String restoreCrLf(String s) {
+        StringBuffer result = new StringBuffer();
+        
+        int size = s.length();
+        for (int i = 0; i < size; i++) {
+            char chr = s.charAt(i);
+            if (chr == '\r') continue;
+            if (chr == '\n') result.append("\r\n");
+            else result.append(chr);
+        }
+        return result.toString();
+    }
+	
+	/**
+	 * Removes all CR occurences
+	 * 
+	 * @param s source string
+	 * @return
+	 */
+    public static String removeCr(String s) {
+        StringBuffer result = new StringBuffer();
+        
+        for (int i = 0; i < s.length(); i++) {
+            char chr = s.charAt(i);
+            if ((chr == 0) || (chr == '\r')) continue;
+            result.append(chr);
+        }
+        return result.toString();
+    }
 	
 	/**
 	 * Convert String from Windows-1251 encoding to UTF8

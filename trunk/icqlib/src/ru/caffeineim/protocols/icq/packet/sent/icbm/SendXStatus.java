@@ -18,7 +18,9 @@ package ru.caffeineim.protocols.icq.packet.sent.icbm;
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -48,7 +50,8 @@ public class SendXStatus extends Flap {
 					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 					0x00, 0x00, 0x00, 0x00, 0x00};
 	
-	public SendXStatus(int Time, int msgID, String userId, String myId, int senderTcpVersion, XStatusModeEnum xstatus, String msg, String extmsg) {
+	public SendXStatus(int Time, int msgID, String userId, String myId, int senderTcpVersion, 
+				XStatusModeEnum xstatus, String msg, String extmsg) throws StringToByteArrayException {
 		super(2);
 		snac = new Snac(0x04, 0x0B, 0x00, 0x00, 0x00);
 	    
@@ -128,11 +131,11 @@ public class SendXStatus extends Flap {
 			
 		// XStatus msg body												   
 		snac.addRawDataToSnac(new RawData("<NR><RES>&lt;ret event='OnRemoteNotification'&gt;&lt;srv&gt;&lt;id&gt;cAwaySrv&lt;/id&gt;&lt;val srv_id='cAwaySrv'&gt;&lt;Root&gt;&lt;CASXtraSetAwayMessage&gt;&lt;/CASXtraSetAwayMessage&gt;&lt;uin&gt;" + myId + "&lt;/uin&gt;&lt;index&gt;" + xstatus.getXStatus() + "&lt;/index&gt;&lt;title&gt;"));
-		// manual convert to byte array
-		snac.addRawDataToSnac(new RawData(msg.getBytes()));	
+		// manual convert to byte array		
+		snac.addRawDataToSnac(new RawData(StringTools.stringToByteArray(msg)));	
 		snac.addRawDataToSnac(new RawData("&lt;/title&gt;&lt;desc&gt;"));
 		// manual convert to byte array
-		snac.addRawDataToSnac(new RawData(extmsg.getBytes()));
+		snac.addRawDataToSnac(new RawData(StringTools.stringToByteArray(extmsg)));
 		snac.addRawDataToSnac(new RawData("&lt;/desc&gt;&lt;/Root&gt;\r\n"));							
 		snac.addRawDataToSnac(new RawData("&lt;/val&gt;&lt;/srv&gt;&lt;srv&gt;&lt;id&gt;cRandomizerSrv&lt;/id&gt;&lt;val srv_id='cRandomizerSrv'&gt;undefined&lt;/val&gt;&lt;/srv&gt;&lt;/ret&gt;</RES></NR>\r\n"));		
 		

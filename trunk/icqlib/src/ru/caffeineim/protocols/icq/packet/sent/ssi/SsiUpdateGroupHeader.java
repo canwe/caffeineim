@@ -23,6 +23,8 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -32,16 +34,19 @@ public class SsiUpdateGroupHeader extends Flap {
 	
 	/** 
 	 * Creates a new instance of SsiUpdateGroupHeader
+	 * @throws StringToByteArrayException 
 	 */
-	public SsiUpdateGroupHeader(Group grp) {
+	public SsiUpdateGroupHeader(Group grp) throws StringToByteArrayException {
 		super(2);
 		Snac snac = new Snac(0x13, 0x09, 0x00, 0x00, 0x00000009);
 		
+		byte[] groupId = StringTools.stringToByteArray(grp.getId());
+		
 		// name lenght
-		snac.addRawDataToSnac(new RawData(grp.getId().length(), RawData.WORD_LENGHT));
+		snac.addRawDataToSnac(new RawData(groupId.length, RawData.WORD_LENGHT));
 		
 		// name
-		snac.addRawDataToSnac(new RawData(grp.getId().getBytes()));
+		snac.addRawDataToSnac(new RawData(groupId));
 		
 		// group id
 		snac.addRawDataToSnac(new RawData((short)grp.getGroupId(), RawData.WORD_LENGHT));

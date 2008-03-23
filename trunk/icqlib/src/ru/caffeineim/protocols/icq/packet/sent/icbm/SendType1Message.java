@@ -17,7 +17,9 @@ package ru.caffeineim.protocols.icq.packet.sent.icbm;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageChannelEnum;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
@@ -26,7 +28,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MessageChannelEnum;
  */
 public class SendType1Message extends SendMessage {
 
-	public SendType1Message(String uin, String message) {
+	public SendType1Message(String uin, String message) throws StringToByteArrayException {
 		super(uin, new MessageChannelEnum(MessageChannelEnum.MESSAGE_CHANNEL_1));
 
 		// TLV(2) containing [ TLV(1281):caps | TLV(257):msg ] 
@@ -40,7 +42,7 @@ public class SendType1Message extends SendMessage {
 		Tlv tlv0101 = new Tlv(0x00020000, RawData.DWORD_LENGHT, 0x0101);		
 		
 		// The message    
-		tlv0101.appendRawDataToTlv(new RawData(message.getBytes()));
+		tlv0101.appendRawDataToTlv(new RawData(StringTools.stringToUcs2beByteArray(message)));
 
 		// Building Tlv(2)
 		tlv2.appendTlvToTlv(tlv0501);

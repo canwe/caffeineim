@@ -19,6 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.StringToByteArrayException;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
@@ -50,7 +51,8 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
 
     public XStatusEventsTest(String uin, String password) {       
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-		connection.getPacketAnalyser().setDebug(true);		
+		connection.getPacketAnalyser().setDebug(true);
+		connection.getPacketAnalyser().setDump(true);
                
         connection.addMessagingListener(this);
         connection.addXStatusListener(this);
@@ -79,7 +81,7 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + StringTools.stringCP1251ToUTF8(e.getMessage()) + " while i was offline");
+        System.out.println(e.getSenderUin() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()) + " while i was offline");
     }
     
     public void onMessageError(MessageErrorEvent e) {
@@ -92,14 +94,24 @@ public class XStatusEventsTest  implements MessagingListener, XStatusListener, O
     
     public void onXStatusRequest(XStatusRequestEvent e) {
     	// Посылаем свой статус, если просят
-    	OscarInterface.sendXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE), 
-    			XSTATUS_BASE_STRING, XSTATUS_EXT_STRING, e.getTime(), e.getMsgID(), e.getSenderID(), e.getSenderTcpVersion());
+    	try {
+    		OscarInterface.sendXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE), 
+    				XSTATUS_BASE_STRING, XSTATUS_EXT_STRING, e.getTime(), e.getMsgID(), e.getSenderID(), e.getSenderTcpVersion());
+    	}
+    	catch(StringToByteArrayException ex) {
+    		System.out.println(ex.getMessage());
+    	}
     }
     
     public void onXStatusChange(XStatusResponseEvent e) {
     	// Если человек присылает статус - пошлем ему его собственный статус как сообщение
     	// Да, да, вот такие мы коварные
-    	OscarInterface.sendExtendedMessage(connection, e.getSenderID(), "Title = " + e.getTitle() + " Description = " + e.getDescription() + " XStatus = " + e.getXStatus().toString());
+    	try {
+    		OscarInterface.sendExtendedMessage(connection, e.getSenderID(), "Title = " + e.getTitle() + " Description = " + e.getDescription() + " XStatus = " + e.getXStatus().toString());    		
+    	}
+    	catch (StringToByteArrayException ex) {
+    		System.out.println(ex.getMessage());
+		}
     }
        
     public static void main(String[] args) {
