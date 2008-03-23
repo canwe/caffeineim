@@ -17,6 +17,9 @@ package ru.caffeineim.protocols.icq;
 
 import java.util.Iterator;
 
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
+import ru.caffeineim.protocols.icq.tool.StringTools;
+
 /**
  * <p>Created by
  *   @author Lo�c Broquet 
@@ -56,11 +59,11 @@ public class Item extends DataField {
 		this.nameLen = (short)name.length();
 	}
 	
-	public Item(byte data[], int offset) {
+	public Item(byte data[], int offset) throws ConvertStringException {
 		int index = offset;
-		nameLen = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();
+		nameLen = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();		
 		index += RawData.WORD_LENGHT;
-		name = new RawData(data, index, nameLen).getStringValue();
+		name = StringTools.utf8ByteArrayToString(data, index, nameLen);
 		index += nameLen;
 		group = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();
 		index += RawData.WORD_LENGHT;

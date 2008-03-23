@@ -17,9 +17,11 @@ package ru.caffeineim.protocols.icq.packet.received.ssi;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.SsiAuthRequestEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.07
@@ -31,7 +33,7 @@ public class SsiAuthRequest__19_25 extends ReceivedPacket {
 	
 	private String message;
 
-	public SsiAuthRequest__19_25(byte[] array) {
+	public SsiAuthRequest__19_25(byte[] array) throws ConvertStringException {
 		super(array, true);
 		int position = 0;
 
@@ -48,7 +50,7 @@ public class SsiAuthRequest__19_25 extends ReceivedPacket {
 		// message
 		len = new RawData(data, position, RawData.WORD_LENGHT);
 		position += 2;
-		message = new String(data, position, len.getValue());
+		message = StringTools.utf8ByteArrayToString(data, position, len.getValue());
 	}
 
 	public void notifyEvent(OscarConnection connection) {		

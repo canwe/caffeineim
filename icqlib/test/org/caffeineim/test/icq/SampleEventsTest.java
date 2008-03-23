@@ -25,13 +25,14 @@ import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageAckEvent;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.MessageMissedEvent;
 import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
-import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 22.03.2008
@@ -59,21 +60,22 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
 
     // Метод будет вызван при установке соединения
     public void update(Observable obs, Object obj) {    	
+    	OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));    	
+    	
     	// Запросим сообщения, присланные нам в оффлайн
         OscarInterface.requestOfflineMessages(connection);                
     }
     
     public void onIncomingMessage(IncomingMessageEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage()));
+        System.out.println(e.getSenderID() + " sent : " + e.getMessage());
     }
     
     public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + StringTools.UTF8ToStringCP1251(e.getUrl()));
+        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + StringTools.UTF8ToStringCP1251(e.getMessage())
-        		+ " while i was offline");
+        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {
@@ -84,6 +86,10 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
         System.out.println(e.getIncomingUserId() + " has just signed on.");
     }
 
+    public void onMessageMissed(MessageMissedEvent e) {
+		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
+	}
+    
     public void onMessageError(MessageErrorEvent e) {
         System.out.println("Message error code " + e.getErrorCode() + " occurred");
     }
