@@ -50,13 +50,14 @@ public class MissedMessage__4_10 extends ReceivedPacket {
 		int index = 0;
 		
 		do {
-			RawData type = new RawData(data, index, RawData.WORD_LENGHT);
+			// TODO разобраться и починить
+/*			RawData type = new RawData(data, index, RawData.WORD_LENGHT);
 			index += RawData.WORD_LENGHT;
 			RawData uinLg = new RawData(data, index, RawData.BYTE_LENGHT);
 			index += RawData.BYTE_LENGHT;
 			uin = new RawData(data, index, uinLg.getValue());
 			index += uinLg.getValue();
-/*			RawData warningLvl = new RawData(data, index, RawData.WORD_LENGHT);
+			RawData warningLvl = new RawData(data, index, RawData.WORD_LENGHT);
 			index += RawData.WORD_LENGHT;
 			RawData nbOfTlv = new RawData(data, index, RawData.WORD_LENGHT); // Should de 4
 			index += RawData.WORD_LENGHT;

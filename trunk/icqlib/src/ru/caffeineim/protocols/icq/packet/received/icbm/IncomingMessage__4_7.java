@@ -15,8 +15,6 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
-import java.io.UnsupportedEncodingException;
-
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -30,13 +28,16 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.MessageType2Ack;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
-import ru.caffeineim.protocols.icq.tool.Dumper;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
  *   @author Fabrice Michellonet 
  */
 public class IncomingMessage__4_7 extends ReceivedPacket {
+	
+	public static final int UCS2BE_ENCODING_MASK = 0x00020000;
+	
 	private RawData time;
 	private RawData msgId;
 	private RawData messageChannel;
@@ -56,6 +57,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	private Tlv ackType2;
 	private Tlv port;
 	private Tlv ip;
+	private RawData encoding;
 
 	private boolean isRequestAwayMessage = false;
 	private boolean isRequestXStatus = false;
@@ -67,8 +69,8 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		super(array, true);
 
 		int position = 0;
-		byte[] data = getSnac().getDataFieldByteArray();
-
+		byte[] data = getSnac().getDataFieldByteArray();		
+		
 		/* retreiving TIME */
 		time = new RawData(data, position, 4);
 		position += 4;
@@ -192,13 +194,20 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 
 		/* retreiving the message's length */
 		Tlv tlvMsg = new Tlv(data, position);
-		int msgLen = tlvMsg.getLength() - 4;
+		int msgLen = tlvMsg.getLength() - 4;		
 
-		/* skipping TLV(0x0101) header + the encoding field + unknown field */
-		position += 8;
+		/* skipping TLV(0x0101) header + tlv length */
+		position += 4;			
+		
+		/* encoding fields */
+		encoding = new RawData(data, position, RawData.DWORD_LENGHT);
+		position += 4;
 
 		/* retreiving the message itself */		
-		message = new String(data, position, msgLen);		
+		if ((getEncoding() & UCS2BE_ENCODING_MASK) > 0)
+			message = StringTools.ucs2beByteArrayToString(data, position, msgLen);
+		else
+			message = StringTools.byteArrayToString(data, position, msgLen);
 	}
 
 	private void parseType2(int position, byte[] data) {
@@ -375,7 +384,11 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	
 	public int getTime() {
 		return time.getValue();		
-	}	
+	}
+	
+	public int getEncoding() {
+		return encoding.getValue();
+	}
 	
 	private boolean isRequestAwayMessage() {
 		return isRequestAwayMessage;
