@@ -48,7 +48,8 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
     public SampleEventsTest(String uin, String password) {
         System.out.println("Login to ICQ server");
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);        
+        connection.getPacketAnalyser().setDebug(true);
+        connection.getPacketAnalyser().setDump(true);
                
         // Зарегестрируем класс как слушатель
         connection.addMessagingListener(this);
@@ -75,7 +76,11 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+        System.out.println(e.getSenderUin() + " sent new offline message");
+        System.out.println(" text: " + e.getMessage());
+        System.out.println(" date: " + e.getSendDate());
+        System.out.println(" type: " + e.getMessageType());
+        System.out.println(" flag: " + e.getMessageFlag());        
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {

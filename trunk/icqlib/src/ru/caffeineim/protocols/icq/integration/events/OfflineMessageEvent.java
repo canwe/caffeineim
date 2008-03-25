@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 import ru.caffeineim.protocols.icq.metainfo.OfflineMessageParser;
+import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 
 /**
@@ -48,5 +49,9 @@ public class OfflineMessageEvent extends EventObject {
 	
 	public MessageTypeEnum getMessageType() {
 		return ((OfflineMessageParser) getSource()).getMessageType();
+	}
+	
+	public MessageFlagsEnum getMessageFlag() {
+		return ((OfflineMessageParser) getSource()).getMessageFlag();
 	}
 }

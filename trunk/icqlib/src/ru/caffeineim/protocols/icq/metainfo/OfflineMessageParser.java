@@ -27,6 +27,7 @@ import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
+import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
@@ -40,6 +41,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 	private Date sendDate;
 	private String message;
 	private int type;
+	private int flag;
 	
 	@Override
 	protected EventObject getNewEvent() {
@@ -52,15 +54,10 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 	
 	@Override
 	public void parse(byte[] data, int position) throws ConvertStringException {
-		// TODO разобраться с парсингом оффлайн-сообщений:
-		// 1. посмотреть формат. Сообщений может быть несколько.
-		// 2. кодировка сообщения (преобразовывать в юникод)
-		// 3. UIN - правильный UIN
-		
 		// Retreiving sender uin
 		RawData uin = new RawData(data, position, RawData.DWORD_LENGHT);
-		//uin.invertIndianness();
-		senderUin = uin.getStringValue();
+		uin.invertIndianness();
+		senderUin = uin.toStringValue();
 		position += RawData.DWORD_LENGHT;
 
 		// Retreiving year
@@ -82,15 +79,15 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 
 		// Retreiving minute
 		RawData minute = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;
-		
+		position += RawData.BYTE_LENGHT;		
 		sendDate = makeDate(year.getValue(), month.getValue(), day.getValue(), hour.getValue(), minute.getValue());
 		
 		// Retreiving message type
 		type = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
 		position += RawData.BYTE_LENGHT;
 
-		// no parse message flag
+		// Retreiving message flag
+		flag = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
 		position += RawData.BYTE_LENGHT;
 
 		// Retreiving message length
@@ -99,7 +96,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 		position += RawData.WORD_LENGHT;
 
 		// Retreiving message
-		message = StringTools.utf8ByteArrayToString(data, position, msgLen.getValue() - 1);
+		message = StringTools.byteArrayToString(data, position, msgLen.getValue() - 1);
 	}
 
 	@Override
@@ -108,7 +105,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 	}
 	
 	private Date makeDate(int year, int month, int day, int hour, int minute) {
-		Calendar calendar = new GregorianCalendar(year, month, day, hour, minute);
+		Calendar calendar = new GregorianCalendar(year, month - 1, day, hour, minute);
 		return calendar.getTime();
 	}
 	
@@ -127,4 +124,8 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 	public MessageTypeEnum getMessageType() {
   		return new MessageTypeEnum(type);
   	}
+	
+	public MessageFlagsEnum getMessageFlag() {
+		return new MessageFlagsEnum(flag);
+	}
 }

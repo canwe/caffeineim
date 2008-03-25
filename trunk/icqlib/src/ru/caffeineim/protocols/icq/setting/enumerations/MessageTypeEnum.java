@@ -18,6 +18,7 @@ package ru.caffeineim.protocols.icq.setting.enumerations;
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
  */
 public class MessageTypeEnum {
 
@@ -34,7 +35,6 @@ public class MessageTypeEnum {
 	public static final int WEB_PAGER_MESSAGE = 0x0D;
 	public static final int EMAIL_EXPRESS_MESSAGE = 0x0E;
 	public static final int CONTACT_LIST = 0x13;
-	//public static final int SMS = 0x1A;
 	public static final int REQUEST_AWAY_MESSAGE = 0xE8;
 	public static final int REQUEST_OCCUPIED_MESSAGE = 0xE9;
 	public static final int REQUEST_NA_MESSAGE = 0xEA;
@@ -93,9 +93,6 @@ public class MessageTypeEnum {
 			case CONTACT_LIST:
 				ret = "Contact list";
 				break;
-			//case SMS:
-				//ret = "Sms";
-				//break;
 			case REQUEST_AWAY_MESSAGE:
 				ret = "Request away message";
 				break;
