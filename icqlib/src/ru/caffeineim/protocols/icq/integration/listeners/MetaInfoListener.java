@@ -18,6 +18,8 @@ package ru.caffeineim.protocols.icq.integration.listeners;
 import java.util.EventListener;
 
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
+import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 
 /**
  * <p>Created by
@@ -27,4 +29,6 @@ import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
 public interface MetaInfoListener extends EventListener {	
 	
 	public void onShortUserInfo(MetaShortUserInfoEvent e);
+	void registerNewUINSuccess(UINRegistrationSuccessEvent event);
+	void registerNewUINFailed(UINRegistrationFailedEvent event);
 }

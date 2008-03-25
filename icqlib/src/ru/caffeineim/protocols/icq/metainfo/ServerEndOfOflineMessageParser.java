@@ -25,16 +25,13 @@ import ru.caffeineim.protocols.icq.packet.sent.meta.ClientMeta;
  */
 public class ServerEndOfOflineMessageParser implements IMetaInfoParser {
 
-	@Override
 	public void execute(OscarConnection connection) {
 		connection.sendFlap(ClientMeta.ackOfflineMessages(connection));	
 	}
 
-	@Override
 	public void notifyEvent(OscarConnection connection) {		
 	}
 
-	@Override
 	public void parse(byte[] data, int position) throws ConvertStringException {				
 	}
 }

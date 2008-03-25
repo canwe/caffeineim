@@ -20,6 +20,8 @@ import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
+import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
 
@@ -46,14 +48,13 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
         connection.addObserver(this);
     }
     
-    @Override
+
     public void update(Observable obs, Object obj) {
     	System.out.println("Send meta request");
     	connection.sendFlap(new RequestShortUserInfo(UIN1, connection.getUserId()));
     	connection.sendFlap(new RequestShortUserInfo(UIN2, connection.getUserId()));
     }
     
-	@Override
 	public void onShortUserInfo(MetaShortUserInfoEvent e) {
 		System.out.println("Short User Info: ");
     	System.out.println("  Nick Name = "  + e.getNickName());
@@ -62,6 +63,16 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("  Email = "      + e.getEmail());
     	System.out.println("  Auth = "       + e.getAuthFlag());		
 	}    
+    
+    public void registerNewUINSuccess(UINRegistrationSuccessEvent event)
+    {
+        
+    }
+    
+    public void registerNewUINFailed(UINRegistrationFailedEvent event)
+    {
+        
+    }
         
     public static void main(String[] args) {
         if (args.length < 2) {
