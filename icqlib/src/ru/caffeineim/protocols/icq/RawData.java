@@ -172,6 +172,14 @@ public class RawData extends DataField {
 		
 		return stringValue;
 	}
+	
+	/**
+	 * 
+	 * @return The integer RawData as String value
+	 */
+	public String toStringValue() {
+		return String.valueOf(getValue());
+	}
 
 	/**
 	 *
