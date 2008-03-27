@@ -19,11 +19,18 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.events.MetaBasicUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaEmailUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaInterestsUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaWorkUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
-import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
+import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
+import ru.caffeineim.protocols.icq.setting.enumerations.CountryEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.InterestsEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.TimeZoneEnum;
 
 /**
  * <p>Created by 22.03.2008
@@ -34,46 +41,117 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
     
-    private static final String UIN1 = "213536590";
+    private static final String UIN1 = "217709";
     private static final String UIN2 = "205717272";
     
     private OscarConnection connection;
 
     public MetaInfoEventsTest(String uin, String password) {       
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);        
+        connection.getPacketAnalyser().setDebug(true);
+        connection.getPacketAnalyser().setDump(true);
                         
         connection.addMetaInfoListener(this);
                 
         connection.addObserver(this);
     }
     
-
+    @Override
     public void update(Observable obs, Object obj) {
     	System.out.println("Send meta request");
-    	connection.sendFlap(new RequestShortUserInfo(UIN1, connection.getUserId()));
-    	connection.sendFlap(new RequestShortUserInfo(UIN2, connection.getUserId()));
+    	//OscarInterface.requestShortUserInfo(connection, UIN1);
+    	//OscarInterface.requestShortUserInfo(connection, UIN2);
+    	
+    	// All Countries
+    	for (String str : CountryEnum.getAllCountries()) {
+    		System.out.println(str);
+    	}
+    	
+    	// ALL TimeZones
+    	for (String str : TimeZoneEnum.getAllTimeZones()) {
+    		System.out.println(str);
+    	}
+    	
+    	connection.sendFlap(new RequestFullUserInfo(UIN1, connection.getUserId()));
     }
     
+	@Override
 	public void onShortUserInfo(MetaShortUserInfoEvent e) {
 		System.out.println("Short User Info: ");
     	System.out.println("  Nick Name = "  + e.getNickName());
     	System.out.println("  First Name = " + e.getFirstName());
     	System.out.println("  Last Name = "  + e.getLastName());
-    	System.out.println("  Email = "      + e.getEmail());
-    	System.out.println("  Auth = "       + e.getAuthFlag());		
+    	System.out.println("  Email = "      + e.getEmail());    	    	
+    	System.out.println("  Auth = "       + e.isAuth());		
+	}
+	
+	@Override
+	public void onBasicUserInfo(MetaBasicUserInfoEvent e) {
+		System.out.println("Basic User Info: ");
+    	System.out.println("  Nick Name = "  + e.getNickName());
+    	System.out.println("  First Name = " + e.getFirstName());
+    	System.out.println("  Last Name = "  + e.getLastName());
+    	System.out.println("  Email = "      + e.getEmail());   
+    	System.out.println("  Home City = "  + e.getHomeCity());
+    	System.out.println("  Home State = " + e.getHomeState());
+    	System.out.println("  Home Phone = " + e.getHomePhone());
+    	System.out.println("  Home Fax = "   + e.getHomeFax());
+    	System.out.println("  Home Address = "  + e.getHomeAddress());
+    	System.out.println("  Cell Phone = "  + e.getCellPhone());
+    	System.out.println("  Zip = "         + e.getZipCode());
+    	System.out.println("  Home Country = "  + e.getHomeCountry());
+    	System.out.println("  GMT offset = "  + e.getTimeZone());
+    	
+    	System.out.println("  Auth = "       + e.isAuth());
+    	System.out.println("  WebAware = "       + e.isWebaware());
+    	System.out.println("  DirectConnection = " + e.isDirectConnection());
+    	System.out.println("  PublishPrimaryEmail = " + e.isPublishPrimaryEmail());
+	}
+	
+	@Override
+	public void onEmailUserInfo(MetaEmailUserInfoEvent e) {
+		System.out.println("Email User Info: ");
+		for (String email : e.getEmails())
+		{
+			System.out.println("Email: " + email);
+		}
+	}
+	
+	@Override
+	public void onWorkUserInfo(MetaWorkUserInfoEvent e) {		
+		System.out.println("Work User Info: ");
+    	System.out.println("  Work City = "  + e.getWorkCity());
+    	System.out.println("  Work State = "  + e.getWorkState());
+    	System.out.println("  Work Phone = "  + e.getWorkPhone());
+    	System.out.println("  Work Fax = "  + e.getWorkFax());
+    	System.out.println("  Work Address = "  + e.getWorkAddress());
+    	System.out.println("  Work Zip = "  + e.getWorkZip());
+    	System.out.println("  Work Country = "  + e.getWorkCountry());
+    	System.out.println("  Work Company = "  + e.getWorkCompany());
+    	System.out.println("  Work Department = "  + e.getWorkDepartment());
+    	System.out.println("  Work Position = "  + e.getWorkPosition());
+    	System.out.println("  Work WebPage = "  + e.getWorkWebPage());
+    	System.out.println("  Work Occupation = "  + e.getWorkOccupation());
 	}    
-    
-    public void registerNewUINSuccess(UINRegistrationSuccessEvent event)
-    {
+
+	@Override
+	public void onInterestsUserInfo(MetaInterestsUserInfoEvent e) {
+		System.out.println("Interests User Info: ");
+		for (InterestsEnum code : e.getInterests().keySet()) {
+			System.out.println("Category: " + code + " interest: " + e.getInterests().get(code));
+		}
+	}
+	
+	@Override
+	public void registerNewUINSuccess(UINRegistrationSuccessEvent e) {
         
     }
     
-    public void registerNewUINFailed(UINRegistrationFailedEvent event)
-    {
+	@Override
+    public void registerNewUINFailed(UINRegistrationFailedEvent e) {
         
     }
-        
+	
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Use : MetaInfoEventsTest MY_UIN MY_PASSWORD");

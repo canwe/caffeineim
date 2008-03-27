@@ -4,7 +4,6 @@ import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
-import ru.caffeineim.protocols.icq.core.OscarConnection;
 
 /**
  * This library is free software; you can redistribute it and/or

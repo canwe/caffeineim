@@ -50,10 +50,27 @@ public class MetaInfoParserFactory {
 					case MetaSubTypeEnum.SERVER_LAST_USER_FOUND:
 						// TODO сюда засунем поиск
 						break;
+						
 					case MetaSubTypeEnum.SERVER_SHORT_USER_INFO_REPLY:
 						parser = new ShortUserInfoParser();
 						break;
-				}
+						
+					case MetaSubTypeEnum.SERVER_BASIC_USER_INFO_REPLY:
+						parser = new BasicUserInfoParser();
+						break;
+						
+					case MetaSubTypeEnum.SERVER_EXTENDED_EMAIL_USER_INFO_REPLY:
+						parser = new EmailUserInfoParser();
+						break;
+						
+					case MetaSubTypeEnum.SERVER_WORK_USER_INFO_REPLY:
+						parser = new WorkUserInfoParser();
+						break;
+					
+					case MetaSubTypeEnum.SERVER_INTERESTS_USER_INFO_REPLY:
+						parser = new InterestsUserInfoParser();
+						break;						
+				}				
 				break;
 		}
 			

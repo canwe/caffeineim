@@ -25,6 +25,7 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.SendXStatus;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.XStatusRequest;
 import ru.caffeineim.protocols.icq.packet.sent.location.SetLocationInformation;
 import ru.caffeineim.protocols.icq.packet.sent.meta.ClientMeta;
+import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
 import ru.caffeineim.protocols.icq.setting.enumerations.IdleTimeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
@@ -143,5 +144,15 @@ public class OscarInterface {
 	 */
 	public static void requestOfflineMessages(OscarConnection connection) {				
 		connection.sendFlap(ClientMeta.requestOfflineMessages(connection));		
-	}	
+	}
+	
+	/**
+	 * Запрос короткой информации о пользователе
+	 * 
+	 * @param connection соединение
+	 * @param uin UIN пользователя, о котором запрашиваем информацию
+	 */
+	public static void requestShortUserInfo(OscarConnection connection, String uin) {
+		connection.sendFlap(new RequestShortUserInfo(uin, connection.getUserId()));
+	}
 }

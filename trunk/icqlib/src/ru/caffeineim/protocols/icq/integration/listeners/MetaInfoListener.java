@@ -17,7 +17,11 @@ package ru.caffeineim.protocols.icq.integration.listeners;
 
 import java.util.EventListener;
 
+import ru.caffeineim.protocols.icq.integration.events.MetaBasicUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaEmailUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaInterestsUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaWorkUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 
@@ -29,6 +33,16 @@ import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEven
 public interface MetaInfoListener extends EventListener {	
 	
 	public void onShortUserInfo(MetaShortUserInfoEvent e);
-	void registerNewUINSuccess(UINRegistrationSuccessEvent event);
-	void registerNewUINFailed(UINRegistrationFailedEvent event);
+	
+	public void onBasicUserInfo(MetaBasicUserInfoEvent e);
+	
+	public void onEmailUserInfo(MetaEmailUserInfoEvent e);
+	
+	public void onWorkUserInfo(MetaWorkUserInfoEvent e);
+	
+	public void onInterestsUserInfo(MetaInterestsUserInfoEvent e);
+	
+	public void registerNewUINSuccess(UINRegistrationSuccessEvent e);
+	
+	public void registerNewUINFailed(UINRegistrationFailedEvent e);
 }

@@ -27,6 +27,7 @@ import ru.caffeineim.protocols.icq.core.OscarConnection;
  */
 public abstract class BaseMetaInfoParser implements IMetaInfoParser {
 
+	@Override
 	public void notifyEvent(OscarConnection connection) {
 		EventObject e = getNewEvent();
 		
@@ -36,6 +37,7 @@ public abstract class BaseMetaInfoParser implements IMetaInfoParser {
 		}
 	}
 		
+	@Override
 	public void execute(OscarConnection connection) {		
 	}
 	
