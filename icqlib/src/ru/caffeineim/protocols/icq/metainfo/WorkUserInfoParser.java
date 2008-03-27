@@ -45,17 +45,17 @@ public class WorkUserInfoParser extends BaseMetaInfoParser {
 	private String workWebPage;
 	private int workOccupationCode;
 	
-	@Override
+	
 	protected EventObject getNewEvent() {
 		return new MetaWorkUserInfoEvent(this);
 	}
 
-	@Override
+	
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MetaInfoListener) listener).onWorkUserInfo((MetaWorkUserInfoEvent) e);
 	}
 
-	@Override
+	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
 		

@@ -32,17 +32,17 @@ import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
 public class EmailUserInfoParser extends BaseMetaInfoParser {
 	private List<String> emails = new ArrayList<String>();
 
-	@Override
+	
 	protected EventObject getNewEvent() {
 		return new MetaEmailUserInfoEvent(this);
 	}
 
-	@Override
+	
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MetaInfoListener) listener).onEmailUserInfo((MetaEmailUserInfoEvent) e);	
 	}
 
-	@Override
+	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
 		
