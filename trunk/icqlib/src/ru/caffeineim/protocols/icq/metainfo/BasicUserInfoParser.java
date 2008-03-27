@@ -50,17 +50,17 @@ public class BasicUserInfoParser extends BaseMetaInfoParser {
 	private boolean directConnection;
 	private boolean publishPrimaryEmail;
 	
-	@Override
+	
 	protected EventObject getNewEvent() {
 		return new MetaBasicUserInfoEvent(this);
 	}
 
-	@Override
+	
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MetaInfoListener) listener).onBasicUserInfo((MetaBasicUserInfoEvent) e);
 	}
 
-	@Override
+	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
 		

@@ -35,17 +35,17 @@ public class InterestsUserInfoParser extends BaseMetaInfoParser {
 
 	private Map<InterestsEnum, String> interests = new HashMap<InterestsEnum, String>();
 	
-	@Override
+	
 	protected EventObject getNewEvent() {
 		return new MetaInterestsUserInfoEvent(this);
 	}
 
-	@Override
+	
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MetaInfoListener) listener).onInterestsUserInfo((MetaInterestsUserInfoEvent) e);	
 	}
 
-	@Override
+	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
 		

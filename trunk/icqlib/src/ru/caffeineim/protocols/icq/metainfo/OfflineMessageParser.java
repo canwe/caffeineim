@@ -43,17 +43,17 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 	private int type;
 	private int flag;
 	
-	@Override
+	
 	protected EventObject getNewEvent() {
 		return new OfflineMessageEvent(this);
 	}
 	
-	@Override
+	
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MessagingListener) listener).onOfflineMessage((OfflineMessageEvent) e);
 	}
 	
-	@Override
+	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		// Retreiving sender uin
 		RawData uin = new RawData(data, position, RawData.DWORD_LENGHT);
@@ -100,7 +100,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 		message = StringTools.byteArrayToString(data, position, msgLen.getValue() - 1);
 	}
 
-	@Override
+	
 	protected List<EventListener> getListenersList(OscarConnection connection) {
 		return connection.getMessagingListeners();
 	}
