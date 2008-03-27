@@ -13,28 +13,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.metainfo;
+package ru.caffeineim.protocols.icq.packet.sent.meta;
 
-import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
-import ru.caffeineim.protocols.icq.packet.sent.meta.ClientMeta;
+import ru.caffeineim.protocols.icq.setting.enumerations.MetaSubTypeEnum;
 
 /**
- * <p>Created by 24.03.2008
+ * <p>Created by 25.03.2008
  *   @author Samolisov Pavel
  */
-public class ServerEndOfOflineMessageParser implements IMetaInfoParser {
-
-	@Override
-	public void execute(OscarConnection connection) {
-		connection.sendFlap(ClientMeta.ackOfflineMessages(connection));	
-	}
-
-	@Override
-	public void notifyEvent(OscarConnection connection) {		
-	}
-
-	@Override
-	public void parse(byte[] data, int position) throws ConvertStringException {				
+public class RequestFullUserInfo extends RequestUserInfo {
+	
+	/** 
+	 * Creates a new instance of RequestFullUserInfo 
+	 * 
+	 * @param uinSearch ICQ UIN to search
+	 * @param uinForRequest for request ICQ UIN
+	 */
+	public RequestFullUserInfo(String uinSearch, String uinForRequest) {
+		super(uinSearch, uinForRequest, MetaSubTypeEnum.REQUEST_FULL_USER_INFO);
 	}
 }

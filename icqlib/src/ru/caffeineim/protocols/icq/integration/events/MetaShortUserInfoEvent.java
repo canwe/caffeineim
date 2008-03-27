@@ -48,7 +48,7 @@ public class MetaShortUserInfoEvent extends EventObject {
 		return ((ShortUserInfoParser) getSource()).getEmail();
 	}
 	
-	public boolean getAuthFlag() {
+	public boolean isAuth() {
 		return ((ShortUserInfoParser) getSource()).isAuthFlag();
 	}
 }

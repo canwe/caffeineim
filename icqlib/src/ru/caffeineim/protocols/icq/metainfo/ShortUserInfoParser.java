@@ -36,14 +36,17 @@ public class ShortUserInfoParser extends BaseMetaInfoParser {
 	private String email;
 	private boolean authFlag;
 	
+	@Override
 	protected EventObject getNewEvent() {
 		return new MetaShortUserInfoEvent(this);
 	}
 
+	@Override
 	protected void sendMessage(EventListener listener, EventObject e) {
 		((MetaInfoListener) listener).onShortUserInfo((MetaShortUserInfoEvent) e);
 	}
 
+	@Override
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
 		
