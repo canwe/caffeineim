@@ -24,8 +24,8 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.SendType2Message;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.SendXStatus;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.XStatusRequest;
 import ru.caffeineim.protocols.icq.packet.sent.location.SetLocationInformation;
-import ru.caffeineim.protocols.icq.packet.sent.meta.ClientMeta;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
+import ru.caffeineim.protocols.icq.packet.sent.meta.RequestOfflineMessages;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
 import ru.caffeineim.protocols.icq.setting.enumerations.IdleTimeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
@@ -63,17 +63,6 @@ public class OscarInterface {
 		// WARNING: Extended Messages will NOT be delivered to offline contacts
 		// and on AIM, only Basic Messages
 		connection.sendFlap(new SendType2Message(userId, message));
-	}
-
-	/**
-	 * Отправляем SMS-сообщение
-	 * 
-	 * @param connection соединение
-	 * @param phoneNumber телефонный номер получателя
-	 * @param message сообщение
-	 */
-	public static void sendSMS(OscarConnection connection, String phoneNumber, String message) {
-		connection.sendFlap(ClientMeta.sendSMS(connection, phoneNumber, message));
 	}
 
 	/**
@@ -144,7 +133,7 @@ public class OscarInterface {
 	 * @param connection соединение
 	 */
 	public static void requestOfflineMessages(OscarConnection connection) {				
-		connection.sendFlap(ClientMeta.requestOfflineMessages(connection));		
+		connection.sendFlap(new RequestOfflineMessages(connection.getUserId()));		
 	}
 	
 	/**

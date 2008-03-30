@@ -30,8 +30,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MessageChannelEnum;
  */
 public abstract class SendMessage extends Flap {
 
-	public Snac snac;
-	public RawData channel;
+	protected Snac snac;
+	protected RawData channel;
 
 	public SendMessage(String userId, MessageChannelEnum messageChannel) {
 		super(2);

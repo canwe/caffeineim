@@ -13,28 +13,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.metainfo;
+package ru.caffeineim.protocols.icq.packet.sent.meta;
 
-import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
-import ru.caffeineim.protocols.icq.packet.sent.meta.AckOfflineMessages;
+import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
 
 /**
- * <p>Created by 24.03.2008
+ * <p>Created by 30.03.2008
  *   @author Samolisov Pavel
  */
-public class ServerEndOfOflineMessageParser implements IMetaInfoParser {
+public class RequestOfflineMessages extends BaseClientMeta {
 
+	protected static final int REQUEST_LENGHT = 0x0800;
 	
-	public void execute(OscarConnection connection) {
-		connection.sendFlap(new AckOfflineMessages(connection.getUserId()));	
-	}
-
-	
-	public void notifyEvent(OscarConnection connection) {		
-	}
-
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {				
-	}
+	public RequestOfflineMessages(String uinForRequest) {
+		super(REQUEST_LENGHT, uinForRequest, MetaTypeEnum.CLIENT_REQUEST_OFFLINE_MESSAGES);
+		finalizePacket();
+	}	
 }

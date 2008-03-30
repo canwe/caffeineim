@@ -31,8 +31,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
 public class ServerMetaReply__21_3 extends ReceivedPacket {
 
 	private int metaType = 0;
-	private int metaSubType = 0;
-	private RawData sequence;
+	private int metaSubType = 0;	
 	
 	private IMetaInfoParser metaInfoParser = null; 
 
@@ -46,18 +45,20 @@ public class ServerMetaReply__21_3 extends ReceivedPacket {
 		position += 10;
 
 		// Retreiving meta-type command
-		metaType = new RawData(data, position, RawData.WORD_LENGHT).getValue();
+		RawData rdMetaType = new RawData(data, position, RawData.WORD_LENGHT);
+		rdMetaType.invertIndianness();
+		metaType = rdMetaType.getValue();
 		position += 2;
 
-		// Retreiving the sequence
-		sequence = new RawData(data, position, RawData.WORD_LENGHT);
+		// Skip the sequence
+		//RawData sequence = new RawData(data, position, RawData.WORD_LENGHT);
 		position += 2;
 		
 		// Retreiving the meta-subtype command
 		if (metaType == MetaTypeEnum.SERVER_ADVANCED_META) {
 			RawData metaSubTypeRD = new RawData(data, position, RawData.WORD_LENGHT);
 			metaSubTypeRD.invertIndianness();
-			metaSubType = metaSubTypeRD.getValue();
+			metaSubType = metaSubTypeRD.getValue();			
 		}
 		
 		// Build parser
