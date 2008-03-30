@@ -15,17 +15,14 @@
  */
 package ru.caffeineim.protocols.icq.packet.sent.meta;
 
-import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.RawData;
-import ru.caffeineim.protocols.icq.Snac;
-import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
 
 /**
  * <p>Created by 25.03.2008
  *   @author Samolisov Pavel
  */
-public abstract class RequestUserInfo extends Flap {
+public abstract class RequestUserInfo extends BaseClientMeta {
 	
 	protected static final int REQUEST_LENGHT = 0x0E00;
 	
@@ -37,38 +34,13 @@ public abstract class RequestUserInfo extends Flap {
 	 * @param subType subtype of meta request
 	 */
 	public RequestUserInfo(String uinSearch, String uinForRequest, int subType) {
-		super(2);
-		Snac snac = new Snac(0x15, 0x02, 0x00, 0x00, 0x00);	
-				
-		// Creating TLV 
-		Tlv tlv = new Tlv(0x01);
-		
-		// Chunk size
-		tlv.appendRawDataToTlv(new RawData(REQUEST_LENGHT, RawData.WORD_LENGHT));
-		
-		// Converting UIN to little endian 
-		RawData rUin = new RawData(Integer.parseInt(uinForRequest), RawData.DWORD_LENGHT);
-		rUin.invertIndianness();
-		
-		// request owner UIN
-		tlv.appendRawDataToTlv(rUin);
-		
-		// Request Type
-		tlv.appendRawDataToTlv(new RawData(MetaTypeEnum.CLIENT_ADVANCED_META, RawData.WORD_LENGHT));
-		
-		// Adding sequence-id 
-		tlv.appendRawDataToTlv(new RawData(0x0200, RawData.WORD_LENGHT));
-		
-		// Request SubType
-		tlv.appendRawDataToTlv(new RawData(subType, RawData.WORD_LENGHT));
+		super(REQUEST_LENGHT, uinForRequest, MetaTypeEnum.CLIENT_ADVANCED_META, subType);
 		
 		// UIN to search
-		rUin = new RawData(Integer.parseInt(uinSearch), RawData.DWORD_LENGHT);
+		RawData rUin = new RawData(Integer.parseInt(uinSearch), RawData.DWORD_LENGHT);
 		rUin.invertIndianness();
 		tlv.appendRawDataToTlv(rUin);
 		
-		snac.addTlvToSnac(tlv);
-		
-		addSnac(snac);		
+		finalizePacket();
 	}
 }

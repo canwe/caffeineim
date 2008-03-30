@@ -176,6 +176,7 @@ public class OscarClient implements Runnable {
      */
     public void sendPacket(byte[] packet) throws IOException {
     	if (analyser.isDumping()) {
+    		System.out.println("Send: ");
     		System.out.println(Dumper.dump(packet, true, 8, 16));
     	}
     	out.write(packet);

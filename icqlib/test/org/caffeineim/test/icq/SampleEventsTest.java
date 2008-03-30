@@ -49,7 +49,7 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
         System.out.println("Login to ICQ server");
     	connection = new OscarConnection(SERVER, PORT, uin, password);
         connection.getPacketAnalyser().setDebug(true);
-        connection.getPacketAnalyser().setDump(true);
+        //connection.getPacketAnalyser().setDump(true);
                
         // Зарегестрируем класс как слушатель
         connection.addMessagingListener(this);

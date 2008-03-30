@@ -21,12 +21,12 @@ package ru.caffeineim.protocols.icq.setting.enumerations;
  */
 public class MetaTypeEnum {
 
-	public static final int CLIENT_REQUEST_OFFLINE_MESSAGES = 0x3C00;
-	public static final int CLIENT_ACK_OFFLINE_MESSAGES = 0x3E00;
-	public static final int CLIENT_ADVANCED_META = 0xD007;
-	public static final int SERVER_OFFLINE_MESSAGE = 0x4100;
-	public static final int SERVER_END_OF_OFFLINE_MESSAGES = 0x4200;
-	public static final int SERVER_ADVANCED_META = 0xDA07;
+	public static final int CLIENT_REQUEST_OFFLINE_MESSAGES = 0x003C;
+	public static final int CLIENT_ACK_OFFLINE_MESSAGES = 0x003E;
+	public static final int CLIENT_ADVANCED_META = 0x07D0;
+	public static final int SERVER_OFFLINE_MESSAGE = 0x0041;
+	public static final int SERVER_END_OF_OFFLINE_MESSAGES = 0x0042;
+	public static final int SERVER_ADVANCED_META = 0x07DA;
 
 	private int type;
 
