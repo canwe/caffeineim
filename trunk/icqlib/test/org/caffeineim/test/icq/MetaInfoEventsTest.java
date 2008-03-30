@@ -55,8 +55,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
                 
         connection.addObserver(this);
     }
-    
-    @Override
+        
     public void update(Observable obs, Object obj) {
     	System.out.println("Send meta request");
     	//OscarInterface.requestShortUserInfo(connection, UIN1);
@@ -74,8 +73,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	
     	connection.sendFlap(new RequestFullUserInfo(UIN1, connection.getUserId()));
     }
-    
-	@Override
+    	
 	public void onShortUserInfo(MetaShortUserInfoEvent e) {
 		System.out.println("Short User Info: ");
     	System.out.println("  Nick Name = "  + e.getNickName());
@@ -84,8 +82,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("  Email = "      + e.getEmail());    	    	
     	System.out.println("  Auth = "       + e.isAuth());		
 	}
-	
-	@Override
+		
 	public void onBasicUserInfo(MetaBasicUserInfoEvent e) {
 		System.out.println("Basic User Info: ");
     	System.out.println("  Nick Name = "  + e.getNickName());
@@ -107,8 +104,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("  DirectConnection = " + e.isDirectConnection());
     	System.out.println("  PublishPrimaryEmail = " + e.isPublishPrimaryEmail());
 	}
-	
-	@Override
+		
 	public void onEmailUserInfo(MetaEmailUserInfoEvent e) {
 		System.out.println("Email User Info: ");
 		for (String email : e.getEmails())
@@ -116,8 +112,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 			System.out.println("Email: " + email);
 		}
 	}
-	
-	@Override
+		
 	public void onWorkUserInfo(MetaWorkUserInfoEvent e) {		
 		System.out.println("Work User Info: ");
     	System.out.println("  Work City = "  + e.getWorkCity());
@@ -133,8 +128,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("  Work WebPage = "  + e.getWorkWebPage());
     	System.out.println("  Work Occupation = "  + e.getWorkOccupation());
 	}    
-
-	@Override
+	
 	public void onInterestsUserInfo(MetaInterestsUserInfoEvent e) {
 		System.out.println("Interests User Info: ");
 		for (InterestsEnum code : e.getInterests().keySet()) {
@@ -142,12 +136,10 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 		}
 	}
 	
-	@Override
 	public void registerNewUINSuccess(UINRegistrationSuccessEvent e) {
         
     }
-    
-	@Override
+    	
     public void registerNewUINFailed(UINRegistrationFailedEvent e) {
         
     }
