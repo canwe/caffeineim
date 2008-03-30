@@ -158,7 +158,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 		for (AffilationEnum code : e.getAffilations().keySet()) {
 			System.out.println("Category: " + code + " affilations: " + e.getAffilations().get(code));
 		}
-	}
+	}	
 	
 	public void registerNewUINSuccess(UINRegistrationSuccessEvent e) {
         
@@ -174,5 +174,5 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
         } else {
             new MetaInfoEventsTest(args[0], args[1]);
         }
-    }
+    }	
 }

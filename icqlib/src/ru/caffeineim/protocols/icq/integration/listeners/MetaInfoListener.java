@@ -49,7 +49,7 @@ public interface MetaInfoListener extends EventListener {
 	
 	public void onNotesUserInfo(MetaNoteUserInfoEvent e);
 	
-	public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e);
+	public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e);		
 	
 	public void registerNewUINSuccess(UINRegistrationSuccessEvent e);
 	

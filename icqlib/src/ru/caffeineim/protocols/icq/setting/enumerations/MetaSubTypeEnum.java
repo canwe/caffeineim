@@ -92,19 +92,4 @@ public class MetaSubTypeEnum {
 	public int getSubType() {
 		return subType;
 	}
-
-	public String toString() {
-		String ret = "";
-		switch (subType) {
-			case CLIENT_SEND_SMS:
-				ret = "Client send an SMS";
-				break;
-			case SEARCH_BY_UIN_PLAIN:
-				case SEARCH_BY_UIN_TLV:
-					ret = "Search by UIN";
-					break;
-		}
-		
-		return ret;
-	}
 }

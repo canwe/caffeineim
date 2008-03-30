@@ -82,6 +82,11 @@ public class MetaInfoParserFactory {
 					case MetaSubTypeEnum.SERVER_AFFILATIONS_USER_INFO_REPLY:
 						parser = new AffilationsUserInfoParser();
 						break;
+						
+					// create parser for server ack
+					case MetaSubTypeEnum.SERVER_SET_USER_PASSWORD:
+						parser = new MetaAckParser();
+						break;
 				}				
 				break;
 		}
