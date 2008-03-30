@@ -25,6 +25,7 @@ import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
+import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.integration.listeners.XStatusListener;
@@ -53,6 +54,7 @@ public class OscarConnection extends Observable {
 	private List<EventListener> xStatusListeners;
 	private List<EventListener> contactListListeners;
 	private List<EventListener> metaInfoListeners;
+	private List<EventListener> metaAckListeners;
   
 	private int flapSeqNrs;
 
@@ -73,10 +75,19 @@ public class OscarConnection extends Observable {
 		xStatusListeners  = new ArrayList<EventListener>();
 		contactListListeners   = new ArrayList<EventListener>();
 		metaInfoListeners  = new ArrayList<EventListener>();
+		metaAckListeners = new ArrayList<EventListener>();
     	
 		client.connectToServer();	
 	}
 
+	public void addMetaAckListener(MetaAckListener listener) {
+		metaAckListeners.add(listener);
+	}
+  
+	public boolean removeMetaAckListener(MetaAckListener listener) {
+		return metaAckListeners.remove(listener);
+	}
+	
 	public void addMetaInfoListener(MetaInfoListener listener) {
 		metaInfoListeners.add(listener);
 	}
@@ -250,6 +261,10 @@ public class OscarConnection extends Observable {
 
 	public List<EventListener> getMetaInfoListeners() {
 		return metaInfoListeners;
+	}
+	
+	public List<EventListener> getMetaAckListeners() {
+		return metaAckListeners;
 	}
 	
 	public RequestKeeper getRequestKeeper() {
