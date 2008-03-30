@@ -19,18 +19,22 @@ import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.events.MetaAffilationsUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaBasicUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaEmailUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaInterestsUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaMoreUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.MetaNoteUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaWorkUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
-import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
-import ru.caffeineim.protocols.icq.setting.enumerations.CountryEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.AffilationEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.InterestsEnum;
-import ru.caffeineim.protocols.icq.setting.enumerations.TimeZoneEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.LanguagesEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.PostBackgroundEnum;
+import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
  * <p>Created by 22.03.2008
@@ -41,8 +45,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
     
-    private static final String UIN1 = "217709";
-    private static final String UIN2 = "205717272";
+    private static final String UIN1 = "217709";    
     
     private OscarConnection connection;
 
@@ -58,20 +61,9 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
         
     public void update(Observable obs, Object obj) {
     	System.out.println("Send meta request");
-    	//OscarInterface.requestShortUserInfo(connection, UIN1);
-    	//OscarInterface.requestShortUserInfo(connection, UIN2);
     	
-    	// All Countries
-    	for (String str : CountryEnum.getAllCountries()) {
-    		System.out.println(str);
-    	}
-    	
-    	// ALL TimeZones
-    	for (String str : TimeZoneEnum.getAllTimeZones()) {
-    		System.out.println(str);
-    	}
-    	
-    	connection.sendFlap(new RequestFullUserInfo(UIN1, connection.getUserId()));
+    	// Запрашиваем инфу
+    	OscarInterface.requestFullUserInfo(connection, UIN1);
     }
     	
 	public void onShortUserInfo(MetaShortUserInfoEvent e) {
@@ -127,12 +119,44 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("  Work Position = "  + e.getWorkPosition());
     	System.out.println("  Work WebPage = "  + e.getWorkWebPage());
     	System.out.println("  Work Occupation = "  + e.getWorkOccupation());
-	}    
+	}
+	
+	public void onMoreUserInfo(MetaMoreUserInfoEvent e) {
+		System.out.println("More User Info");
+		System.out.println(" age = " + e.getAge());
+		System.out.println(" gender = " + e.getGender());
+		System.out.println(" homePage = " + e.getHomePage());
+		System.out.println(" birth = " + e.getBirth());
+		System.out.println(" languages:");
+		for (LanguagesEnum lang : e.getLanguages()) {
+			System.out.println(lang);
+		}
+		System.out.println(" original City = " + e.getOriginalCity());
+		System.out.println(" original State = " + e.getOriginalState());
+		System.out.println(" original Country = " + e.getOriginalCountry());
+		System.out.println(" marital Status = " + e.getMaritalStatus());		
+	}
+	
+	public void onNotesUserInfo(MetaNoteUserInfoEvent e) {
+		System.out.println(" About info = " + e.getNote());
+	}
 	
 	public void onInterestsUserInfo(MetaInterestsUserInfoEvent e) {
 		System.out.println("Interests User Info: ");
 		for (InterestsEnum code : e.getInterests().keySet()) {
 			System.out.println("Category: " + code + " interest: " + e.getInterests().get(code));
+		}
+	}
+	
+	public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e) {
+		System.out.println("PostBackgrounds User Info: ");
+		for (PostBackgroundEnum code : e.getPostBackgrounds().keySet()) {
+			System.out.println("Category: " + code + " postbackground: " + e.getPostBackgrounds().get(code));
+		}
+		
+		System.out.println("Affilations User Info: ");
+		for (AffilationEnum code : e.getAffilations().keySet()) {
+			System.out.println("Category: " + code + " affilations: " + e.getAffilations().get(code));
 		}
 	}
 	

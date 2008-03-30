@@ -13,42 +13,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.setting.enumerations;
+package ru.caffeineim.protocols.icq.integration.events;
+
+import java.util.EventObject;
+
+import ru.caffeineim.protocols.icq.metainfo.NotesUserInfoParser;
 
 /**
- * <p>Created by 15.08.07
+ * <p>Created by 30.03.2008
  *   @author Samolisov Pavel
  */
-public class GenderEnum {
+public class MetaNoteUserInfoEvent extends EventObject {
 
-	public static final int UNKNOWN = 0x00;
-	public static final int MALE = 0x02;
-	public static final int FEMALE = 0x01;
+	private static final long serialVersionUID = -2665788131933999461L;
 
-	private int gender;
-
-	public GenderEnum(int gender) {
-		this.gender = gender;
+	public MetaNoteUserInfoEvent(NotesUserInfoParser source) {
+		super(source);
 	}
-
-	public int getGender() {
-		return gender;
-	}
-
-	public String toString() {
-		String ret = "";
-		switch (gender) {
-			case UNKNOWN:
-				ret = "UNKNOWN";
-				break;
-			case MALE:
-				ret = "Male";
-				break;
-			case FEMALE:
-				ret = "Female";
-				break;
-		}
-		
-		return ret;
+	
+	public String getNote() {
+		return ((NotesUserInfoParser) getSource()).getNote();
 	}
 }
