@@ -15,11 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.metainfo;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import ru.caffeineim.protocols.icq.RawData;
@@ -29,6 +27,7 @@ import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageFlagsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MessageTypeEnum;
+import ru.caffeineim.protocols.icq.tool.DateTools;
 import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
@@ -81,7 +80,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 		// Retreiving minute
 		RawData minute = new RawData(data, position, RawData.BYTE_LENGHT);
 		position += RawData.BYTE_LENGHT;		
-		sendDate = makeDate(year.getValue(), month.getValue(), day.getValue(), hour.getValue(), minute.getValue());
+		sendDate = DateTools.makeDate(year.getValue(), month.getValue(), day.getValue(), hour.getValue(), minute.getValue());
 		
 		// Retreiving message type
 		type = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
@@ -99,17 +98,11 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
 		// Retreiving message
 		message = StringTools.byteArrayToString(data, position, msgLen.getValue() - 1);
 	}
-
 	
 	protected List<EventListener> getListenersList(OscarConnection connection) {
 		return connection.getMessagingListeners();
 	}
-	
-	private Date makeDate(int year, int month, int day, int hour, int minute) {
-		Calendar calendar = new GregorianCalendar(year, month - 1, day, hour, minute);
-		return calendar.getTime();
-	}
-	
+		
 	public String getSenderUin() {
 		return senderUin;
 	}

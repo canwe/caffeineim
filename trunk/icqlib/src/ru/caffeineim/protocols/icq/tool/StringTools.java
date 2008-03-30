@@ -47,7 +47,7 @@ public class StringTools {
 		catch (UnsupportedEncodingException e) {
 			throw new ConvertStringException(UTF8_ENCODING + " not supported in your system");
 		}
-	}
+	}	
 	
 	/**
 	 * Create String from UTF-8 byte-array
@@ -138,9 +138,72 @@ public class StringTools {
         }
         
         // TODO разобраться с определением кодировки. Пока считаем что если не юникод, то cp1251
-        return stringCP1251ToUTF8(new String(arr, off, len));
+        return byteArray1251ToString(arr, off, len);
+    }    
+    
+    /**
+     * Convert array of CP1251 bytes to UTF-8
+     * 
+     * @param data
+     * @param off
+     * @param len
+     */
+    public static String byteArray1251ToString(byte[] data, int off, int len) {
+        String s = new String(data, off, len);
+        
+        StringBuffer stringbuffer = new StringBuffer(len);
+        for(int k = 0; k < len; k++) {
+            int l = data[k + off] & 0xff;
+            
+            switch (l) {
+            	case 168:
+            		stringbuffer.append('\u0401');
+            		break;
+            	case 184:
+            		stringbuffer.append('\u0451');
+            		break;
+
+            	/* Ukrainian CP1251 chars section */
+            	case 165:
+            		stringbuffer.append('\u0490');
+            		break;
+            	case 170:
+            		stringbuffer.append('\u0404');
+            		break;
+            	case 175:
+            		stringbuffer.append('\u0407');
+            		break;
+            	case 178:
+            		stringbuffer.append('\u0406');
+            		break;
+            	case 179:
+            		stringbuffer.append('\u0456');
+            		break;
+            	case 180:
+            		stringbuffer.append('\u0491');
+            		break;
+            	case 186:
+            		stringbuffer.append('\u0454');
+            		break;
+            	case 191:
+            		stringbuffer.append('\u0457');
+            		break;
+            	/* end of section */
+
+            	default:
+            		if (l >= 192 && l <= 255) {
+            			stringbuffer.append((char) ((1040 + l) - 192));
+            		}
+            		else {
+            			stringbuffer.append(s.charAt(k));
+            		}
+            		break;
+            }
+        }
+        
+        return stringbuffer.toString();
     }
-	
+    	
 	/**
 	 * Restore the simbols of string end.
 	 * 

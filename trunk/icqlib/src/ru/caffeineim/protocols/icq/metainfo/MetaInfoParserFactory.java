@@ -69,7 +69,19 @@ public class MetaInfoParserFactory {
 					
 					case MetaSubTypeEnum.SERVER_INTERESTS_USER_INFO_REPLY:
 						parser = new InterestsUserInfoParser();
-						break;						
+						break;
+					
+					case MetaSubTypeEnum.SERVER_MORE_USER_INFO_REPLY:
+						parser = new MoreUserInfoParser();
+						break;
+						
+					case MetaSubTypeEnum.SERVER_ABOUT_USER_INFO_REPLY:
+						parser = new NotesUserInfoParser();
+						break;
+					
+					case MetaSubTypeEnum.SERVER_AFFILATIONS_USER_INFO_REPLY:
+						parser = new AffilationsUserInfoParser();
+						break;
 				}				
 				break;
 		}

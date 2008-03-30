@@ -13,42 +13,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.setting.enumerations;
+package ru.caffeineim.protocols.icq.tool;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
- * <p>Created by 15.08.07
+ * <p>Created by 30.03.2008
  *   @author Samolisov Pavel
  */
-public class GenderEnum {
-
-	public static final int UNKNOWN = 0x00;
-	public static final int MALE = 0x02;
-	public static final int FEMALE = 0x01;
-
-	private int gender;
-
-	public GenderEnum(int gender) {
-		this.gender = gender;
-	}
-
-	public int getGender() {
-		return gender;
-	}
-
-	public String toString() {
-		String ret = "";
-		switch (gender) {
-			case UNKNOWN:
-				ret = "UNKNOWN";
-				break;
-			case MALE:
-				ret = "Male";
-				break;
-			case FEMALE:
-				ret = "Female";
-				break;
-		}
-		
-		return ret;
+public class DateTools {
+	
+	public static Date makeDate(int year, int month, int day, int hour, int minute) {
+		Calendar calendar = new GregorianCalendar(year, month - 1, day, hour, minute);
+		return calendar.getTime();
 	}
 }
