@@ -29,8 +29,8 @@ import ru.caffeineim.protocols.icq.packet.received.generic.PauseReq__1_11;
 import ru.caffeineim.protocols.icq.packet.received.generic.RateReply__1_7;
 import ru.caffeineim.protocols.icq.packet.received.generic.ServerFamilies__1_24;
 import ru.caffeineim.protocols.icq.packet.received.generic.ServerReady__1_3;
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__17_1;
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSuccess__17_5;
+import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__23_1;
+import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSuccess__23_5;
 import ru.caffeineim.protocols.icq.packet.received.icbm.ICBMParametersReply__4_5;
 import ru.caffeineim.protocols.icq.packet.received.icbm.IncomingMessage__4_7;
 import ru.caffeineim.protocols.icq.packet.received.icbm.MessageAck__4_12;
@@ -87,8 +87,8 @@ public class ReceivedPackedRegistry implements IReceivedPacketRegistry {
 		registry.add(MetaError__21_1.class.getName());
 		registry.add(ServerMetaReply__21_3.class.getName());				
 	
-	    registry.add(UINRegistrationSuccess__17_5.class.getName());
-	    registry.add(UINRegistrationFailed__17_1.class.getName());
+	    registry.add(UINRegistrationSuccess__23_5.class.getName());
+	    registry.add(UINRegistrationFailed__23_1.class.getName());
 	}
 		
 	public Vector<String> getClassNameVector() {

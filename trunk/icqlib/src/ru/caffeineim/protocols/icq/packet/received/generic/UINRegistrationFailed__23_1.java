@@ -24,8 +24,8 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
  * <p>Created by
  *   @author Egor Baranov 
  */
-public class UINRegistrationFailed__17_1 extends ReceivedPacket {
-    public UINRegistrationFailed__17_1(byte array[]) {
+public class UINRegistrationFailed__23_1 extends ReceivedPacket {
+    public UINRegistrationFailed__23_1(byte array[]) {
         super(array, true);
     }
 
@@ -34,7 +34,7 @@ public class UINRegistrationFailed__17_1 extends ReceivedPacket {
         for (int i = 0; i < connection.getMetaInfoListeners().size(); i++) {
             MetaInfoListener l = (MetaInfoListener) connection
                     .getMessagingListeners().get(i);
-            l.registerNewUINFailed(e);
+            l.onRegisterNewUINFailed(e);
         }
     }
 }

@@ -25,12 +25,12 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
  * <p>Created by
  *   @author Egor Baranov 
  */
-public class UINRegistrationSuccess__17_5 extends ReceivedPacket {
+public class UINRegistrationSuccess__23_5 extends ReceivedPacket {
     protected String uin;
 
-    public UINRegistrationSuccess__17_5(byte array[]) {
+    public UINRegistrationSuccess__23_5(byte array[]) {
         super(array, true);
-        RawData uinData = new RawData(this.getSnac().getByteArray(), 11, RawData.WORD_LENGHT);
+        RawData uinData = new RawData(array, 50, RawData.WORD_LENGHT);
         uinData.invertIndianness();
         uin = uinData.toStringValue();
     }
@@ -44,7 +44,7 @@ public class UINRegistrationSuccess__17_5 extends ReceivedPacket {
         for (int i = 0; i < connection.getMetaInfoListeners().size(); i++) {
             MetaInfoListener l = (MetaInfoListener) connection
                     .getMessagingListeners().get(i);
-            l.registerNewUINSuccess(e);
+            l.onRegisterNewUINSuccess(e);
         }
     }
 
