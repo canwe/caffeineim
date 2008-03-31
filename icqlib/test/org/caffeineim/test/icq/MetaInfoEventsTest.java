@@ -160,11 +160,12 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 		}
 	}	
 	
-	public void registerNewUINSuccess(UINRegistrationSuccessEvent e) {
-        
+	public void onRegisterNewUINSuccess(UINRegistrationSuccessEvent e) {
+        System.out.println("Registration of new number complete");
+        System.out.println("New number: " + e.getNewUIN());
     }
     	
-    public void registerNewUINFailed(UINRegistrationFailedEvent e) {
+    public void onRegisterNewUINFailed(UINRegistrationFailedEvent e) {
         
     }
 	

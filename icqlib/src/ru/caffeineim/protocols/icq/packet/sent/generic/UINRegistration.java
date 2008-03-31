@@ -73,7 +73,7 @@ public class UINRegistration extends Flap {
 
     protected byte[] getPasswordLng(String password) {
         short lng = (short) password.length();
-        RawData lngData = new RawData(lng);
+        RawData lngData = new RawData(lng, RawData.DWORD_LENGHT);
         lngData.invertIndianness();
         return lngData.getByteArray();
     }

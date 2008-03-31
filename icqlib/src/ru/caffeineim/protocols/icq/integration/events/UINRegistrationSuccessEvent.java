@@ -17,7 +17,7 @@ package ru.caffeineim.protocols.icq.integration.events;
 
 import java.util.EventObject;
 
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSuccess__17_5;
+import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSuccess__23_5;
 
 /**
  * <p>Created by
@@ -25,13 +25,13 @@ import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSucces
  */
 public class UINRegistrationSuccessEvent extends EventObject {
 
-    private static final long serialVersionUID = -7299142770380656252L;
+    private static final long serialVersionUID = -2690338742682890998L;
 
-    public UINRegistrationSuccessEvent(UINRegistrationSuccess__17_5 source) {
+    public UINRegistrationSuccessEvent(UINRegistrationSuccess__23_5 source) {
         super(source);
     }
 
-    String getNewUIN() {
-        return ((UINRegistrationSuccess__17_5) this.getSource()).getNewUIN();
+    public String getNewUIN() {
+        return ((UINRegistrationSuccess__23_5) this.getSource()).getNewUIN();
     }
 }

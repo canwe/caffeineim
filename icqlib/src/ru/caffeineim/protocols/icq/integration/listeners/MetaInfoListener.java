@@ -52,7 +52,7 @@ public interface MetaInfoListener extends EventListener {
 	
 	public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e);		
 	
-	public void registerNewUINSuccess(UINRegistrationSuccessEvent e);
+	public void onRegisterNewUINSuccess(UINRegistrationSuccessEvent e);
 	
-	public void registerNewUINFailed(UINRegistrationFailedEvent e);
+	public void onRegisterNewUINFailed(UINRegistrationFailedEvent e);
 }

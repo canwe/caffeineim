@@ -17,7 +17,7 @@ package ru.caffeineim.protocols.icq.integration.events;
 
 import java.util.EventObject;
 
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__17_1;
+import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__23_1;
 
 /**
  * <p>Created by
@@ -27,7 +27,7 @@ public class UINRegistrationFailedEvent extends EventObject {
 
     private static final long serialVersionUID = 3076041651776567131L;
 
-    public UINRegistrationFailedEvent(UINRegistrationFailed__17_1 source) {
+    public UINRegistrationFailedEvent(UINRegistrationFailed__23_1 source) {
         super(source);
     }
 }
