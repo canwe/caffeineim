@@ -31,7 +31,8 @@ import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEven
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
- *   @author Samolisov Pavel 
+ *   @author Samolisov Pavel
+ *   @author Egor Baranov 
  */
 public interface MetaInfoListener extends EventListener {	
 	

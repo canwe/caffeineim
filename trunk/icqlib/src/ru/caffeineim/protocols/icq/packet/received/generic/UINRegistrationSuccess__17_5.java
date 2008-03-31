@@ -15,6 +15,7 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.generic;
 
+import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
@@ -29,9 +30,9 @@ public class UINRegistrationSuccess__17_5 extends ReceivedPacket {
 
     public UINRegistrationSuccess__17_5(byte array[]) {
         super(array, true);
-        int num = this.getSnac().getByteArray()[11] << 8 + this.getSnac()
-                .getByteArray()[12];
-        uin = String.valueOf(num);
+        RawData uinData = new RawData(this.getSnac().getByteArray(), 11, RawData.WORD_LENGHT);
+        uinData.invertIndianness();
+        uin = uinData.toStringValue();
     }
 
     public String getNewUIN() {

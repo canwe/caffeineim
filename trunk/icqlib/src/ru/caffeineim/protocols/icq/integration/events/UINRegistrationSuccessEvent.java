@@ -24,7 +24,8 @@ import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSucces
  *   @author Egor Baranov 
  */
 public class UINRegistrationSuccessEvent extends EventObject {
-    private static final long serialVersionUID = 1;
+
+    private static final long serialVersionUID = -7299142770380656252L;
 
     public UINRegistrationSuccessEvent(UINRegistrationSuccess__17_5 source) {
         super(source);
