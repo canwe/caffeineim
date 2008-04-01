@@ -29,7 +29,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
  *   @author Samolisov Pavel 
  */
 public class ServerMetaReply__21_3 extends ReceivedPacket {
-
+	
 	private int metaType = 0;
 	private int metaSubType = 0;	
 	

@@ -17,7 +17,7 @@ package ru.caffeineim.protocols.icq.integration.events;
 
 import java.util.EventObject;
 
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__23_1;
+import ru.caffeineim.protocols.icq.packet.received.authorization.UINRegistrationFailed__23_1;
 
 /**
  * <p>Created by

@@ -13,7 +13,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.packet.received.generic;
+package ru.caffeineim.protocols.icq.packet.received.authorization;
 
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -30,7 +30,7 @@ public class UINRegistrationSuccess__23_5 extends ReceivedPacket {
 
     public UINRegistrationSuccess__23_5(byte array[]) {
         super(array, true);
-        RawData uinData = new RawData(array, 50, RawData.WORD_LENGHT);
+        RawData uinData = new RawData(array, 50, RawData.DWORD_LENGHT);
         uinData.invertIndianness();
         uin = uinData.toStringValue();
     }

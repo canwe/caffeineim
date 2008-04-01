@@ -56,7 +56,8 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 
 	public ContactListEventsTest(String uin, String password) {
 		connection = new OscarConnection(SERVER, PORT, uin, password);
-		connection.getPacketAnalyser().setDebug(true);		
+		connection.getPacketAnalyser().setDebug(true);
+		connection.getPacketAnalyser().setDump(true);
 		
 		connection.addMessagingListener(this);
 		connection.addStatusListener(this);

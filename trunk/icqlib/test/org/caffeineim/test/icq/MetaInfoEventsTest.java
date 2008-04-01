@@ -52,7 +52,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     public MetaInfoEventsTest(String uin, String password) {       
     	connection = new OscarConnection(SERVER, PORT, uin, password);
         connection.getPacketAnalyser().setDebug(true);
-        //connection.getPacketAnalyser().setDump(true);
+        connection.getPacketAnalyser().setDump(true);
                         
         connection.addMetaInfoListener(this);
                 
@@ -63,7 +63,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
     	System.out.println("Send meta request");
     	
     	// Запрашиваем инфу
-    	OscarInterface.requestFullUserInfo(connection, UIN1);
+    	OscarInterface.requestFullUserInfo(connection, UIN1);    	
     }
     	
 	public void onShortUserInfo(MetaShortUserInfoEvent e) {
@@ -162,11 +162,11 @@ public class MetaInfoEventsTest implements MetaInfoListener, Observer {
 	
 	public void onRegisterNewUINSuccess(UINRegistrationSuccessEvent e) {
         System.out.println("Registration of new number complete");
-        System.out.println("New number: " + e.getNewUIN());
+        System.out.println("New UIN: " + e.getNewUIN());
     }
     	
     public void onRegisterNewUINFailed(UINRegistrationFailedEvent e) {
-        
+    	System.out.println("UIN Registration filed!");
     }
 	
     public static void main(String[] args) {
