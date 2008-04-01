@@ -24,6 +24,7 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.SendType2Message;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.SendXStatus;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.XStatusRequest;
 import ru.caffeineim.protocols.icq.packet.sent.location.SetLocationInformation;
+import ru.caffeineim.protocols.icq.packet.sent.meta.ChangePassword;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestOfflineMessages;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
@@ -154,5 +155,16 @@ public class OscarInterface {
 	 */
 	public static void requestFullUserInfo(OscarConnection connection, String uin) {
 		connection.sendFlap(new RequestFullUserInfo(uin, connection.getUserId()));
+	}
+		
+	/**
+	 * Смена пароля пользователем
+	 * 
+	 * @param connection соединение
+	 * @param newPassword новый пароль пользователя
+	 * @throws ConvertStringException
+	 */
+	public static void changePassword(OscarConnection connection, String newPassword) throws ConvertStringException {
+		connection.sendFlap(new ChangePassword(connection.getUserId(), newPassword));
 	}
 }

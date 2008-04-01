@@ -18,6 +18,8 @@ package ru.caffeineim.protocols.icq.packet.received;
 import java.util.Vector;
 
 import ru.caffeineim.protocols.icq.core.IReceivedPacketRegistry;
+import ru.caffeineim.protocols.icq.packet.received.authorization.UINRegistrationFailed__23_1;
+import ru.caffeineim.protocols.icq.packet.received.authorization.UINRegistrationSuccess__23_5;
 import ru.caffeineim.protocols.icq.packet.received.byddylist.BuddyListRightsReply__3_3;
 import ru.caffeineim.protocols.icq.packet.received.byddylist.IncomingUser__3_11;
 import ru.caffeineim.protocols.icq.packet.received.byddylist.OffgoingUser__3_12;
@@ -29,8 +31,6 @@ import ru.caffeineim.protocols.icq.packet.received.generic.PauseReq__1_11;
 import ru.caffeineim.protocols.icq.packet.received.generic.RateReply__1_7;
 import ru.caffeineim.protocols.icq.packet.received.generic.ServerFamilies__1_24;
 import ru.caffeineim.protocols.icq.packet.received.generic.ServerReady__1_3;
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationFailed__23_1;
-import ru.caffeineim.protocols.icq.packet.received.generic.UINRegistrationSuccess__23_5;
 import ru.caffeineim.protocols.icq.packet.received.icbm.ICBMParametersReply__4_5;
 import ru.caffeineim.protocols.icq.packet.received.icbm.IncomingMessage__4_7;
 import ru.caffeineim.protocols.icq.packet.received.icbm.MessageAck__4_12;

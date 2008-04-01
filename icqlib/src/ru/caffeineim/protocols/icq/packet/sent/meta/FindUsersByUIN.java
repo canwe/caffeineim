@@ -13,25 +13,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.integration.events;
+package ru.caffeineim.protocols.icq.packet.sent.meta;
 
-import java.util.EventObject;
-
-import ru.caffeineim.protocols.icq.packet.received.authorization.UINRegistrationSuccess__23_5;
+import ru.caffeineim.protocols.icq.setting.enumerations.MetaSubTypeEnum;
 
 /**
- * <p>Created by
- *   @author Egor Baranov 
+ * <p>Created by 30.03.2008
+ *   @author Samolisov Pavel
  */
-public class UINRegistrationSuccessEvent extends EventObject {
-
-    private static final long serialVersionUID = -2690338742682890998L;
-
-    public UINRegistrationSuccessEvent(UINRegistrationSuccess__23_5 source) {
-        super(source);
-    }
-
-    public String getNewUIN() {
-        return ((UINRegistrationSuccess__23_5) this.getSource()).getNewUIN();
-    }
+public class FindUsersByUIN extends RequestUserInfo {
+	
+	public FindUsersByUIN(String uinSearch, String uinForRequest) {
+		super(uinSearch, uinForRequest, MetaSubTypeEnum.SEARCH_BY_UIN_PLAIN);
+	}
 }

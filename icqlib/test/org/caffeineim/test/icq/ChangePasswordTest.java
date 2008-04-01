@@ -22,7 +22,7 @@ import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaAckEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
-import ru.caffeineim.protocols.icq.packet.sent.meta.ChangePassword;
+import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
  * <p>Created by 30.03.2008
@@ -49,7 +49,7 @@ public class ChangePasswordTest implements Observer, MetaAckListener{
 	
 	public void update(Observable obs, Object obj) {
 		try {
-			con.sendFlap(new ChangePassword(con.getUserId(), newPassword));
+			OscarInterface.changePassword(con, newPassword);
 		}
 		catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());	
