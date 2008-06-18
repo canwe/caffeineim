@@ -24,217 +24,284 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusFlagEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.TcpConnectionFlagEnum;
+import ru.caffeineim.protocols.icq.tool.Utils;
 
 /**
- * <p>Created by
- *   @author Fabrice Michellonet 
+ * <p>
+ * Created by
+ * 
+ * @author Fabrice Michellonet
+ * @author Egor Baranov
  */
 public class IncomingUser__3_11 extends ReceivedPacket {
 
-	private RawData userId;
-	private RawData internalIp;
-	private RawData port;
-	private RawData tcpFlag;
-	private RawData tcpVersion;
-	private RawData cookie;
-	private RawData versioning1;
-	private RawData versioning2;
-	private Tlv externalIp;
-	private Tlv userStatus;
-	private Tlv capabilities;
-	private Tlv onlineSince;
-	private Tlv idleTime;
-	private Tlv memberSince;
-	private Tlv timeUpdate;
+    private RawData userId;
 
-	private boolean isContainingCapabilities = false;
-	private boolean isConstainingDirectConnectionInformation = false;
+    private RawData internalIp;
 
-	public IncomingUser__3_11(byte[] array) {
-		super(array, true);
-		int position = 0;
-		byte[] data = getSnac().getDataFieldByteArray();
+    private RawData port;
 
-		/* Retreiving user id */
-		RawData idLen = new RawData(data, position, 1);
-		position++;
-		userId = new RawData(data, position, idLen.getValue());
-		position += userId.getByteArray().length;
+    private RawData tcpFlag;
 
-		/* Skipping "Warning Level" */
-		position += 2;
+    private RawData tcpVersion;
 
-		/* Retreiving Number of TLV */
-		RawData nbTLV = new RawData(data, position, 2);
-		position += 2;
+    private RawData cookie;
 
-		for (int i = 0; i < nbTLV.getValue(); i++) {
-			Tlv tmpTlv = new Tlv(data, position);
-			switch (tmpTlv.getType()) {
-				case 0x0C:
-					/* Retreiving Tlv(0x0C) */
-					parseCli2Cli(tmpTlv.getByteArray());
-					isConstainingDirectConnectionInformation = true;
-					break;
+    private RawData versioning1;
 
-				case 0x0A:
-					/* Retreiving external Ip */
-					externalIp = tmpTlv;
-					break;
-        
-				case 0x06:
-					/* Retreiving user Status */
-					userStatus = tmpTlv;
-					break;
-        
-				case 0x0D:
-					/* retreiving capabilities' Tlv */
-					capabilities = tmpTlv;
-					isContainingCapabilities = true;
-					break;
+    private RawData versioning2;
 
-				case 0x0F:
-					/* retreive client idle time */
-					idleTime = tmpTlv;
-					break;
-				
-				case 0x03:
-					/* retreive client idle time */
-					onlineSince = tmpTlv;
-					break;
-				
-				case 0x05:
-					/* retreive client member since time */
-					memberSince = tmpTlv;
-					break;
-        
-				case 0x011:
-					/* retreive time update */
-					timeUpdate = tmpTlv;
-					break;
-			}
-			position += tmpTlv.getByteArray().length;
-		}
-	}
+    private RawData versioning3;
 
-	public void notifyEvent(OscarConnection connection) {    
-		IncomingUserEvent e = new IncomingUserEvent(this);
-		for (int i = 0; i < connection.getStatusListeners().size(); i++) {
-			StatusListener l = (StatusListener) connection.getStatusListeners().get(i);
-			l.onIncomingUser(e);
-		}
-	}
+    private Tlv externalIp;
 
-	private void parseCli2Cli(byte[] data) {
-		/* Skipping Tlv type & legth fields */
-		int position = 4;
+    private Tlv userStatus;
 
-		/* Retreiving internal ip */
-		internalIp = new RawData(data, position, 4);
-		position += 4;
+    private Tlv capabilitiesOld;
 
-		/* Retreiving port */
-		port = new RawData(data, position, 4);
-		position += 4;
+    private Tlv capabilitiesNew;
 
-		/* retreiving tcp flag */
-		tcpFlag = new RawData(data, position, 1);
-		position++;
+    private Tlv onlineSince;
 
-		/* reteiving tcp version */
-		tcpVersion = new RawData(data, position, 2);
-		position += 2;
+    private Tlv idleTime;
 
-		/* Retreiving cookie */
-		cookie = new RawData(data, position, 4);
-		position += 4;
+    private Tlv memberSince;
 
-		/* skipping next 8 byte */
-		position += 8;
+    private Tlv timeUpdate;
 
-		/* Retreiving abused time stamp [versioning1] */
-		versioning1 = new RawData(data, position, 4);
-		position += 4;
+    private boolean isContainingCapabilities = false;
 
-		/* Retreiving 2nd abused time stamp [versioning2] */
-		versioning2 = new RawData(data, position, 4);
-	}
+    private boolean isConstainingDirectConnectionInformation = false;
 
-	public boolean getIsContainingCapabilities() {
-		return isContainingCapabilities;
-	}
+    private String clientName;
 
-	public boolean isConstainingDirectConnectionInformation() {
-		return isConstainingDirectConnectionInformation;
-	}
+    public IncomingUser__3_11(byte[] array) {
+        super(array, true);
+        int position = 0;
+        byte[] data = getSnac().getDataFieldByteArray();
 
-	public String getUserId() {
-		return userId.getStringValue();
-	}
+        /* Retreiving user id */
+        RawData idLen = new RawData(data, position, 1);
+        position++;
+        userId = new RawData(data, position, idLen.getValue());
+        position += userId.getByteArray().length;
 
-	public String getInterlnalIp() {
-		String add = "";
-		add += ( (internalIp.getValue() >> 24) & 0xFF) + ".";
-		add += ( (internalIp.getValue() >> 16) & 0xFF) + ".";
-		add += ( (internalIp.getValue() >> 8) & 0xFF) + ".";
-		add += (internalIp.getValue() & 0xFF);
-	
-		return add;
-	}
+        /* Skipping "Warning Level" */
+        position += 2;
 
-	public int getPort() {
-		return port.getValue();
-	}
+        /* Retreiving Number of TLV */
+        RawData nbTLV = new RawData(data, position, 2);
+        position += 2;
 
-	public TcpConnectionFlagEnum getTcpFlag() {
-		return new TcpConnectionFlagEnum(tcpFlag.getValue());
-	}
+        for (int i = 0; i < nbTLV.getValue(); i++) {
+            Tlv tmpTlv = new Tlv(data, position);
+            switch (tmpTlv.getType()) {
+            case 0x0C:
+                /* Retreiving Tlv(0x0C) */
+                parseCli2Cli(tmpTlv.getByteArray());
+                isConstainingDirectConnectionInformation = true;
 
-	public int getTcpVersion() {
-		return tcpVersion.getValue();
-	}
+                /* */
+                break;
 
-	public int getCookie() {
-		return cookie.getValue();
-	}
+            case 0x0A:
+                /* Retreiving external Ip */
+                externalIp = tmpTlv;
+                break;
 
-	public int getVersionning1() {
-		return versioning1.getValue();
-	}
+            case 0x06:
+                /* Retreiving user Status */
+                userStatus = tmpTlv;
+                break;
 
-	public int getVersionning2() {
-		return versioning2.getValue();
-	}
+            case 0x0D:
+                /* retreiving capabilities' Tlv (old style) */
+                capabilitiesOld = tmpTlv;
+                isContainingCapabilities = true;
+                break;
+            case 0x19:
+                /* retreiving capabilities' Tlv (new style) */
+                capabilitiesNew = tmpTlv;
+                isContainingCapabilities = true;
+                break;
 
-	public String getExternalIp() {
-		String add = "";
-		add += ( (externalIp.getValue() >> 24) & 0xFF) + ".";
-		add += ( (externalIp.getValue() >> 16) & 0xFF) + ".";
-		add += ( (externalIp.getValue() >> 8) & 0xFF) + ".";
-		add += (externalIp.getValue() & 0xFF);
-		
-		return add;
-	}
+            case 0x0F:
+                /* retreive client idle time */
+                idleTime = tmpTlv;
+                break;
 
-	public StatusModeEnum getStatusMode() {
-		/* AIM do not send statuses */
-		if (userStatus == null)
-			return new StatusModeEnum(StatusModeEnum.ONLINE);
-		return new StatusModeEnum(userStatus.getValue() & 0xFFFF);
-	}
+            case 0x03:
+                /* retreive client idle time */
+                onlineSince = tmpTlv;
+                break;
 
-	public StatusFlagEnum getStatusFlag() {
-		/* AIM do not send status */
-		if (userStatus == null)
-			return new StatusFlagEnum(StatusFlagEnum.DIRECT_CONNECTION_ALLOWED);
-		return new StatusFlagEnum(userStatus.getValue());
-	}
+            case 0x05:
+                /* retreive client member since time */
+                memberSince = tmpTlv;
+                break;
 
-	public Tlv getCapabilities() {
-		return capabilities;
-	}
+            case 0x011:
+                /* retreive time update */
+                timeUpdate = tmpTlv;
+                break;
+            }
+            position += tmpTlv.getByteArray().length;
+        }
 
-	public int getOnlineSince() {
-		return onlineSince.getValue();
-	}
+        // After parsing all data let's detect remote user's client
+        detectClient();
+    }
+
+    private void detectClient() {
+        int dwFP1 = (int) Utils.getDWord(versioning1.getByteArray(), 0);
+        int dwFP2 = (int) Utils.getDWord(versioning2.getByteArray(), 0);
+        int dwFP3 = (int) Utils.getDWord(versioning3.getByteArray(), 0);
+        ;
+
+        int wVersion = Utils.getWord(tcpVersion.getByteArray(), 0);
+
+        clientName = Utils.detectUserClient(dwFP1, dwFP2, dwFP3, Utils
+                .mergeCapabilities(capabilitiesOld.getByteArray(),
+                        capabilitiesNew.getByteArray()), wVersion);
+    }
+
+    public void notifyEvent(OscarConnection connection) {
+        IncomingUserEvent e = new IncomingUserEvent(this);
+        for (int i = 0; i < connection.getStatusListeners().size(); i++) {
+            StatusListener l = (StatusListener) connection.getStatusListeners()
+                    .get(i);
+            l.onIncomingUser(e);
+        }
+    }
+
+    private void parseCli2Cli(byte[] data) {
+
+        /* Skipping Tlv type & legth fields */
+        int position = 4;
+
+        /* Retreiving internal ip */
+        internalIp = new RawData(data, position, 4);
+        position += 4;
+
+        /* Retreiving port */
+        port = new RawData(data, position, 4);
+        position += 4;
+
+        /* retreiving tcp flag */
+        tcpFlag = new RawData(data, position, 1);
+        position++;
+
+        /* reteiving tcp version */
+        tcpVersion = new RawData(data, position, 2);
+        position += 2;
+
+        /* Retreiving cookie */
+        cookie = new RawData(data, position, 4);
+        position += 4;
+
+        /* skipping next 8 byte */
+        position += 8;
+
+        /* Retreiving abused time stamp [versioning1] */
+        versioning1 = new RawData(data, position, 4);
+        position += 4;
+
+        /* Retreiving 2nd abused time stamp [versioning2] */
+        versioning2 = new RawData(data, position, 4);
+        position += 4;
+
+        /* Retreiving 3d parameter for client detection */
+        versioning3 = new RawData(data, position, 4);
+    }
+
+    public boolean getIsContainingCapabilities() {
+        return isContainingCapabilities;
+    }
+
+    public boolean isConstainingDirectConnectionInformation() {
+        return isConstainingDirectConnectionInformation;
+    }
+
+    public String getUserId() {
+        return userId.getStringValue();
+    }
+
+    public String getInterlnalIp() {
+        String add = "";
+        add += ((internalIp.getValue() >> 24) & 0xFF) + ".";
+        add += ((internalIp.getValue() >> 16) & 0xFF) + ".";
+        add += ((internalIp.getValue() >> 8) & 0xFF) + ".";
+        add += (internalIp.getValue() & 0xFF);
+
+        return add;
+    }
+
+    public int getPort() {
+        return port.getValue();
+    }
+
+    public TcpConnectionFlagEnum getTcpFlag() {
+        return new TcpConnectionFlagEnum(tcpFlag.getValue());
+    }
+
+    public int getTcpVersion() {
+        return tcpVersion.getValue();
+    }
+
+    public int getCookie() {
+        return cookie.getValue();
+    }
+
+    public int getVersionning1() {
+        return versioning1.getValue();
+    }
+
+    public int getVersionning2() {
+        return versioning2.getValue();
+    }
+
+    public String getExternalIp() {
+        String add = "";
+        add += ((externalIp.getValue() >> 24) & 0xFF) + ".";
+        add += ((externalIp.getValue() >> 16) & 0xFF) + ".";
+        add += ((externalIp.getValue() >> 8) & 0xFF) + ".";
+        add += (externalIp.getValue() & 0xFF);
+
+        return add;
+    }
+
+    public StatusModeEnum getStatusMode() {
+        /* AIM do not send statuses */
+        if (userStatus == null)
+            return new StatusModeEnum(StatusModeEnum.ONLINE);
+        return new StatusModeEnum(userStatus.getValue() & 0xFFFF);
+    }
+
+    public StatusFlagEnum getStatusFlag() {
+        /* AIM do not send status */
+        if (userStatus == null)
+            return new StatusFlagEnum(StatusFlagEnum.DIRECT_CONNECTION_ALLOWED);
+        return new StatusFlagEnum(userStatus.getValue());
+    }
+
+    /**
+     * get client name (like QIP or Miranda)
+     * 
+     * @return
+     */
+    public String getClient() {
+        return clientName;
+    }
+
+    public Tlv getCapabilitiesOld() {
+        return capabilitiesOld;
+    }
+
+    public Tlv getCapabilitiesNew() {
+        return capabilitiesNew;
+    }
+
+    public int getOnlineSince() {
+        return onlineSince.getValue();
+    }
 }
