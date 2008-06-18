@@ -46,6 +46,7 @@ import ru.caffeineim.protocols.icq.tool.OscarInterface;
 /**
  * <p> Created by 22.03.2008
  *   @author Samolisov Pavel
+ *   @author Egor Baranov
  */
 public class ContactListEventsTest implements MessagingListener, StatusListener, ContactListListener, Observer {
 
@@ -77,7 +78,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 
 	// !!!
 	public void onIncomingUser(IncomingUserEvent e) {
-		System.out.println(e.getIncomingUserId() + " has just signed on.");
+		System.out.println(e.getIncomingUserId() + " has just signed on (" + e.getClientName() + ").");
 	}
 
 	// !!!

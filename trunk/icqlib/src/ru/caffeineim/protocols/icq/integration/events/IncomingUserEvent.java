@@ -27,7 +27,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
  */
 public class IncomingUserEvent extends EventObject {
 
-    private static final long serialVersionUID = -6952485890863023290L;
+    private static final long serialVersionUID = -5665513460661361463L;
 
     public IncomingUserEvent(IncomingUser__3_11 source) {
 		super(source);
@@ -56,4 +56,8 @@ public class IncomingUserEvent extends EventObject {
 	public StatusFlagEnum getStatusFlag() {
 		return ( (IncomingUser__3_11) getSource()).getStatusFlag();
 	}
+    
+    public String getClientName() {
+        return ( (IncomingUser__3_11) getSource()).getClient();
+    }
 }
