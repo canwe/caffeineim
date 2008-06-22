@@ -152,8 +152,13 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 		if (messageType.getType() == MessageTypeEnum.XSTATUS_MESSAGE) {
 			// Пропускаем 66 байт - информация о плагине
 			index += 66;
-			// Пропускаем 22 байта - заголовок вложенного Type 1 сообщения
+
+			// Пропускаем 24 байта - заголовок вложенного Type 1 сообщения
 			index += 24;
+			
+			System.out.println("Log: ");
+			System.out.println("  index = " + index);
+			System.out.println("  data.length - index = " + (data.length - index));
 			message = StringTools.utf8ByteArrayToString(data, index, data.length - index);
 		}
 			

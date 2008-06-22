@@ -16,10 +16,10 @@
 package ru.caffeineim.protocols.icq.core;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 import java.util.Observable;
+import java.util.Vector;
 
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Tlv;
@@ -70,12 +70,12 @@ public class OscarConnection extends Observable {
 		analyser = new OscarPacketAnalyser(this);
 		client = new OscarClient(host, port, analyser);
 		requestKeeper = new RequestKeeper();
-		messagingListeners = new ArrayList<EventListener>();
-		statusListeners  = new ArrayList<EventListener>();
-		xStatusListeners  = new ArrayList<EventListener>();
-		contactListListeners   = new ArrayList<EventListener>();
-		metaInfoListeners  = new ArrayList<EventListener>();
-		metaAckListeners = new ArrayList<EventListener>();
+		messagingListeners = new Vector<EventListener>();
+		statusListeners  = new Vector<EventListener>();
+		xStatusListeners  = new Vector<EventListener>();
+		contactListListeners   = new Vector<EventListener>();
+		metaInfoListeners  = new Vector<EventListener>();
+		metaAckListeners = new Vector<EventListener>();
     	
 		client.connectToServer();	
 	}

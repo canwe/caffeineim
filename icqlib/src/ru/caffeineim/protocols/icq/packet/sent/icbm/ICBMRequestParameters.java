@@ -22,11 +22,11 @@ import ru.caffeineim.protocols.icq.Snac;
  * <p>Created by
  *   @author Fabrice Michellonet
  */
-public class ICBMParametersRequest extends Flap {
+public class ICBMRequestParameters extends Flap {
 
-	public ICBMParametersRequest() {
+	public ICBMRequestParameters() {
 		super(2);
-		/* add the empty snac */
+		
 		Snac snac = new Snac(0x04, 0x04, 0x0, 0x0, 0x00);
 		this.addSnac(snac);
 	}
