@@ -85,8 +85,8 @@ public class OscarPacketAnalyser {
 	protected void handleService(byte[] packet) throws Exception {
 		ReceivedPacket receivedFlap = new ReceivedPacket(packet, true);
 		int familyId = receivedFlap.getSnac().getFamilyId();
-		int subTypeId = receivedFlap.getSnac().getSubTypeId();
-
+		int subTypeId = receivedFlap.getSnac().getSubTypeId();		
+		
 		if (debug)
 			System.out.println("Received " + familyId + " - " + subTypeId);
 		
@@ -117,8 +117,8 @@ public class OscarPacketAnalyser {
 				System.out.println("--> Load class: " + loadedClass.getName());
 				System.out.println("--> Execute method: " + receivedFlap.getClass().getName() + ".execute(connection)");
 			}
-		}
-
+		}		
+		
 		receivedFlap.matchRequest(connection);
 
 		if (familyId == 9 && subTypeId == 3) {

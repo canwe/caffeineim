@@ -22,18 +22,21 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import ru.caffeineim.protocols.icq.core.exceptions.LoginException;
-import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.tool.Dumper;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
+ *   @author Дмитрий Пролубников 
  */
 public class OscarClient implements Runnable {
     
+	public static final String THREAD_NAME = "OscarClientThread";
+	
     private OscarPacketAnalyser analyser;
     private String host;
     private int port;
@@ -42,6 +45,7 @@ public class OscarClient implements Runnable {
     private DataOutputStream out;
     private Thread runner;
     private boolean running = true;
+    private Queue<byte[]> messagesQueue;
     
     /**
      * This create a socket that will be connected to an Oscar Server.
@@ -55,14 +59,18 @@ public class OscarClient implements Runnable {
         this.analyser = analyser;
         this.host = host;
         this.port = port;
-        runner = new Thread(this, "OscarClientThread");
+        runner = new Thread(this, THREAD_NAME);
+        messagesQueue = new LinkedList<byte[]>();
+        
+        // start packet handler thread
+        new OscarPacketHandler(this);
     }
     
     /**
      * This function simply start the client.    
      */
     public void connectToServer() {
-        runner.start();
+    	runner.start();
     }
     
     /**
@@ -93,10 +101,13 @@ public class OscarClient implements Runnable {
         boolean waitData = false;
         
         try {
-            if(System.getProperty("socks.proxyHost")!=null){
-                SocketAddress addr = new InetSocketAddress(
-                        System.getProperty("socks.proxyHost"),
+        	// TODO рефакторинг подсистемы прокси
+            if (System.getProperty("socks.proxyHost") != null) {
+                
+            	SocketAddress addr = new InetSocketAddress(
+                		System.getProperty("socks.proxyHost"),
                         Integer.parseInt(System.getProperty("socks.proxyPort")));
+                
                 Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
                 socketClient = new Socket(proxy);
                 InetSocketAddress dest = new InetSocketAddress(host, port);
@@ -104,6 +115,7 @@ public class OscarClient implements Runnable {
             } else {
                 socketClient = new Socket(host, port);
             }
+            
             out = new DataOutputStream(socketClient.getOutputStream());
             in = socketClient.getInputStream();
             
@@ -122,11 +134,11 @@ public class OscarClient implements Runnable {
                     if (in.available() >= packetLen) {
                         in.read(packet, 6, packetLen);
                         /* adding the header to the packet */
-                        System.arraycopy(header, 0, packet, 0, 6);                        
-                        analyser.handlePacket(packet);                        
+                        System.arraycopy(header, 0, packet, 0, 6);
+                        getMessageQueue().add(packet);
                         waitData = false;
                     }
-                }            
+                }
                 Thread.sleep(10);
             }            
         }
@@ -135,14 +147,6 @@ public class OscarClient implements Runnable {
         }              
         catch (InterruptedException ex) {        	
             ex.printStackTrace();
-        }
-        catch (LoginException ex) {
-        	// create event and notifycation
-        	LoginErrorEvent e = new LoginErrorEvent(ex.getErrorType());
-    		for (int i = 0; i < analyser.getConnection().getStatusListeners().size(); i++) {
-    			StatusListener l = (StatusListener) analyser.getConnection().getStatusListeners().get(i);
-    			l.onAuthorizationFailed(e);
-    		}
         }
     }
     
@@ -153,6 +157,14 @@ public class OscarClient implements Runnable {
      */
     public byte[] getInetaddress() {
         return socketClient.getLocalAddress().getAddress();
+    }
+    
+    public Queue<byte[]> getMessageQueue() {
+    	return messagesQueue;
+    }
+    
+    public OscarPacketAnalyser getAnalyser() {
+    	return analyser;
     }
     
     /**
@@ -181,5 +193,5 @@ public class OscarClient implements Runnable {
     	}
     	out.write(packet);
     	out.flush();    	
-    }
+    }    
 }

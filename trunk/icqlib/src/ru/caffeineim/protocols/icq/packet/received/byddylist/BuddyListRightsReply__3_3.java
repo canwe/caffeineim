@@ -17,7 +17,7 @@ package ru.caffeineim.protocols.icq.packet.received.byddylist;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
-import ru.caffeineim.protocols.icq.packet.sent.icbm.ICBMParametersRequest;
+import ru.caffeineim.protocols.icq.packet.sent.icbm.ICBMRequestParameters;
 
 /**
  * <p>Created by
@@ -30,6 +30,6 @@ public class BuddyListRightsReply__3_3 extends ReceivedPacket {
 	}
 
 	public void execute(OscarConnection connection) {
-		connection.sendFlap(new ICBMParametersRequest());
+		connection.sendFlap(new ICBMRequestParameters());
 	}
 }

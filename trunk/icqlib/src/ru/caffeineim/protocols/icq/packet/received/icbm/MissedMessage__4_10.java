@@ -54,7 +54,6 @@ public class MissedMessage__4_10 extends ReceivedPacket {
 		int index = 0;
 		
 		do {
-			// TODO разобраться и починить
 			RawData type = new RawData(data, index, RawData.WORD_LENGHT);
 			index += RawData.WORD_LENGHT;
 			RawData uinLg = new RawData(data, index, RawData.BYTE_LENGHT);
@@ -93,9 +92,11 @@ public class MissedMessage__4_10 extends ReceivedPacket {
 		while(index < data.length);
 	}
 	
+	@Override
 	public void execute(OscarConnection connection) throws Exception {		
 	}
 	
+	@Override
 	public void notifyEvent(OscarConnection connection) {
 		MessageMissedEvent e = new MessageMissedEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {

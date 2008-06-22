@@ -17,11 +17,13 @@ package ru.caffeineim.protocols.icq.packet.received.icbm;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
+import ru.caffeineim.protocols.icq.packet.sent.icbm.ICBMSetParameters;
 import ru.caffeineim.protocols.icq.packet.sent.privacy.BosRightsRequest;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
+ *   @author Дмитрий Пролубников 
  */
 public class ICBMParametersReply__4_5 extends ReceivedPacket {
 
@@ -29,7 +31,9 @@ public class ICBMParametersReply__4_5 extends ReceivedPacket {
 		super(array, true);
 	}
 
+	@Override
 	public void execute(OscarConnection connection) {
+		connection.sendFlap(new ICBMSetParameters());
 		connection.sendFlap(new BosRightsRequest());
 	}
 }
