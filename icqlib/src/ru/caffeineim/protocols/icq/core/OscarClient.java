@@ -60,17 +60,17 @@ public class OscarClient implements Runnable {
         this.host = host;
         this.port = port;
         runner = new Thread(this, THREAD_NAME);
-        messagesQueue = new LinkedList<byte[]>();
-        
-        // start packet handler thread
-        new OscarPacketHandler(this);
+        messagesQueue = new LinkedList<byte[]>();                   
     }
-    
+        
     /**
      * This function simply start the client.    
      */
     public void connectToServer() {
     	runner.start();
+    	
+    	// start packet handler thread
+        new OscarPacketHandler(this);        
     }
     
     /**
@@ -80,8 +80,9 @@ public class OscarClient implements Runnable {
      */
     public synchronized void disconnect() throws IOException {
         running = false;
-        socketClient.shutdownInput();
-        socketClient.shutdownOutput();
+        // TODO разобраться
+        //socketClient.shutdownInput();
+        //socketClient.shutdownOutput();
     }
     
     /**

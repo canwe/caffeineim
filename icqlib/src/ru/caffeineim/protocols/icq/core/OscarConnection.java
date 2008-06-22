@@ -77,7 +77,11 @@ public class OscarConnection extends Observable {
 		metaInfoListeners  = new Vector<EventListener>();
 		metaAckListeners = new Vector<EventListener>();
     	
-		client.connectToServer();	
+		// Connect to Server
+		client.connectToServer();
+		
+		// Start ping Server for monitoring connection
+		new OscarPingHandler(this, 30000);
 	}
 
 	public void addMetaAckListener(MetaAckListener listener) {
@@ -159,7 +163,6 @@ public class OscarConnection extends Observable {
 				}
 			}
 		} catch (NullPointerException e) {
-			System.err.println("OOPS! NullPointerException");
 			e.printStackTrace();
 		}
 	}
