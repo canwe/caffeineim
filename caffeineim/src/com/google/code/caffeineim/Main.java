@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.google.code.caffeineim;
 
 import java.util.logging.Level;
@@ -33,7 +28,7 @@ public class Main {
                     LoginFrame frame = new LoginFrame();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setLocationRelativeTo(null);
-                    //frame.pack();
+                    frame.pack();
                     frame.setVisible(true);
 
                 } catch (ClassNotFoundException ex) {
