@@ -27,7 +27,8 @@ public class LoginFrame extends JFrame {
                                                 
         JComboBox comboNumber= new JComboBox();
         comboNumber.setEditable(true);
-        comboNumber.setModel(new DefaultComboBoxModel(new String[] { "395245849", "330893303", "1445935","222523534" }));
+        comboNumber.setModel(new DefaultComboBoxModel(
+                new String[] { "395245849", "330893303", "1445935","222523534" }));
         comboNumber.setPreferredSize(new java.awt.Dimension(55, 21));
 
         JButton btnLogin = new JButton("Вход");
