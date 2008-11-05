@@ -12,6 +12,8 @@ import javax.swing.*;
 
 
 public class ContactList extends JFrame implements ActionListener {
+    
+    private static final String CMD_HISTORY = "history";
 
     public ContactList() {
 
@@ -58,7 +60,7 @@ public class ContactList extends JFrame implements ActionListener {
     }
     
     private JButton createToolBarButton(String icon, String cmd, String tip) {
-        ImageIcon img = getImageIcon(icon);
+        ImageIcon img = UIHelper.getIcon(icon);
         JButton btn = new JButton(img);        
         btn.setActionCommand(cmd);
         btn.setToolTipText(tip);
@@ -66,14 +68,13 @@ public class ContactList extends JFrame implements ActionListener {
         return btn;
     }
     
-    private static ImageIcon getImageIcon(String filename) {
-        Image img = Toolkit.getDefaultToolkit().getImage(
-                Main.class.getResource("images/" + filename));
-        return new ImageIcon(img);
-    }
-
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
+        if (cmd.equals(CMD_HISTORY)) {
+            HistoryFrame f = new HistoryFrame();
+            f.setLocation(500, 300);
+            f.setVisible(true);
+        }
     }
     
     
