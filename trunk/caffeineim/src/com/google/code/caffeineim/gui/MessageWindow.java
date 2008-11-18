@@ -18,7 +18,7 @@ import java.awt.event.*;
 
 /**
  *
- * @author Urfin, Renat
+ * @author Andrew Romanoff, Urfin, Renat
  */
 public class MessageWindow extends JFrame implements ActionListener{
     
@@ -29,23 +29,43 @@ public class MessageWindow extends JFrame implements ActionListener{
 
     public MessageWindow() {
         
-        JPanel contentPane = new JPanel(new GridBagLayout());
-        JPanel contentPaneUp = new JPanel(new GridBagLayout());
+        GridBagPanel contentPane = new GridBagPanel();
+        setContentPane(contentPane);
+        contentPane.setAnchor(GridBagConstraints.WEST);
+        contentPane.setInsets(4, 0, 0, 0);
+        contentPane.setFill(GridBagConstraints.BOTH);       
+        
+        GridBagPanel contentPaneUp = new GridBagPanel();
+        contentPaneUp.setAnchor(GridBagConstraints.WEST);
+        contentPaneUp.setInsets(4, 0, 0, 0);
+        contentPaneUp.setFill(GridBagConstraints.BOTH);
+        
+        GridBagPanel paneInner = new GridBagPanel();
+        paneInner.setAnchor(GridBagConstraints.WEST);
+        paneInner.setInsets(4, 0, 0, 0);
+        
         JTextArea areaText = new JTextArea();
-
         JScrollPane answerScrollPane = new JScrollPane(areaText); 
         answerScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         answerScrollPane.setPreferredSize(new Dimension(350, 150));
         answerScrollPane.setMinimumSize(new Dimension(100, 20));
 
+        GridBagPanel contentPaneGND = new GridBagPanel();
+        contentPaneGND.setAnchor(GridBagConstraints.WEST);
+        contentPaneGND.setInsets(4, 0, 0, 0);
+        
+        ImageIcon img = UIHelper.getIcon("Jasmine_32.png");
+        JButton btn = new JButton(img);
+        paneInner.place(btn,              0, 0, 1, 3);
+        paneInner.setFill(GridBagConstraints.BOTH);
+        paneInner.place(answerScrollPane, 1, 0, 1, 3);
+                
         JTabbedPane tabUINs  = new JTabbedPane();
-        tabUINs.addTab(uin, answerScrollPane);
-
-        contentPaneUp.add(tabUINs, new GridBagConstraints(GridBagConstraints.RELATIVE,0,4,1,1.1,1,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0,0,0,0),0,0));
-
-        JPanel contentPaneGND = new JPanel(new GridBagLayout());
-
+        tabUINs.addTab(uin, paneInner);
+        
+        contentPaneUp.place(tabUINs, 0, 0, 5, 4);
+        contentPaneUp.setFill(GridBagConstraints.BOTH);
+        
         JTextPane paneTextGND = new JTextPane();
         JScrollPane answerScrollPaneGND = new JScrollPane(paneTextGND); 
         answerScrollPaneGND.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -59,21 +79,29 @@ public class MessageWindow extends JFrame implements ActionListener{
             contentPaneGND.add(paneService, new GridBagConstraints(0, 0, 4, 1, 1.1, 1,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
-       contentPaneGND.add(answerScrollPaneGND, new GridBagConstraints(GridBagConstraints.RELATIVE,1,4,1,1.1,1,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0,0,0,0),0,0));
-       JButton buttonSend = new JButton("Отправить");
-       contentPaneGND.add(buttonSend, new GridBagConstraints(0,GridBagConstraints.RELATIVE,2,0,1,1.1,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0),0,0));
+        JButton buttonSend = new JButton("Отправить");
+        btn = new JButton(UIHelper.getIcon("avp1_32.png"));
+        JCheckBox chkBasic = new JCheckBox("Basic");
+        //chkBasic = 1;
+        JCheckBox chkExtend = new JCheckBox("Extend");
+        JCheckBox chkIntermediate = new JCheckBox("Intermediate");
+        
+        contentPaneGND.place(btn,                 0, 0, 1, 4);
+        contentPaneGND.place(chkBasic,            1, 0, 1, 1);
+        contentPaneGND.place(chkExtend,           2, 0, 1, 1);
+        contentPaneGND.place(chkIntermediate,     3, 0, 1, 1);
+        contentPaneGND.setFill(GridBagConstraints.BOTH);
+        contentPaneGND.place(answerScrollPaneGND, 1, 1, 4, 2);
+        contentPaneGND.setFill(GridBagConstraints.NONE);
+        contentPaneGND.place(buttonSend,          1, 3, 2, 1);       
        
        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,contentPaneUp,contentPaneGND);
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(0.5);
-        contentPane.add(splitPane, new GridBagConstraints(GridBagConstraints.RELATIVE,GridBagConstraints.RELATIVE,1,1,1.1,1,
-                GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH, new Insets(0,0,0,0),0,0));
-       
+        
+        contentPane.place(splitPane, 1, 1, 1, 1);
+        contentPane.setFill(GridBagConstraints.BOTH);       
         setContentPane(contentPane);
-        setDefaultLookAndFeelDecorated(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocation(400, 300);
         pack();
     }

@@ -78,10 +78,6 @@ public class HistoryFrame extends JFrame implements ActionListener {
         c.place(paneScrollPane,                   0, 4, 4, 4);
         c.setFill(GridBagConstraints.BOTH);
         setContentPane(c);
-
-        // FIXME: Нафига?
-        setDefaultLookAndFeelDecorated(true);
-
         pack();
      }
 
