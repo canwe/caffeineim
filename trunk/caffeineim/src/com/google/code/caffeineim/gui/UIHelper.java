@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package com.google.code.caffeineim.gui;
+package ru.caffeineim.gui;
 
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 
-import com.google.code.caffeineim.Main;
+import ru.caffeineim.Main;
 
 /**
  *

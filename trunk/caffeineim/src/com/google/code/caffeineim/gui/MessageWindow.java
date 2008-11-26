@@ -9,10 +9,9 @@
  * limitations under the License. 
  */
 
-package com.google.code.caffeineim.gui;
+package ru.caffeineim.gui;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 
