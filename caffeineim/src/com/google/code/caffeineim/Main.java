@@ -1,4 +1,4 @@
-package com.google.code.caffeineim;
+package ru.caffeineim;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,8 +8,8 @@ import javax.swing.UIManager;
 import javax.swing.JFrame;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.google.code.caffeineim.gui.LoginFrame;
-import com.google.code.caffeineim.gui.MessageWindow;
+import ru.caffeineim.gui.LoginFrame;
+import ru.caffeineim.gui.MessageWindow;
 
 /**
  *

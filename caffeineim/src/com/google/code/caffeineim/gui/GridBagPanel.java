@@ -1,4 +1,4 @@
-package com.google.code.caffeineim.gui;
+package ru.caffeineim.gui;
 
 import javax.swing.*;
 import java.awt.*;

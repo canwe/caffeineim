@@ -1,4 +1,4 @@
-package com.google.code.caffeineim.gui;
+package ru.caffeineim.gui;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -1,11 +1,10 @@
-package com.google.code.caffeineim.gui;
+package ru.caffeineim.gui;
 
 /**
  *
  * @author renat
  */
 
-import com.google.code.caffeineim.Main;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
