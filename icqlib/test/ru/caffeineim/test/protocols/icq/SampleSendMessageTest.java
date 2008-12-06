@@ -13,58 +13,56 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.caffeineim.test.icq;
+package ru.caffeineim.test.protocols.icq;
 
 import java.util.Observable;
 import java.util.Observer;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
-import ru.caffeineim.protocols.icq.integration.events.MetaAckEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
- * <p>Created by 30.03.2008
+ * <p>Created by 22.03.2008
  *   @author Samolisov Pavel
  */
-public class ChangePasswordTest implements Observer, MetaAckListener{
-
+public class SampleSendMessageTest implements Observer {
+	
 	private static final String SERVER = "login.icq.com";
 	private static final int PORT = 5190;
 	
-	private OscarConnection con;
-	private String newPassword;
+	private static final String BASIC_MESSAGE = 
+		"Channel1 message - Привет! Я - базовое сообщение";
+	
+	private static final String EXTENDS_MESSAGE = 
+		"Channel2 message\r\nПривет! Я - расширенное сообщение";
 
-	public ChangePasswordTest(String login, String password, String newPassword) {
-		this.newPassword = newPassword;
+	private OscarConnection con;
+	private String receiver;
+
+	public SampleSendMessageTest(String login, String password, String receiver) {
+		this.receiver = receiver;
 		con = new OscarConnection(SERVER, PORT, login, password);
-		con.getPacketAnalyser().setDebug(true);		
-		con.getPacketAnalyser().setDump(true);
-		
-		con.addMetaAckListener(this);
-		
+		con.getPacketAnalyser().setDebug(true);
+
 		con.addObserver(this);
 	}
-	
-	public void update(Observable obs, Object obj) {
+
+	public void update(Observable obs, Object obj) {		
 		try {
-			OscarInterface.changePassword(con, newPassword);
-		}
-		catch (ConvertStringException ex) {
+			//OscarInterface.changeXStatus(con, new XStatusModeEnum(XStatusModeEnum.THINKING));
+			OscarInterface.sendBasicMessage(con, receiver, BASIC_MESSAGE);
+			OscarInterface.sendExtendedMessage(con, receiver, EXTENDS_MESSAGE);
+		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());	
-		}
+		}		
 	}
 
-	public void onMetaAck(MetaAckEvent e) {
-		System.out.println("Result = " + e.isOk());
-	}
-	
 	public static void main(String[] args) {
 		if (args.length < 3) {
-			System.out.println("Use : ChangePasswordTest MY_UIN MY_PASSWORD NEW_PASSWORD");
+			System.out.println("Use : SampleSendMessageTest MY_UIN MY_PASSWORD RECEIVER_UIN");
 		} else {
-			new ChangePasswordTest(args[0], args[1], args[2]);
+			new SampleSendMessageTest(args[0], args[1], args[2]);
 		}
 	}
 }

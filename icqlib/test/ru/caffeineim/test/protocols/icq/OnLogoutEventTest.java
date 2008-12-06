@@ -13,7 +13,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.caffeineim.test.icq;
+package ru.caffeineim.test.protocols.icq;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -69,8 +69,9 @@ public class OnLogoutEventTest implements Observer, StatusListener {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void onOffgoingUser(OffgoingUserEvent e) {
+		// TODO Auto-generated method stub
 	}
 
 	public void onStatusChange(StatusEvent e) {
