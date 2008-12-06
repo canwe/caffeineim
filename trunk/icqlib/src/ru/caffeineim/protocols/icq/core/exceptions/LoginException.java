@@ -18,30 +18,29 @@ package ru.caffeineim.protocols.icq.core.exceptions;
 import ru.caffeineim.protocols.icq.setting.enumerations.LoginErrorTypeEnum;
 
 /**
- * <p>Created by
- *   @author Fabrice Michellonet 
+ *	@author Fabrice Michellonet
  */
 public class LoginException extends Exception {
 
     private static final long serialVersionUID = 5005784558498444971L;
-    
+
     private LoginErrorTypeEnum errorType;
-	
+
 	public LoginException(LoginErrorTypeEnum type) {
 		super(type.toString());
 		errorType = type;
-	}		
-	
+	}
+
 	public LoginException(LoginErrorTypeEnum type, Throwable t) {
 		super(type.toString(),t);
 		errorType = type;
 	}
-	
+
 	public LoginException(String s, Throwable t) {
 		super(s,t);
 		errorType = new LoginErrorTypeEnum(LoginErrorTypeEnum.UNKNOWN_ERROR);
 	}
-	
+
 	public LoginErrorTypeEnum getErrorType() {
 		return errorType;
 	}

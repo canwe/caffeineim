@@ -23,74 +23,74 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
  *   @author Samolisov Pavel
  */
 public class MetaInfoParserFactory {
-	
+
 	/**
-	 * Строим конкретную реализацию интерфейса IMetaInfoParser для обработки 
+	 * Строим конкретную реализацию интерфейса IMetaInfoParser для обработки
 	 * того или иного типа метаинформации
-	 * 
+	 *
 	 * @param metaType
 	 * @param metaSubType
 	 * @return
 	 */
 	public static IMetaInfoParser buildMetaInfoParser(int metaType, int metaSubType) {
 		IMetaInfoParser parser = null;
-		
+
 		switch (metaType) {
 			case MetaTypeEnum.SERVER_OFFLINE_MESSAGE:
-				parser = new OfflineMessageParser();				
+				parser = new OfflineMessageParser();
 				break;
-				
+
 			case MetaTypeEnum.SERVER_END_OF_OFFLINE_MESSAGES:
 				parser = new ServerEndOfOflineMessageParser();
 				break;
-				
-			case MetaTypeEnum.SERVER_ADVANCED_META:								
+
+			case MetaTypeEnum.SERVER_ADVANCED_META:
 				switch (metaSubType) {
 					case MetaSubTypeEnum.SERVER_USER_FOUND:
 					case MetaSubTypeEnum.SERVER_LAST_USER_FOUND:
 						// TODO сюда засунем поиск
 						break;
-						
+
 					case MetaSubTypeEnum.SERVER_SHORT_USER_INFO_REPLY:
 						parser = new ShortUserInfoParser();
 						break;
-						
+
 					case MetaSubTypeEnum.SERVER_BASIC_USER_INFO_REPLY:
 						parser = new BasicUserInfoParser();
 						break;
-						
+
 					case MetaSubTypeEnum.SERVER_EXTENDED_EMAIL_USER_INFO_REPLY:
 						parser = new EmailUserInfoParser();
 						break;
-						
+
 					case MetaSubTypeEnum.SERVER_WORK_USER_INFO_REPLY:
 						parser = new WorkUserInfoParser();
 						break;
-					
+
 					case MetaSubTypeEnum.SERVER_INTERESTS_USER_INFO_REPLY:
 						parser = new InterestsUserInfoParser();
 						break;
-					
+
 					case MetaSubTypeEnum.SERVER_MORE_USER_INFO_REPLY:
 						parser = new MoreUserInfoParser();
 						break;
-						
+
 					case MetaSubTypeEnum.SERVER_ABOUT_USER_INFO_REPLY:
 						parser = new NotesUserInfoParser();
 						break;
-					
+
 					case MetaSubTypeEnum.SERVER_AFFILATIONS_USER_INFO_REPLY:
 						parser = new AffilationsUserInfoParser();
 						break;
-						
+
 					// create parser for server ack
 					case MetaSubTypeEnum.SERVER_SET_USER_PASSWORD:
 						parser = new MetaAckParser();
 						break;
-				}				
+				}
 				break;
 		}
-			
+
 		return parser;
 	}
 }
