@@ -31,12 +31,12 @@ import ru.caffeineim.protocols.icq.tool.Dumper;
  * <p>Created by
  *   @author Fabrice Michellonet
  *   @author Samolisov Pavel
- *   @author Дмитрий Пролубников 
+ *   @author Дмитрий Пролубников
  */
 public class OscarClient implements Runnable {
-    
+
 	public static final String THREAD_NAME = "OscarClientThread";
-	
+
     private OscarPacketAnalyser analyser;
     private String host;
     private int port;
@@ -46,7 +46,7 @@ public class OscarClient implements Runnable {
     private Thread runner;
     private boolean running = true;
     private Queue<byte[]> messagesQueue;
-    
+
     /**
      * This create a socket that will be connected to an Oscar Server.
      *
@@ -60,19 +60,19 @@ public class OscarClient implements Runnable {
         this.host = host;
         this.port = port;
         runner = new Thread(this, THREAD_NAME);
-        messagesQueue = new LinkedList<byte[]>();                   
+        messagesQueue = new LinkedList<byte[]>();
     }
-        
+
     /**
-     * This function simply start the client.    
+     * This function simply start the client.
      */
     public void connectToServer() {
     	runner.start();
-    	
+
     	// start packet handler thread
-        new OscarPacketHandler(this);        
+        new OscarPacketHandler(this);
     }
-    
+
     /**
      * Simply stop the client.
      *
@@ -84,7 +84,7 @@ public class OscarClient implements Runnable {
         //socketClient.shutdownInput();
         //socketClient.shutdownOutput();
     }
-    
+
     /**
      * This function is ran by the Thread.
      * It keeps reading the socket until 6 bytes at least are present.
@@ -100,15 +100,15 @@ public class OscarClient implements Runnable {
         byte packet[] = null;
         int packetLen = 0;
         boolean waitData = false;
-        
+
         try {
         	// TODO рефакторинг подсистемы прокси
             if (System.getProperty("socks.proxyHost") != null) {
-                
+
             	SocketAddress addr = new InetSocketAddress(
                 		System.getProperty("socks.proxyHost"),
                         Integer.parseInt(System.getProperty("socks.proxyPort")));
-                
+
                 Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
                 socketClient = new Socket(proxy);
                 InetSocketAddress dest = new InetSocketAddress(host, port);
@@ -116,10 +116,10 @@ public class OscarClient implements Runnable {
             } else {
                 socketClient = new Socket(host, port);
             }
-            
+
             out = new DataOutputStream(socketClient.getOutputStream());
             in = socketClient.getInputStream();
-            
+
             while (running) {
                 if (!waitData) {
                     /* waiting for at least 6 bytes */
@@ -141,16 +141,16 @@ public class OscarClient implements Runnable {
                     }
                 }
                 Thread.sleep(10);
-            }            
+            }
         }
         catch (IOException ex) {
             ex.printStackTrace();
-        }              
-        catch (InterruptedException ex) {        	
+        }
+        catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Return the Inet address of the socket that is connected to
      * the Oscar Server.
@@ -159,15 +159,15 @@ public class OscarClient implements Runnable {
     public byte[] getInetaddress() {
         return socketClient.getLocalAddress().getAddress();
     }
-    
+
     public Queue<byte[]> getMessageQueue() {
     	return messagesQueue;
     }
-    
+
     public OscarPacketAnalyser getAnalyser() {
     	return analyser;
     }
-    
+
     /**
      * <b>MUST BE MOVED TO SOME UTILS IN PACKAGE JOscarLib.Utils</b>
      * @todo MUST BE MOVED TO SOME UTILS IN PACKAGE JOscarLib.Utils
@@ -180,7 +180,7 @@ public class OscarClient implements Runnable {
         result |= header[5] & 0xFF;
         return result;
     }
-    
+
     /**
      * This function gives you the possibility to send
      * packets throught the socket.
@@ -193,6 +193,6 @@ public class OscarClient implements Runnable {
     		System.out.println(Dumper.dump(packet, true, 8, 16));
     	}
     	out.write(packet);
-    	out.flush();    	
-    }    
+    	out.flush();
+    }
 }
