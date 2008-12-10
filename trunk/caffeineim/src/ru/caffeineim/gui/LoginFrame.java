@@ -15,8 +15,9 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 /**
- *
- * @author renat
+ * Описание: Класс предназначен для ввода регистрационных данных
+ * @version 0.0.1  10.12.2008
+ * @author Renat Nasyrov
  */
 public class LoginFrame extends JFrame {
     
@@ -47,7 +48,7 @@ public class LoginFrame extends JFrame {
                 
                 LoginFrame.this.dispose();
 
-                JFrame contactList = new ContactList();
+                JFrame contactList = new ContactsFrame();
                 contactList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 contactList.setLocation(800, 300);
                 contactList.setVisible(true);

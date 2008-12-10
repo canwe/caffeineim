@@ -1,3 +1,13 @@
+/** * Copyright 2008 Caffeine-Soft Group * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. */
+
 package ru.caffeineim;
 
 import java.util.logging.Level;
@@ -10,10 +20,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import ru.caffeineim.gui.LoginFrame;
 import ru.caffeineim.gui.MessageWindow;
+import ru.caffeineim.gui.ProxySet;
 
 /**
- *
- * @author renat
+ * Описание: Класс запускает приложение.
+ * @version 0.0.1  10.12.2008
+ * @author Renat Nasyrov
  */
 public class Main {
 
@@ -23,21 +35,13 @@ public class Main {
             @Override
             public void run() {                
                 try {
-
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
                     LoginFrame frame = new LoginFrame();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setLocationRelativeTo(null);
                     frame.pack();
                     frame.setVisible(true);
-                    
-                    MessageWindow mw_frame = new MessageWindow();
-//                    mw_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                    mw_frame.setLocationRelativeTo(null);
-                    mw_frame.pack();
-                    mw_frame.setVisible(true);
-
+                                        
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InstantiationException ex) {

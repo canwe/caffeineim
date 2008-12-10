@@ -16,23 +16,32 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 /**
- *
- * @author 
+ * Описание: Класс предназначен для указания данных прокси-сервера
+ * @version 0.0.1  10.12.2008
+ * @author Andrew Romanoff
+ * @author Vladimir Dvinianinov 
  */
 public class ProxySet extends JFrame{
+    
     private String proxyIP;
     private String proxyPort;
     private String proxyLogin;
     private String proxyPSW;
+    private static final String titleStr = "Proxy-settings";
+    private static final String borderStr = "Введите параметры прокси-сервера";
+    private static final String saveStr = "Сохранить";
+    private static final String loginStr = "Авторизация:";
+    private static final String passwordStr = "пароль:";
     
     public ProxySet(){
-        setTitle("Proxy-settings");
+        
+        setTitle(titleStr);
         setSize(400, 300);
         
         GridBagPanel c = new GridBagPanel();
         setContentPane(c);
 
-        TitledBorder titleBorder= new TitledBorder("Введите параметры прокси-сервера");
+        TitledBorder titleBorder= new TitledBorder(borderStr);
         c.setBorder(titleBorder);
         c.setInsets(8, 4, 8, 4);
         
@@ -40,7 +49,7 @@ public class ProxySet extends JFrame{
         JTextField portField = new JTextField(proxyPort, 4);
         JTextField loginField = new JTextField(proxyLogin, 15);
         JPasswordField pswField = new JPasswordField(proxyPSW, 10);
-        JButton btnSave = new JButton("Сохранить");
+        JButton btnSave = new JButton(saveStr);
         btnSave.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -56,11 +65,11 @@ public class ProxySet extends JFrame{
         c.setAnchor(GridBagConstraints.WEST);
         c.place(portField,                  3, 0, 1, 1);
         c.setAnchor(GridBagConstraints.EAST);
-        c.place(new JLabel("Авторизация:"), 0, 1, 1, 1);
+        c.place(new JLabel(loginStr), 0, 1, 1, 1);
         c.setAnchor(GridBagConstraints.WEST);
         c.place(loginField,                 1, 1, 1, 1);
         c.setAnchor(GridBagConstraints.EAST);
-        c.place(new JLabel("пароль:"),      0, 2, 1, 1);
+        c.place(new JLabel(passwordStr),      0, 2, 1, 1);
         c.setAnchor(GridBagConstraints.WEST);
         c.place(pswField,                   1, 2, 1, 1);
         c.setAnchor(GridBagConstraints.WEST);
@@ -68,27 +77,35 @@ public class ProxySet extends JFrame{
         setLocation(400, 300);
         pack();
     }
+    
     private String getIP() {
         return proxyIP;
     }
+    
     public void setIP(String proxyIP) {
         this.proxyIP = proxyIP;
     }
+    
     private String getPort() {
         return proxyPort;
     }
+    
     public void setPort(String proxyPort) {
         this.proxyPort = proxyPort;
     }
+    
     private String getLogin() {
         return proxyLogin;
     }
+    
     public void setLogin(String proxyLogin) {
         this.proxyLogin = proxyLogin;
     }
+    
     private String getPSW() {
         return proxyPSW;
     }
+    
     public void setPSW(String proxyPSW) {
         this.proxyPSW = proxyPSW;
     }

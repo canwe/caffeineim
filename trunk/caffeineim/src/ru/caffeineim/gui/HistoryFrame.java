@@ -16,8 +16,10 @@ import javax.swing.*;
 
 
 /**
- *
- * @author Urfin, Renat
+ * Описание: Класс предназначен для работы с историей сообщений
+ * @version 0.0.1  10.12.2008
+ * @author Vladimir Dvinianinov
+ * @author Renat Nasyrov
  */
 public class HistoryFrame extends JFrame implements ActionListener {
     public String[] contactsString = {"11111", "22222", "33333", "44444"};
