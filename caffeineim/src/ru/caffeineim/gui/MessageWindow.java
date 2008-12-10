@@ -16,8 +16,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- *
- * @author Andrew Romanoff, Urfin, Renat
+ * Описание: Окно сообщений
+ * @version 0.0.1  10.12.2008
+ * @author Andrew Romanoff
+ * @author Vladimir Dvinianinov
+ * @author Renat Nasyrov
  */
 public class MessageWindow extends JFrame implements ActionListener{
     

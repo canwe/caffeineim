@@ -10,22 +10,32 @@
 package ru.caffeineim.gui;
 
 /**
- *
- * @author renat
+ * Описание: Класс представляет собой контейнер с контактами
+ * @version 0.0.1  10.12.2008
+ * @author Renat Nasyrov
  */
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import ru.caffeineim.protocols.icq.contacts.*;
 
 
-public class ContactList extends JFrame implements ActionListener {
+public class ContactsFrame extends JFrame implements ActionListener {
     
     private static final String CMD_HISTORY = "history";
+    private static final String titleStr = "Список собеседников";
+    private static final String onlineStr = "Показать/скрыть оффлайн";
+    private static final String groupStr = "Отображать/скрыть группы";
+    private static final String soundStr = "Включить/отключить звуки";
+    private static final String privateStr = "Вывести приватные списки";
+    private static final String historyStr = "История сообщений";
+    private static final String toolsStr = "Настройки";
+    private static final String infoStr = "Информация о Контакте";
 
-    public ContactList() {
+    public ContactsFrame() {
 
-        setTitle("Список собеседников");
+        setTitle(titleStr);
         setSize(300, 500);
 
         Container c = getContentPane();
@@ -42,25 +52,25 @@ public class ContactList extends JFrame implements ActionListener {
         JToolBar tb = new JToolBar();
         tb.setFloatable(false);
 
-        btn = createToolBarButton("on-line.png", "on-line", "Показать/скрыть оффлайн");
+        btn = createToolBarButton("on-line.png", "on-line", onlineStr);
         tb.add(btn);
         
-        btn = createToolBarButton("group.png", "group", "Отображать/скрыть группы");
+        btn = createToolBarButton("group.png", "group", groupStr);
         tb.add(btn);
         
-        btn = createToolBarButton("sound.png", "sound", "Включить/отключить звуки");
+        btn = createToolBarButton("sound.png", "sound", soundStr);
         tb.add(btn);
 
-        btn = createToolBarButton("noprivate.png", "private", "Вывести приватные списки");
+        btn = createToolBarButton("noprivate.png", "private", privateStr);
         tb.add(btn);
 
-        btn = createToolBarButton("history.png", "history", "История сообщений");
+        btn = createToolBarButton("history.png", "history", historyStr);
         tb.add(btn);
 
-        btn = createToolBarButton("tools.png", "tools", "Настройки");
+        btn = createToolBarButton("tools.png", "tools", toolsStr);
         tb.add(btn);
         
-        btn = createToolBarButton("info.png", "info", "Информация о Контакте");
+        btn = createToolBarButton("info.png", "info", infoStr);
         tb.add(btn);
 
         return tb;
@@ -68,6 +78,7 @@ public class ContactList extends JFrame implements ActionListener {
     }
     
     private JButton createToolBarButton(String icon, String cmd, String tip) {
+        
         ImageIcon img = UIHelper.getIcon(icon);
         JButton btn = new JButton(img);        
         btn.setActionCommand(cmd);
@@ -77,13 +88,14 @@ public class ContactList extends JFrame implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
+        
         String cmd = e.getActionCommand();
-        if (cmd.equals(CMD_HISTORY)) {
+        
+        if (CMD_HISTORY.equals(cmd)) {
             HistoryFrame f = new HistoryFrame();
             f.setLocation(500, 300);
             f.setVisible(true);
         }
     }
-    
-    
+     
 }
