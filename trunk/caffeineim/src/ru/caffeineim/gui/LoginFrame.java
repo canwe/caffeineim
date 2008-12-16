@@ -11,15 +11,25 @@ package ru.caffeineim.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 
 /**
  * Описание: Класс предназначен для ввода регистрационных данных
  * @version 0.0.1  10.12.2008
  * @author Renat Nasyrov
+ * @author Vladimir Dvinianinov
+ * @author
  */
 public class LoginFrame extends JFrame {
+    private static final String SERVER = "login.icq.com";
+    private static final int PORT = 5190;
+    private OscarConnection connection;
     
     public LoginFrame() {
 
@@ -40,11 +50,20 @@ public class LoginFrame extends JFrame {
         comboNumber.setModel(new DefaultComboBoxModel(
                 new String[] { "395245849", "330893303", "1445935","222523534" }));
         comboNumber.setPreferredSize(new java.awt.Dimension(55, 21));
+        
+        //JPasswordField pswField = new JPasswordField(20);
+        final JTextField pswField = new JTextField("", 20);
 
         JButton btnLogin = new JButton("Вход");
         btnLogin.setMnemonic(KeyEvent.VK_C);
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox)e.getSource();
+                
+                String newSelection = (String)cb.getSelectedItem();
+                
+                connection = new OscarConnection(SERVER, PORT, newSelection, pswField.getText());
+                connection.getPacketAnalyser().setDebug(true);
                 
                 LoginFrame.this.dispose();
 
@@ -54,9 +73,7 @@ public class LoginFrame extends JFrame {
                 contactList.setVisible(true);
                                     
             }
-//        private void delButActionPerformed(java.awt.event.ActionEvent evt) {                                       
-//        cl.removeContact(cl.getSelectedContact());
-//        }
+
         }); 
         
         Box hbox = Box.createHorizontalBox();
@@ -85,8 +102,8 @@ public class LoginFrame extends JFrame {
 
         c.setFill(GridBagConstraints.HORIZONTAL);
         c.place(comboNumber,                        0, 1, 1, 1);
-        c.place(new JTextField(20),                 0, 3, 1, 1);
+        c.place(pswField,                           0, 3, 1, 1);
         
     }
-
+    
 }
