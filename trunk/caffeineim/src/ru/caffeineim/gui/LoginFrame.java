@@ -45,7 +45,7 @@ public class LoginFrame extends JFrame {
         c.setAnchor(GridBagConstraints.WEST);
         c.setInsets(8, 4, 8, 4);               
                                                 
-        JComboBox comboNumber= new JComboBox();
+        final JComboBox comboNumber= new JComboBox();
         comboNumber.setEditable(true);
         comboNumber.setModel(new DefaultComboBoxModel(
                 new String[] { "395245849", "330893303", "1445935","222523534" }));
@@ -58,11 +58,10 @@ public class LoginFrame extends JFrame {
         btnLogin.setMnemonic(KeyEvent.VK_C);
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JComboBox cb = (JComboBox)e.getSource();
+                //System.out.println(pswField.getText());
+                String numSelection = (String) comboNumber.getSelectedItem();
                 
-                String newSelection = (String)cb.getSelectedItem();
-                
-                connection = new OscarConnection(SERVER, PORT, newSelection, pswField.getText());
+                connection = new OscarConnection(SERVER, PORT, numSelection, pswField.getText());
                 connection.getPacketAnalyser().setDebug(true);
                 
                 LoginFrame.this.dispose();
