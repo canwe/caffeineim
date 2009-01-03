@@ -18,6 +18,7 @@ import javax.swing.border.TitledBorder;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
+import ru.caffeineim.Make;
 
 /**
  * Описание: Класс предназначен для ввода регистрационных данных
@@ -62,14 +63,10 @@ public class LoginFrame extends JFrame {
                 String numSelection = (String) comboNumber.getSelectedItem();
                 
                 connection = new OscarConnection(SERVER, PORT, numSelection, pswField.getText());
-                connection.getPacketAnalyser().setDebug(true);
-                
+                            
                 LoginFrame.this.dispose();
 
-                JFrame contactList = new ContactsFrame();
-                contactList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                contactList.setLocation(800, 300);
-                contactList.setVisible(true);
+                Make makeInstance = new Make(connection);
                                     
             }
 

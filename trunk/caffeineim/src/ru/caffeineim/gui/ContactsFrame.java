@@ -19,9 +19,21 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import ru.caffeineim.protocols.icq.contacts.*;
+import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
+import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
+import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
+import ru.caffeineim.protocols.icq.integration.events.SsiAuthReplyEvent;
+import ru.caffeineim.protocols.icq.integration.events.SsiAuthRequestEvent;
+import ru.caffeineim.protocols.icq.integration.events.SsiFutureAuthGrantEvent;
+import ru.caffeineim.protocols.icq.integration.events.SsiModifyingAckEvent;
+import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
+import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
+import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.packet.sent.buddylist.AddToContactList;
 
-
-public class ContactsFrame extends JFrame implements ActionListener {
+public class ContactsFrame extends JFrame implements ActionListener, StatusListener, ContactListListener {
     
     private static final String CMD_HISTORY = "history";
     private static final String titleStr = "Список собеседников";
@@ -32,18 +44,31 @@ public class ContactsFrame extends JFrame implements ActionListener {
     private static final String historyStr = "История сообщений";
     private static final String toolsStr = "Настройки";
     private static final String infoStr = "Информация о Контакте";
+    private JList contacts;
 
-    public ContactsFrame() {
+    public ContactsFrame(OscarConnection connection) {
 
         setTitle(titleStr);
         setSize(300, 500);
-
-        Container c = getContentPane();
-        c.setLayout(new BorderLayout());
-        
         JToolBar toolBar = createToolBar();
-        c.add(toolBar, BorderLayout.NORTH);
+        contacts = new JList();
+        //contacts.setCellRenderer(new MyCellRenderer()); 
+
+        JScrollPane paneScrollPane = new JScrollPane(contacts); 
+        paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        paneScrollPane.setPreferredSize(new Dimension(250, 155));
+        paneScrollPane.setMinimumSize(new Dimension(10, 10));
+
+        GridBagPanel contentPane = new GridBagPanel();
+        setContentPane(contentPane);
+        contentPane.setAnchor(GridBagConstraints.NORTHWEST);
+        contentPane.setInsets(2, 0, 0, 0);
+        contentPane.place(toolBar,        0, 0, 1, 1);
+        contentPane.setAnchor(GridBagConstraints.NORTHWEST);
+        contentPane.setFill(GridBagConstraints.BOTH);
+        contentPane.place(paneScrollPane, 0, 1, 1, 50);
         
+                
     }
 
     private JToolBar createToolBar() {
@@ -96,6 +121,47 @@ public class ContactsFrame extends JFrame implements ActionListener {
             f.setLocation(500, 300);
             f.setVisible(true);
         }
+    }
+
+    public void onIncomingUser(IncomingUserEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onOffgoingUser(OffgoingUserEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onStatusChange(StatusEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onLogout() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onAuthorizationFailed(LoginErrorEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateContactList(ContactListEvent e) {
+		System.out.println("\nMy Contact List");
+		System.out.println(ContactList.getInstance(e.getRoot()));
+	}
+
+    public void onSsiModifyingAck(SsiModifyingAckEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onSsiAuthRequest(SsiAuthRequestEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onSsiAuthReply(SsiAuthReplyEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
      
 }
