@@ -10,6 +10,7 @@
 
 package ru.caffeineim;
 
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +36,14 @@ public class Main {
             @Override
             public void run() {                
                 try {
+                    Properties systemSettings = System.getProperties();
+                    systemSettings.put("http.proxyHost", "192.167.11.11");
+                    systemSettings.put("http.proxyPort", "80");
+//                    systemSettings.put("http.proxyUser", "");
+//                    systemSettings.put("http.proxyPassword", "");
+                    System.setProperties(systemSettings);
+                    System.out.println(systemSettings); 
+        
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     LoginFrame frame = new LoginFrame();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
