@@ -65,7 +65,10 @@ public class Make implements MessagingListener, Observer {
    }
 
     public void onIncomingMessage(IncomingMessageEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        if(historyOn){
+//            History.saveMessage(e.getMessage());
+//        }
+        System.out.println(e.getSenderID()+": "+e.getMessage());
     }
 
     public void onIncomingUrl(IncomingUrlEvent e) {
