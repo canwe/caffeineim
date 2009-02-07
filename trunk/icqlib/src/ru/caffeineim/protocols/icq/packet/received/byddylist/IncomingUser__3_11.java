@@ -21,17 +21,16 @@ import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
+import ru.caffeineim.protocols.icq.setting.Capabilities;
+import ru.caffeineim.protocols.icq.setting.enumerations.ClientsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusFlagEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.TcpConnectionFlagEnum;
-import ru.caffeineim.protocols.icq.tool.Utils;
 
 /**
- * <p>
- * Created by
- * 
  * @author Fabrice Michellonet
  * @author Egor Baranov
+ * @author Pavel Samolisov
  */
 public class IncomingUser__3_11 extends ReceivedPacket {
 
@@ -73,7 +72,7 @@ public class IncomingUser__3_11 extends ReceivedPacket {
 
     private boolean isConstainingDirectConnectionInformation = false;
 
-    private String clientName;
+    private ClientsEnum client;
 
     public IncomingUser__3_11(byte[] array) {
         super(array, true);
@@ -152,19 +151,23 @@ public class IncomingUser__3_11 extends ReceivedPacket {
         detectClient();
     }
 
+    /**
+     * Detect remote user client capabilites
+     *
+     */
     private void detectClient() {
-        int dwFP1 = (int) Utils.getDWord(versioning1.getByteArray(), 0);
-        int dwFP2 = (int) Utils.getDWord(versioning2.getByteArray(), 0);
-        int dwFP3 = (int) Utils.getDWord(versioning3.getByteArray(), 0);
-        ;
+        int dwFP1 = versioning1.getValue();
+        int dwFP2 = versioning2.getValue();
+        int dwFP3 = versioning3.getValue();
 
-        int wVersion = Utils.getWord(tcpVersion.getByteArray(), 0);
+        int wVersion = tcpVersion.getValue();
 
-        clientName = Utils.detectUserClient(dwFP1, dwFP2, dwFP3, Utils
-                .mergeCapabilities(capabilitiesOld.getByteArray(),
-                        capabilitiesNew.getByteArray()), wVersion);
+        client = Capabilities.detectUserClient(dwFP1, dwFP2, dwFP3,
+            Capabilities.mergeCapabilities(capabilitiesOld.getByteArray(),
+                capabilitiesNew.getByteArray()), wVersion);
     }
 
+    @Override
     public void notifyEvent(OscarConnection connection) {
         IncomingUserEvent e = new IncomingUserEvent(this);
         for (int i = 0; i < connection.getStatusListeners().size(); i++) {
@@ -285,12 +288,11 @@ public class IncomingUser__3_11 extends ReceivedPacket {
     }
 
     /**
-     * get client name (like QIP or Miranda)
-     * 
+     * get client data
      * @return
      */
-    public String getClient() {
-        return clientName;
+    public ClientsEnum getClient() {
+        return client;
     }
 
     public Tlv getCapabilitiesOld() {

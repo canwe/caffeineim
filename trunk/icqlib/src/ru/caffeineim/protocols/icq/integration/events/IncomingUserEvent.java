@@ -18,12 +18,13 @@ package ru.caffeineim.protocols.icq.integration.events;
 import java.util.EventObject;
 
 import ru.caffeineim.protocols.icq.packet.received.byddylist.IncomingUser__3_11;
+import ru.caffeineim.protocols.icq.setting.enumerations.ClientsEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusFlagEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class IncomingUserEvent extends EventObject {
 
@@ -56,8 +57,8 @@ public class IncomingUserEvent extends EventObject {
 	public StatusFlagEnum getStatusFlag() {
 		return ( (IncomingUser__3_11) getSource()).getStatusFlag();
 	}
-    
-    public String getClientName() {
+
+    public ClientsEnum getClientData() {
         return ( (IncomingUser__3_11) getSource()).getClient();
     }
 }
