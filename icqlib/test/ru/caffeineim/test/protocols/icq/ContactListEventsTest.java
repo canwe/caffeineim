@@ -41,6 +41,7 @@ import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.SsiResultModeEnum;
+import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
@@ -59,15 +60,17 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		connection = new OscarConnection(SERVER, PORT, uin, password);
 		connection.getPacketAnalyser().setDebug(true);
 		connection.getPacketAnalyser().setDump(true);
-		
+
 		connection.addMessagingListener(this);
 		connection.addStatusListener(this);
 		connection.addContactListListener(this);
-		
+
 		connection.addObserver(this);
 	}
 
-	public void update(Observable obs, Object obj) {		
+	public void update(Observable obs, Object obj) {
+	    OscarInterface.changeStatus(connection,
+	        new StatusModeEnum(StatusModeEnum.ONLINE));
 		ContactList.sendContatListRequest(connection);
 	}
 
@@ -78,7 +81,8 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 
 	// !!!
 	public void onIncomingUser(IncomingUserEvent e) {
-		System.out.println(e.getIncomingUserId() + " has just signed on (" + e.getClientName() + ").");
+		System.out.println(e.getIncomingUserId() + " has just signed on (" + e.getClientData() + ").");
+		System.out.printf("Capabilites: 0x%X", e.getClientData().getCaps());
 	}
 
 	// !!!
@@ -91,7 +95,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		for (int i = 0; i < e.getResults().length; i++) {
 			System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
 		}
-		
+
 		if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
 			System.out.println("\nMy Contact List");
 			System.out.println(ContactList.getInstance().toString());
@@ -106,14 +110,14 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 	/* This is executed when you receive a message */
 	public void onIncomingMessage(IncomingMessageEvent e) {
 		System.out.println(e.getSenderID() + " sent : " + e.getMessage());
-		
-		try {			
+
+		try {
 			OscarInterface.sendBasicMessage(connection, e.getSenderID(), e.getMessage());
-			
+
 			String[] params = e.getMessage().split(" ");
 			if (params[0].equals("add") && params.length > 1) {
 				System.out.println("Add new user!");
-				ContactList.getInstance().addContact(connection, params[1], 
+				ContactList.getInstance().addContact(connection, params[1],
 						(Group) ContactList.getRootGroup().getContainedItems().get(0));
 				ContactList.sendYouWereAdded(connection, params[1]);
 			} else if (params[0].equals("addgrp") && params.length > 1) {
@@ -123,15 +127,15 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 				System.out.println("Remove contact!");
 				ContactList.getInstance().removeContact(connection, params[1]);
 			} else if (params[0].equals("remgrp")) {
-				System.out.println("Remove group " 
+				System.out.println("Remove group "
 						+ ContactList.getRootGroup().getContainedItems().get(0).getId() + "!");
-				ContactList.getInstance().removeGroup(connection, 
+				ContactList.getInstance().removeGroup(connection,
 						(Group) ContactList.getRootGroup().getContainedItems().get(0));
-			} else if (params[0].equals("remme") && params.length > 1) {			
+			} else if (params[0].equals("remme") && params.length > 1) {
 				ContactList.removeYourself(connection, params[1]);
-			} else if (params[0].equals("auth") && params.length > 1) {				
+			} else if (params[0].equals("auth") && params.length > 1) {
 				ContactList.sendAuthRequestMessage(connection, params[1], "Авторизуй меня!");
-			} else if (params[0].equals("msge") && params.length > 2) {								
+			} else if (params[0].equals("msge") && params.length > 2) {
 				OscarInterface.sendExtendedMessage(connection, params[2], params[1]);
 			} else if (params[0].equals("msgb")) {
 				OscarInterface.sendBasicMessage(connection, params[2], params[1]);
@@ -139,7 +143,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());
 		}
-	}	
+	}
 
 	/* This is executed when you receive an url */
 	public void onIncomingUrl(IncomingUrlEvent e) {
@@ -154,7 +158,7 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 	public void onMessageError(MessageErrorEvent e) {
 		System.out.println("Message error code " + e.getErrorCode() + " occurred");
 	}
-	
+
 	public void onMessageMissed(MessageMissedEvent e) {
 		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
 	}
@@ -175,17 +179,17 @@ public class ContactListEventsTest implements MessagingListener, StatusListener,
 		System.out.println("FutureAuthGrant UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
 	}
 
-	public void onSsiAuthRequest(SsiAuthRequestEvent e) {						
+	public void onSsiAuthRequest(SsiAuthRequestEvent e) {
 		try {
 			System.out.println("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
 			ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
-		} catch (ConvertStringException ex) {	
+		} catch (ConvertStringException ex) {
 			System.out.println(ex.getMessage());
 		}
 	}
 
 	public void onSsiAuthReply(SsiAuthReplyEvent e) {
-		System.out.println("AuthReply UIN: " + e.getSenderUin() + " Mesage: " 
+		System.out.println("AuthReply UIN: " + e.getSenderUin() + " Mesage: "
 				+ e.getMessage() + " Flag: " + e.getAuthFlag());
 	}
 
