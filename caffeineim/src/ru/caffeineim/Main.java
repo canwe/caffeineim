@@ -1,4 +1,4 @@
-/** * Copyright 2008 Caffeine-Soft Group * 
+/** * Copyright 2008 Caffeine-Soft Group *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at *  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,14 +14,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.JFrame;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import ru.caffeineim.gui.LoginFrame;
-import ru.caffeineim.gui.MessageWindow;
-import ru.caffeineim.gui.ProxySet;
 
 /**
  * Описание: Класс запускает приложение.
@@ -31,10 +29,9 @@ import ru.caffeineim.gui.ProxySet;
 public class Main {
 
     public static void main(String args[]) {
-        
+
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {                
+            public void run() {
                 try {
                     Properties systemSettings = System.getProperties();
                     systemSettings.put("http.proxyHost", "192.167.11.11");
@@ -42,15 +39,15 @@ public class Main {
 //                    systemSettings.put("http.proxyUser", "");
 //                    systemSettings.put("http.proxyPassword", "");
                     System.setProperties(systemSettings);
-                    System.out.println(systemSettings); 
-        
+                    System.out.println(systemSettings);
+
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     LoginFrame frame = new LoginFrame();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setLocationRelativeTo(null);
                     frame.pack();
                     frame.setVisible(true);
-                                        
+
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InstantiationException ex) {
@@ -59,7 +56,7 @@ public class Main {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedLookAndFeelException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }                    
+                }
             }
         });
     }
