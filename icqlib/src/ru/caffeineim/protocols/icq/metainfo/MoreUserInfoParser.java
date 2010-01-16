@@ -38,153 +38,151 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  *   @author Samolisov Pavel
  */
 public class MoreUserInfoParser extends BaseMetaInfoParser {
-	
-	private int age;
-	private GenderEnum gender;
-	private String homePage;
-	private Date birth;
-	private List<LanguagesEnum> languages;
-	private String originalCity;
-	private String originalState;
-	private CountryEnum originalCountry;
-	private TimeZoneEnum userTimeZone;
-	private MaritalStatusEnum maritalStatus;
-	
-	@Override
-	protected EventObject getNewEvent() {
-		return new MetaMoreUserInfoEvent(this);
-	}
-	
-	@Override
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaInfoListener) listener).onMoreUserInfo((MetaMoreUserInfoEvent) e);		
-	}
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
-		// Age
-		RawData ageRD = new RawData(data, position, RawData.WORD_LENGHT);
-		ageRD.invertIndianness();
-		age = ageRD.getValue(); 
-		position += RawData.WORD_LENGHT;
 
-		// Gender
-		gender = new GenderEnum(new RawData(data, position, RawData.BYTE_LENGHT).getValue());		 
-		position += RawData.BYTE_LENGHT;
-		
-		// Home Page Lenght
-		RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-		rStrLen.invertIndianness();
-		position += RawData.WORD_LENGHT;
-		
-		// Home page
-		homePage = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
-		position += rStrLen.getValue();
-		
-		// Birth year
-		RawData year = new RawData(data, position, RawData.WORD_LENGHT);
-		year.invertIndianness();
-		position += RawData.WORD_LENGHT;
+    private int age;
+    private GenderEnum gender;
+    private String homePage;
+    private Date birth;
+    private List languages;
+    private String originalCity;
+    private String originalState;
+    private CountryEnum originalCountry;
+    private TimeZoneEnum userTimeZone;
+    private MaritalStatusEnum maritalStatus;
 
-		// Birth month
-		RawData month = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;		
+    protected EventObject getNewEvent() {
+        return new MetaMoreUserInfoEvent(this);
+    }
 
-		// Birth day
-		RawData day = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaInfoListener) listener).onMoreUserInfo((MetaMoreUserInfoEvent) e);
+    }
 
-		birth = DateTools.makeDate(year.getValue(), month.getValue(), day.getValue(), 0, 0);
-		
-		// Languages
-		languages = new ArrayList<LanguagesEnum>();
-		int lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		position += RawData.BYTE_LENGHT;
-		languages.add(new LanguagesEnum(lang));
-		
-		lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		position += RawData.BYTE_LENGHT;
-		languages.add(new LanguagesEnum(lang));
-		
-		lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		position += RawData.BYTE_LENGHT;
-		languages.add(new LanguagesEnum(lang));
-		
-		// UNKNOWN
-		position += RawData.WORD_LENGHT;
-		
-		// Original From City lenght
-		rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-		rStrLen.invertIndianness();
-		position += RawData.WORD_LENGHT;
-		
-		// Original From City
-		originalCity = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
-		position += rStrLen.getValue();
- 
-		// Original From State lenght
-		rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-		rStrLen.invertIndianness();
-		position += RawData.WORD_LENGHT;
-		
-		// Original From State
-		originalState = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
-		position += rStrLen.getValue();
-		
-		// Original From country
-		RawData originalCountryRD = (new RawData(data, position, RawData.WORD_LENGHT));
-		originalCountryRD.invertIndianness();
-		originalCountry = new CountryEnum(originalCountryRD.getValue());
-		position += RawData.WORD_LENGHT;
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        position += 3; // skip subtype and success byte (always 0x0A) and data size.
 
-		// Marital Status
-		RawData maritalStatusRD = (new RawData(data, position, RawData.WORD_LENGHT));
-		maritalStatusRD.invertIndianness();		
-		maritalStatus = new MaritalStatusEnum(maritalStatusRD.getValue());
-		position += RawData.WORD_LENGHT;
-		
-		// User time zone
-		userTimeZone = new TimeZoneEnum((new RawData(data, position, RawData.BYTE_LENGHT)).getValue());				
-	}		
-	
-	public int getAge() {
-		return age;
-	}
-	
-	public GenderEnum getGender() {
-		return gender;
-	}
-	
-	public String getHomePage() {
-		return homePage;
-	}
-	
-	public Date getBirth() {
-		return birth;
-	}
-	
-	public List<LanguagesEnum> getLanguages() {
-		return languages;
-	}
-	
-	public String getOriginalCity() {
-		return originalCity;
-	}
-	
-	public String getOriginalState() {
-		return originalState;
-	}
-	
-	public CountryEnum getOriginalCountry() {
-		return originalCountry;
-	}
-	
-	public TimeZoneEnum getUserTimeZone() {
-		return userTimeZone;
-	}
+        // Age
+        RawData ageRD = new RawData(data, position, RawData.WORD_LENGHT);
+        ageRD.invertIndianness();
+        age = ageRD.getValue();
+        position += RawData.WORD_LENGHT;
 
-	public MaritalStatusEnum getMaritalStatus() {
-		return maritalStatus;
-	}	
+        // Gender
+        gender = new GenderEnum(new RawData(data, position, RawData.BYTE_LENGHT).getValue());
+        position += RawData.BYTE_LENGHT;
+
+        // Home Page Lenght
+        RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+        rStrLen.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Home page
+        homePage = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+        position += rStrLen.getValue();
+
+        // Birth year
+        RawData year = new RawData(data, position, RawData.WORD_LENGHT);
+        year.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Birth month
+        RawData month = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
+
+        // Birth day
+        RawData day = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
+
+        birth = DateTools.makeDate(year.getValue(), month.getValue(), day.getValue(), 0, 0);
+
+        // Languages
+        languages = new ArrayList();
+        int lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        position += RawData.BYTE_LENGHT;
+        languages.add(new LanguagesEnum(lang));
+
+        lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        position += RawData.BYTE_LENGHT;
+        languages.add(new LanguagesEnum(lang));
+
+        lang = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        position += RawData.BYTE_LENGHT;
+        languages.add(new LanguagesEnum(lang));
+
+        // UNKNOWN
+        position += RawData.WORD_LENGHT;
+
+        // Original From City lenght
+        rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+        rStrLen.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Original From City
+        originalCity = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+        position += rStrLen.getValue();
+
+        // Original From State lenght
+        rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+        rStrLen.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Original From State
+        originalState = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+        position += rStrLen.getValue();
+
+        // Original From country
+        RawData originalCountryRD = (new RawData(data, position, RawData.WORD_LENGHT));
+        originalCountryRD.invertIndianness();
+        originalCountry = new CountryEnum(originalCountryRD.getValue());
+        position += RawData.WORD_LENGHT;
+
+        // Marital Status
+        RawData maritalStatusRD = (new RawData(data, position, RawData.WORD_LENGHT));
+        maritalStatusRD.invertIndianness();
+        maritalStatus = new MaritalStatusEnum(maritalStatusRD.getValue());
+        position += RawData.WORD_LENGHT;
+
+        // User time zone
+        userTimeZone = new TimeZoneEnum((new RawData(data, position, RawData.BYTE_LENGHT)).getValue());
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public String getHomePage() {
+        return homePage;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public List getLanguages() {
+        return languages;
+    }
+
+    public String getOriginalCity() {
+        return originalCity;
+    }
+
+    public String getOriginalState() {
+        return originalState;
+    }
+
+    public CountryEnum getOriginalCountry() {
+        return originalCountry;
+    }
+
+    public TimeZoneEnum getUserTimeZone() {
+        return userTimeZone;
+    }
+
+    public MaritalStatusEnum getMaritalStatus() {
+        return maritalStatus;
+    }
 }

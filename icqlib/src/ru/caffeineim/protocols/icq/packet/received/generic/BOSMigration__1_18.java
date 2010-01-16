@@ -15,8 +15,6 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.generic;
 
-import java.io.IOException;
-
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -24,7 +22,7 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class BOSMigration__1_18 extends ReceivedPacket {
 	private Tlv server;
@@ -39,12 +37,7 @@ public class BOSMigration__1_18 extends ReceivedPacket {
 	}
 
 	public void execute(OscarConnection connection) {
-		try {
-			connection.close();
-		}
-		catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
+		connection.close();
 	}
 
 	public void notifyEvent(OscarConnection oscarconnection) {

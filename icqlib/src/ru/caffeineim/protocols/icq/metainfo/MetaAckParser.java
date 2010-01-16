@@ -30,33 +30,31 @@ import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
  *   @author Samolisov Pavel
  */
 public class MetaAckParser extends BaseMetaInfoParser {
-	
-	private boolean isOk;	
 
-	@Override
-	protected EventObject getNewEvent() {
-		return new MetaAckEvent(this);
-	}
+    private boolean isOk;
 
-	@Override
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaAckListener) listener).onMetaAck((MetaAckEvent) e);
-	}
+    protected EventObject getNewEvent() {
+        return new MetaAckEvent(this);
+    }
 
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		// scip data lenght
-		position += 2;
-		
-		// code ack
-		int code = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		isOk = (code == 0x0A);
-	}
-	
-	protected List<EventListener> getListenersList(OscarConnection connection) {
-		return connection.getMetaAckListeners();
-	}
-	
-	public boolean isOk() {
-		return isOk;
-	}
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaAckListener) listener).onMetaAck((MetaAckEvent) e);
+    }
+
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        // scip data lenght
+        position += 2;
+
+        // code ack
+        int code = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        isOk = (code == 0x0A);
+    }
+
+    protected List getListenersList(OscarConnection connection) {
+        return connection.getMetaAckListeners();
+    }
+
+    public boolean isOk() {
+        return isOk;
+    }
 }

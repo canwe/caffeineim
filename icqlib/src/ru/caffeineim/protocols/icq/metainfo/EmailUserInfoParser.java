@@ -30,43 +30,42 @@ import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
  *   @author Samolisov Pavel
  */
 public class EmailUserInfoParser extends BaseMetaInfoParser {
-	private List<String> emails = new ArrayList<String>();
+    private List emails = new ArrayList();
 
-	
-	protected EventObject getNewEvent() {
-		return new MetaEmailUserInfoEvent(this);
-	}
+    protected EventObject getNewEvent() {
+        return new MetaEmailUserInfoEvent(this);
+    }
 
-	
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaInfoListener) listener).onEmailUserInfo((MetaEmailUserInfoEvent) e);	
-	}
 
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
-		int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
-		position += RawData.BYTE_LENGHT;
-		
-		for (int i = 0; i < len; i++) {			
-			// Skiping publish byte
-			position += RawData.BYTE_LENGHT;
-			
-			// Email lenght
-			RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;;
-		
-			// Email
-			String email = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
-			position += rStrLen.getValue();
-			
-			emails.add(email);
-		}
-	}
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaInfoListener) listener).onEmailUserInfo((MetaEmailUserInfoEvent) e);
+    }
 
-	public List<String> getEmails() {
-		return emails;
-	}	
+
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        position += 3; // skip subtype and success byte (always 0x0A) and data size.
+
+        int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        for (int i = 0; i < len; i++) {
+            // Skiping publish byte
+            position += RawData.BYTE_LENGHT;
+
+            // Email lenght
+            RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;;
+
+            // Email
+            String email = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
+            position += rStrLen.getValue();
+
+            emails.add(email);
+        }
+    }
+
+    public List getEmails() {
+        return emails;
+    }
 }

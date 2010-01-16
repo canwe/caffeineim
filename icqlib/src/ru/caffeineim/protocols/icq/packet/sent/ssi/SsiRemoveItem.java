@@ -22,7 +22,6 @@ import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.contacts.Contact;
-import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.tool.StringTools;
@@ -30,70 +29,70 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
 /**
  * <p>Created by
  *   @author Lo�c Broquet
- *   @author Samolisov Pavel 
+ *   @author Samolisov Pavel
  */
 public class SsiRemoveItem extends Flap {
-	
-	public SsiRemoveItem(Contact item) {
-		super(2);
-		Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
-		deleteContact(item, snac);		
-		addSnac(snac);
-	}
-	
-	public SsiRemoveItem(Group grp) throws ConvertStringException {
-		super(2);
-		Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
-		
-		byte[] groupId = StringTools.stringToByteArray(grp.getId());
-		
-		// name lenght
-		snac.addRawDataToSnac(new RawData(groupId.length, RawData.WORD_LENGHT));
-		
-		// name
-		snac.addRawDataToSnac(new RawData(groupId));
-		
-		// group id
-		snac.addRawDataToSnac(new RawData(grp.getGroupId(), RawData.WORD_LENGHT));
-			
-		// item id
-		snac.addRawDataToSnac(new RawData(grp.getItemId(), RawData.WORD_LENGHT));
-			
-		// type of item (group)
-		snac.addRawDataToSnac(new RawData(0x0001, RawData.WORD_LENGHT));
 
-		// additional data
-		snac.addRawDataToSnac(new RawData(0x0004, RawData.WORD_LENGHT));
-		
-		// 0x00C8 TLV
-		Tlv tlv = new Tlv(0x00C8);
-		snac.addTlvToSnac(tlv);
+    public SsiRemoveItem(Contact item) {
+        super(2);
+        Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
+        deleteContact(item, snac);
+        addSnac(snac);
+    }
 
-		// Add group items		
-		for (Iterator<ContactListItem> iter = grp.getContainedItems().iterator(); iter.hasNext();) {
-			deleteContact((Contact) iter.next(), snac);
-		}
-		
-		addSnac(snac);
-	}
-	
-	private void deleteContact(Contact item, Snac snac) {
-		// uin lenght
-		snac.addRawDataToSnac(new RawData(item.getId().length(), RawData.WORD_LENGHT));
-		
-		// uin
-		snac.addRawDataToSnac(new RawData(item.getId()));
-		
-		// group id
-		snac.addRawDataToSnac(new RawData(item.getGroupId(), RawData.WORD_LENGHT));
-			
-		// item id
-		snac.addRawDataToSnac(new RawData(item.getItemId(), RawData.WORD_LENGHT));
-			
-		// type of item (contact)
-		snac.addRawDataToSnac(new RawData(0x0000, RawData.WORD_LENGHT));
+    public SsiRemoveItem(Group grp) throws ConvertStringException {
+        super(2);
+        Snac snac = new Snac(0x13, 0x0A, 0x00, 0x00, 0x0000000A);
 
-		// additional data
-		snac.addRawDataToSnac(new RawData(0x0000, RawData.WORD_LENGHT));		
-	}
+        byte[] groupId = StringTools.stringToByteArray(grp.getId());
+
+        // name lenght
+        snac.addRawDataToSnac(new RawData(groupId.length, RawData.WORD_LENGHT));
+
+        // name
+        snac.addRawDataToSnac(new RawData(groupId));
+
+        // group id
+        snac.addRawDataToSnac(new RawData(grp.getGroupId(), RawData.WORD_LENGHT));
+
+        // item id
+        snac.addRawDataToSnac(new RawData(grp.getItemId(), RawData.WORD_LENGHT));
+
+        // type of item (group)
+        snac.addRawDataToSnac(new RawData(0x0001, RawData.WORD_LENGHT));
+
+        // additional data
+        snac.addRawDataToSnac(new RawData(0x0004, RawData.WORD_LENGHT));
+
+        // 0x00C8 TLV
+        Tlv tlv = new Tlv(0x00C8);
+        snac.addTlvToSnac(tlv);
+
+        // Add group items
+        for (Iterator iter = grp.getContainedItems().iterator(); iter.hasNext();) {
+            deleteContact((Contact) iter.next(), snac);
+        }
+
+        addSnac(snac);
+    }
+
+    private void deleteContact(Contact item, Snac snac) {
+        // uin lenght
+        snac.addRawDataToSnac(new RawData(item.getId().length(), RawData.WORD_LENGHT));
+
+        // uin
+        snac.addRawDataToSnac(new RawData(item.getId()));
+
+        // group id
+        snac.addRawDataToSnac(new RawData(item.getGroupId(), RawData.WORD_LENGHT));
+
+        // item id
+        snac.addRawDataToSnac(new RawData(item.getItemId(), RawData.WORD_LENGHT));
+
+        // type of item (contact)
+        snac.addRawDataToSnac(new RawData(0x0000, RawData.WORD_LENGHT));
+
+        // additional data
+        snac.addRawDataToSnac(new RawData(0x0000, RawData.WORD_LENGHT));
+    }
 }

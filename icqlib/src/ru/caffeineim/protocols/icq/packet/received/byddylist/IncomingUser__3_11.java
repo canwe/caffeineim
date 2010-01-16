@@ -19,7 +19,7 @@ import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.UserStatusListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 import ru.caffeineim.protocols.icq.setting.Capabilities;
 import ru.caffeineim.protocols.icq.setting.enumerations.ClientsEnum;
@@ -167,12 +167,10 @@ public class IncomingUser__3_11 extends ReceivedPacket {
                 capabilitiesNew.getByteArray()), wVersion);
     }
 
-    @Override
     public void notifyEvent(OscarConnection connection) {
         IncomingUserEvent e = new IncomingUserEvent(this);
-        for (int i = 0; i < connection.getStatusListeners().size(); i++) {
-            StatusListener l = (StatusListener) connection.getStatusListeners()
-                    .get(i);
+        for (int i = 0; i < connection.getUserStatusListeners().size(); i++) {
+            UserStatusListener l = (UserStatusListener) connection.getUserStatusListeners().get(i);
             l.onIncomingUser(e);
         }
     }

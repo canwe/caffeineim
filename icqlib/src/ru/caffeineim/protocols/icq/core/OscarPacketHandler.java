@@ -17,45 +17,57 @@ package ru.caffeineim.protocols.icq.core;
 
 import ru.caffeineim.protocols.icq.core.exceptions.LoginException;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
 
 /**
  * <p>Created by 13.06.2008
  *   @author Samolisov Pavel
- *   @author Дмитрий Пролубников
+ *   @author Prolubnikov Dmitry
  */
 public class OscarPacketHandler implements Runnable {
 
-	public static final String THREAD_NAME = "OscarPacketHandlerThread";	
-	
-	private Thread thread;
-	private OscarClient client;
-		
-	public OscarPacketHandler(OscarClient client) {
-		this.client = client;
-		thread = new Thread(this);
-		thread.start();
-	}
-	
-	public void run() {
-		try {
-            while(true) {
+    public static final String THREAD_NAME = "OscarPacketHandlerThread";
+
+    private Thread thread;
+    private OscarClient client;
+
+    private boolean runnable;
+
+    public OscarPacketHandler(OscarClient client) {
+        this.client = client;
+        runnable = true;
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    public void run() {
+        try {
+            while(runnable) {
                 if (!client.getMessageQueue().isEmpty()) {
-                   client.getAnalyser().handlePacket(client.getMessageQueue().poll());
+                   client.getAnalyser().handlePacket((byte[]) client.getMessageQueue().poll());
+                } else {
+                	try {
+                		Thread.sleep(100);
+                	}
+                	catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-                Thread.sleep(10);
             }
         }
-		catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-		catch (LoginException ex) {
+        catch (LoginException ex) {
             // create event and notifycation
             LoginErrorEvent e = new LoginErrorEvent(ex.getErrorType());
-            for (int i = 0; i < client.getAnalyser().getConnection().getStatusListeners().size(); i++) {
-                StatusListener l = (StatusListener) client.getAnalyser().getConnection().getStatusListeners().get(i);
+            for (int i = 0; i < client.getAnalyser().getConnection().getOurStatusListeners().size(); i++) {
+                OurStatusListener l = (OurStatusListener) client.getAnalyser().getConnection()
+                		.getOurStatusListeners().get(i);
                 l.onAuthorizationFailed(e);
             }
+            runnable = false;
         }
-	}
+    }
+
+    public synchronized void stop() {
+    	runnable = false;
+    }
 }

@@ -36,90 +36,87 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class OfflineMessageParser extends BaseMetaInfoParser {
 
-	private String senderUin;	
-	private Date sendDate;
-	private String message;
-	private int type;
-	private int flag;
-	
-	
-	protected EventObject getNewEvent() {
-		return new OfflineMessageEvent(this);
-	}
-	
-	
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MessagingListener) listener).onOfflineMessage((OfflineMessageEvent) e);
-	}
-	
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		// Retreiving sender uin
-		RawData uin = new RawData(data, position, RawData.DWORD_LENGHT);
-		uin.invertIndianness();
-		senderUin = uin.toStringValue();
-		position += RawData.DWORD_LENGHT;
+    private String senderUin;
+    private Date sendDate;
+    private String message;
+    private int type;
+    private int flag;
 
-		// Retreiving year
-		RawData year = new RawData(data, position, RawData.WORD_LENGHT);
-		year.invertIndianness();
-		position += RawData.WORD_LENGHT;
+    protected EventObject getNewEvent() {
+        return new OfflineMessageEvent(this);
+    }
 
-		// Retreiving month
-		RawData month = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;		
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MessagingListener) listener).onOfflineMessage((OfflineMessageEvent) e);
+    }
 
-		// Retreiving day
-		RawData day = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        // Retreiving sender uin
+        RawData uin = new RawData(data, position, RawData.DWORD_LENGHT);
+        uin.invertIndianness();
+        senderUin = uin.toStringValue();
+        position += RawData.DWORD_LENGHT;
 
-		// Retreiving hour
-		RawData hour = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;
+        // Retreiving year
+        RawData year = new RawData(data, position, RawData.WORD_LENGHT);
+        year.invertIndianness();
+        position += RawData.WORD_LENGHT;
 
-		// Retreiving minute
-		RawData minute = new RawData(data, position, RawData.BYTE_LENGHT);
-		position += RawData.BYTE_LENGHT;		
-		sendDate = DateTools.makeDate(year.getValue(), month.getValue(), day.getValue(), hour.getValue(), minute.getValue());
-		
-		// Retreiving message type
-		type = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		position += RawData.BYTE_LENGHT;
+        // Retreiving month
+        RawData month = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
 
-		// Retreiving message flag
-		flag = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
-		position += RawData.BYTE_LENGHT;
+        // Retreiving day
+        RawData day = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
 
-		// Retreiving message length
-		RawData msgLen = new RawData(data, position, RawData.WORD_LENGHT);
-		msgLen.invertIndianness();
-		position += RawData.WORD_LENGHT;
+        // Retreiving hour
+        RawData hour = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
 
-		// Retreiving message
-		message = StringTools.byteArrayToString(data, position, msgLen.getValue() - 1);
-	}
-	
-	protected List<EventListener> getListenersList(OscarConnection connection) {
-		return connection.getMessagingListeners();
-	}
-		
-	public String getSenderUin() {
-		return senderUin;
-	}
-	
-	public Date getSendDate() {
-		return sendDate;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public MessageTypeEnum getMessageType() {
-  		return new MessageTypeEnum(type);
-  	}
-	
-	public MessageFlagsEnum getMessageFlag() {
-		return new MessageFlagsEnum(flag);
-	}
+        // Retreiving minute
+        RawData minute = new RawData(data, position, RawData.BYTE_LENGHT);
+        position += RawData.BYTE_LENGHT;
+        sendDate = DateTools.makeDate(year.getValue(), month.getValue(), day.getValue(), hour.getValue(), minute.getValue());
+
+        // Retreiving message type
+        type = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        // Retreiving message flag
+        flag = new RawData(data, position, RawData.BYTE_LENGHT).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        // Retreiving message length
+        RawData msgLen = new RawData(data, position, RawData.WORD_LENGHT);
+        msgLen.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Retreiving message
+        message = StringTools.byteArrayToString(data, position, msgLen.getValue() - 1);
+    }
+
+    protected List getListenersList(OscarConnection connection) {
+        return connection.getMessagingListeners();
+    }
+
+    public String getSenderUin() {
+        return senderUin;
+    }
+
+    public Date getSendDate() {
+        return sendDate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public MessageTypeEnum getMessageType() {
+          return new MessageTypeEnum(type);
+      }
+
+    public MessageFlagsEnum getMessageFlag() {
+        return new MessageFlagsEnum(flag);
+    }
 }

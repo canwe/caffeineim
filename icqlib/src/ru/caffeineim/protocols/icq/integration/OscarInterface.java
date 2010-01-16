@@ -13,7 +13,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.tool;
+package ru.caffeineim.protocols.icq.integration;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
@@ -35,31 +35,34 @@ import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
  */
 public class OscarInterface {
 
 	/**
-	 * Отправляем сообщение по 1-му каналу
-	 * 
+	 * Отправляем сообщение <code>message</code> пользователю <code>userId</code>
+	 * по 1-му каналу
+	 *
 	 * @param connection соединение
 	 * @param userId UIN получателя
 	 * @param message сообщение
-	 * @throws ConvertStringException 
+	 * @throws ConvertStringException
 	 */
-	public static void sendBasicMessage(OscarConnection connection, String userId, String message) 
+	public static void sendBasicMessage(OscarConnection connection, String userId, String message)
 			throws ConvertStringException {
 		connection.sendFlap(new SendType1Message(userId, message));
 	}
 
 	/**
-	 * Отправляем сообщение по 2-му каналу
-	 * 
+	 * Отправляем сообщение <code>message</code> пользователю <code>userId</code>
+	 * по 2-му каналу
+	 *
 	 * @param connection соединение
 	 * @param userId UIN получателя
 	 * @param message сообщение
-	 * @throws ConvertStringException 
+	 * @throws ConvertStringException
 	 */
-	public static void sendExtendedMessage(OscarConnection connection, String userId, String message) 
+	public static void sendExtendedMessage(OscarConnection connection, String userId, String message)
 			throws ConvertStringException {
 		// WARNING: Extended Messages will NOT be delivered to offline contacts
 		// and on AIM, only Basic Messages
@@ -67,8 +70,8 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Смена статуса
-	 * 
+	 * Изменяем свой статус на <code>newStatus</code>
+	 *
 	 * @param connection соединение
 	 * @param newStatus новый статус
 	 */
@@ -81,36 +84,37 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Смена X-статуса
-	 * 
+	 * Изменяем свой X-статус на <code>newStatus</code>
+	 *
 	 * @param connection соедиенение
-	 * @param newStatus новый статус
+	 * @param newStatus новый X-статус
 	 */
 	public static void changeXStatus(OscarConnection connection, XStatusModeEnum newStatus) {
 		connection.sendFlap(new SetLocationInformation(newStatus));
 	}
 
 	/**
-	 * Посылаем XStatuc в ответ на запрос
-	 * 
+	 * Отправляем Х-статус в ответ на запрос
+	 *
 	 * @param connection соединение
-	 * @param xstatus наш XStatus
-	 * @param title титл статуса
+	 * @param xstatus наш Х-статус
+	 * @param title заголовок статуса
 	 * @param description подробное описание статуса
 	 * @param time время запроса
 	 * @param msgId Id сообщение с запросом
 	 * @param userId Id пользователя запросившего статус
 	 * @param tcpVersion версия TCP протокола
-	 * @throws ConvertStringException 
+	 * @throws ConvertStringException
 	 */
-	public static void sendXStatus(OscarConnection connection, XStatusModeEnum xstatus, String title, 
+	public static void sendXStatus(OscarConnection connection, XStatusModeEnum xstatus, String title,
 			String description, int time, int msgId, String userId, int tcpVersion) throws ConvertStringException {
-		connection.sendFlap(new SendXStatus(time, msgId, userId, connection.getUserId(), tcpVersion, xstatus, title, description));
+		connection.sendFlap(new SendXStatus(time, msgId, userId, connection.getUserId(), tcpVersion, xstatus,
+				title, description));
 	}
-	
+
 	/**
-	 * Посылаем запрос на XStatus
-	 * 
+	 * Запрашиваем X-статус у пользователя <code>userId</code>
+	 *
 	 * @param connection соединение
 	 * @param userId UIN пользователя
 	 */
@@ -119,8 +123,8 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Смена времени бездействия
-	 * 
+	 * Устанавливаем режим бездействия в <code>idleTimeMode</code>
+	 *
 	 * @param connection соединение
 	 * @param idleTimeMode режим времени
 	 */
@@ -129,42 +133,42 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Запрос offline-сообщений
-	 * 
+	 * Запрашиваем отправленные нам offline-сообщения
+	 *
 	 * @param connection соединение
 	 */
-	public static void requestOfflineMessages(OscarConnection connection) {				
-		connection.sendFlap(new RequestOfflineMessages(connection.getUserId()));		
+	public static void requestOfflineMessages(OscarConnection connection) {
+		connection.sendFlap(new RequestOfflineMessages(connection.getUserId()));
 	}
-	
+
 	/**
-	 * Запрос короткой информации о пользователе
-	 * 
+	 * Запрашиваем "короткую" информацию о пользователе <code>userId</code>
+	 *
 	 * @param connection соединение
-	 * @param uin UIN пользователя, о котором запрашиваем информацию
+	 * @param userId UIN пользователя, о котором запрашиваем информацию
 	 */
-	public static void requestShortUserInfo(OscarConnection connection, String uin) {
-		connection.sendFlap(new RequestShortUserInfo(uin, connection.getUserId()));
+	public static void requestShortUserInfo(OscarConnection connection, String userId) {
+		connection.sendFlap(new RequestShortUserInfo(userId, connection.getUserId()));
 	}
-	
+
 	/**
-	 * Запрос полной информации о пользователе
-	 * 
+	 * Запрашиваем "полную" информацию о пользователе <code>userId</code>
+	 *
 	 * @param connection соединение
-	 * @param uin UIN пользователя о котором запрашиваем информацию
+	 * @param userId UIN пользователя о котором запрашиваем информацию
 	 */
-	public static void requestFullUserInfo(OscarConnection connection, String uin) {
-		connection.sendFlap(new RequestFullUserInfo(uin, connection.getUserId()));
+	public static void requestFullUserInfo(OscarConnection connection, String userId) {
+		connection.sendFlap(new RequestFullUserInfo(userId, connection.getUserId()));
 	}
-		
+
 	/**
-	 * Смена пароля пользователем
-	 * 
+	 * Устанавливаем себе новый пароль, равный <code>password</code>
+	 *
 	 * @param connection соединение
-	 * @param newPassword новый пароль пользователя
+	 * @param password новый пароль пользователя
 	 * @throws ConvertStringException
 	 */
-	public static void changePassword(OscarConnection connection, String newPassword) throws ConvertStringException {
-		connection.sendFlap(new ChangePassword(connection.getUserId(), newPassword));
+	public static void changePassword(OscarConnection connection, String password) throws ConvertStringException {
+		connection.sendFlap(new ChangePassword(connection.getUserId(), password));
 	}
 }

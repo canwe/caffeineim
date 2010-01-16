@@ -33,12 +33,12 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class IncomingMessage__4_7 extends ReceivedPacket {
-	
+
 	public static final int UCS2BE_ENCODING_MASK = 0x00020000;
-	
+
 	private RawData time;
 	private RawData msgId;
 	private RawData messageChannel;
@@ -70,8 +70,8 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		super(array, true);
 
 		int position = 0;
-		byte[] data = getSnac().getDataFieldByteArray();		
-		
+		byte[] data = getSnac().getDataFieldByteArray();
+
 		/* retreiving TIME */
 		time = new RawData(data, position, 4);
 		position += 4;
@@ -112,7 +112,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 			}
 			position += tmpTlv.getByteArray().length;
 		}
-		
+
 		if (messageChannel.getValue() == 1) {
 			parseType1(position, data);
 		}
@@ -122,7 +122,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		else {
 			parseType4(position, data);
 		}
-		
+
 		if (getMessageType().getType() == MessageTypeEnum.XSTATUS_MESSAGE) {
 			isRequestXStatus = true;
 		}
@@ -143,7 +143,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 			notifyIncomingMessage(connection);
 		else if (getMessageType().getType() == MessageTypeEnum.URL)
 			notifyIncomingUrl(connection);
-		else if (getMessageType().getType() == MessageTypeEnum.XSTATUS_MESSAGE) 
+		else if (getMessageType().getType() == MessageTypeEnum.XSTATUS_MESSAGE)
 			notifyXStatusRequest(connection);
 		else {
 			System.out.println("UNRECOGNIZED IncomingMessage__4_7 TYPE: " + getMessageType().getType() + " (norm " +
@@ -154,11 +154,11 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	private void notifyIncomingMessage(OscarConnection connection) {
 		IncomingMessageEvent e = new IncomingMessageEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
-			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);            		
+			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
 			l.onIncomingMessage(e);
 		}
 	}
-	
+
 	private void notifyXStatusRequest(OscarConnection connection) {
 		XStatusRequestEvent e = new XStatusRequestEvent(this);
 		for (int i = 0; i < connection.getXStatusListeners().size(); i++) {
@@ -181,7 +181,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	 *
 	 * @param position The position where we must start to parse.
 	 * @param data The packet we must parse.
-	 * @throws ConvertStringException 
+	 * @throws ConvertStringException
 	 */
 	private void parseType1(int position, byte[] data) throws ConvertStringException {
 		/* Setting up the msgType property to NORMAL MESSAGE */
@@ -196,16 +196,16 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 
 		/* retreiving the message's length */
 		Tlv tlvMsg = new Tlv(data, position);
-		int msgLen = tlvMsg.getLength() - 4;		
+		int msgLen = tlvMsg.getLength() - 4;
 
 		/* skipping TLV(0x0101) header + tlv length */
-		position += 4;			
-		
+		position += 4;
+
 		/* encoding fields */
 		encoding = new RawData(data, position, RawData.DWORD_LENGHT);
 		position += 4;
 
-		/* retreiving the message itself */		
+		/* retreiving the message itself */
 		if ((getEncoding() & UCS2BE_ENCODING_MASK) > 0)
 			message = StringTools.ucs2beByteArrayToString(data, position, msgLen);
 		else
@@ -383,15 +383,15 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	public MessageTypeEnum getMessageType() {
 		return new MessageTypeEnum(msgType.getValue());
 	}
-	
+
 	public int getTime() {
-		return time.getValue();		
+		return time.getValue();
 	}
-	
+
 	public int getEncoding() {
 		return encoding.getValue();
 	}
-	
+
 	private boolean isRequestAwayMessage() {
 		return isRequestAwayMessage;
 	}
@@ -399,7 +399,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 	private boolean isFileAckOrAbortRequest() {
 		return isFileAckOrAbortRequest;
 	}
-	
+
 	private boolean isRequestXStatus() {
 		return isRequestXStatus;
 	}

@@ -15,10 +15,8 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaAffilationsUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaBasicUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaEmailUserInfoEvent;
@@ -27,36 +25,35 @@ import ru.caffeineim.protocols.icq.integration.events.MetaMoreUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaNoteUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaWorkUserInfoEvent;
+import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
 import ru.caffeineim.protocols.icq.packet.sent.meta.FindUsersByUIN;
 
 /**
  * <p>Created by 30.03.2008
  *   @author Samolisov Pavel
  */
-public class FindUsersEventsTest implements Observer, MetaInfoListener {
+public class FindUsersEventsTest implements MetaInfoListener, OurStatusListener {
 
 	private static final String SERVER = "login.icq.com";
-    private static final int PORT = 5190;    
-    private static final String UIN = "217709";    
-    
+    private static final int PORT = 5190;
+    private static final String UIN = "426981083";
+
     private OscarConnection connection;
 
     public FindUsersEventsTest(String uin, String password) {
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
-        connection.getPacketAnalyser().setDump(true);
-                        
+        //connection.getPacketAnalyser().setDebug(true);
+        //connection.getPacketAnalyser().setDump(true);
+
         connection.addMetaInfoListener(this);
-                
-        connection.addObserver(this);
+        connection.addOurStatusListener(this);
+
+        connection.connect();
     }
-    
-	public void update(Observable o, Object arg) {
-    	connection.sendFlap(new FindUsersByUIN(UIN, connection.getUserId()));
-	}
 
 	public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e) {
 	}
@@ -87,7 +84,7 @@ public class FindUsersEventsTest implements Observer, MetaInfoListener {
 
 	public void onRegisterNewUINSuccess(UINRegistrationSuccessEvent e) {
 	}
-	
+
 	public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Use : FindUsersEventsTest MY_UIN MY_PASSWORD");
@@ -96,4 +93,24 @@ public class FindUsersEventsTest implements Observer, MetaInfoListener {
         }
     }
 
+	public void onAuthorizationFailed(LoginErrorEvent e) {
+		System.out.println("AuthorizationFailed");
+		connection.close();
+		System.exit(1);
+	}
+
+	public void onLogin() {
+		connection.sendFlap(new FindUsersByUIN(UIN, connection.getUserId()));
+	}
+
+	public void onLogout(Exception e) {
+		System.out.println("OnLogout");
+		e.printStackTrace();
+		connection.close();
+		System.exit(1);
+	}
+
+	public void onStatusResponse(StatusEvent e) {
+		// XXX
+	}
 }

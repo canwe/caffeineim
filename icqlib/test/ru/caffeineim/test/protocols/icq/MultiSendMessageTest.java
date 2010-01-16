@@ -15,24 +15,24 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
-import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
+import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
 
 /**
  * <p>Created by 05.06.2008
  *   @author Samolisov Pavel
  */
-public class MultiSendMessageTest implements Observer {
-	
+public class MultiSendMessageTest implements OurStatusListener {
+
 	private static final String SERVER = "login.icq.com";
 	private static final int PORT = 5190;
-	
+
 	private static final String TEST_MESSAGE = "Я - тучка тучка тучка, я вовсе не медведь!";
-	
+
 	private OscarConnection con;
 	private String receiver;
 
@@ -41,25 +41,9 @@ public class MultiSendMessageTest implements Observer {
 		con = new OscarConnection(SERVER, PORT, login, password);
 		con.getPacketAnalyser().setDebug(true);
 
-		con.addObserver(this);
-	}
+		con.addOurStatusListener(this);
 
-	/**
-	 * После подключения к серверу начинаем посылать сообщения
-	 * 
-	 */
-	public void update(Observable obs, Object obj) {		
-		try {		
-			for (int i = 1; i <= 15; i++) {
-				OscarInterface.sendBasicMessage(con, receiver, TEST_MESSAGE + " " + i);
-				Thread.sleep(100);
-			}									
-		} catch (ConvertStringException ex) {
-			System.out.println(ex.getMessage());	
-		}	
-		catch (InterruptedException ex) {        	
-            ex.printStackTrace();
-        }
+		con.connect();
 	}
 
 	public static void main(String[] args) {
@@ -68,5 +52,34 @@ public class MultiSendMessageTest implements Observer {
 		} else {
 			new MultiSendMessageTest(args[0], args[1], args[2]);
 		}
+	}
+
+	public void onAuthorizationFailed(LoginErrorEvent e) {
+		con.close();
+		System.exit(1);
+	}
+
+	public void onLogin() {
+		try {
+			for (int i = 1; i <= 15; i++) {
+				OscarInterface.sendBasicMessage(con, receiver, TEST_MESSAGE + " " + i);
+				Thread.sleep(100);
+			}
+		} catch (ConvertStringException ex) {
+			System.out.println(ex.getMessage());
+		}
+		catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+	}
+
+	public void onLogout(Exception e) {
+		e.printStackTrace();
+		con.close();
+		System.exit(1);
+	}
+
+	public void onStatusResponse(StatusEvent e) {
+		// XXX
 	}
 }

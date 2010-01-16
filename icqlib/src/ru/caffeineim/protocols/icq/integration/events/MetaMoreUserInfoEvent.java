@@ -22,7 +22,6 @@ import java.util.List;
 import ru.caffeineim.protocols.icq.metainfo.MoreUserInfoParser;
 import ru.caffeineim.protocols.icq.setting.enumerations.CountryEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.GenderEnum;
-import ru.caffeineim.protocols.icq.setting.enumerations.LanguagesEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MaritalStatusEnum;
 
 /**
@@ -30,46 +29,46 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MaritalStatusEnum;
  *   @author Samolisov Pavel
  */
 public class MetaMoreUserInfoEvent extends EventObject {
-	
-	private static final long serialVersionUID = -7346651515115520506L;
 
-	public MetaMoreUserInfoEvent(MoreUserInfoParser source) {
-		super(source);
-	}
-	
-	public int getAge() {
-		return ((MoreUserInfoParser) getSource()).getAge();
-	}
-	
-	public GenderEnum getGender() {
-		return ((MoreUserInfoParser) getSource()).getGender();
-	}
-	
-	public String getHomePage() {
-		return ((MoreUserInfoParser) getSource()).getHomePage();
-	}
-	
-	public Date getBirth() {
-		return ((MoreUserInfoParser) getSource()).getBirth();
-	}
-	
-	public List<LanguagesEnum> getLanguages() {
-		return ((MoreUserInfoParser) getSource()).getLanguages();
-	}
-	
-	public String getOriginalCity() {
-		return ((MoreUserInfoParser) getSource()).getOriginalCity();
-	}
-	
-	public String getOriginalState() {
-		return ((MoreUserInfoParser) getSource()).getOriginalState();
-	}
-	
-	public CountryEnum getOriginalCountry() {
-		return ((MoreUserInfoParser) getSource()).getOriginalCountry();
-	}	
-	
-	public MaritalStatusEnum getMaritalStatus() {
-		return ((MoreUserInfoParser) getSource()).getMaritalStatus();
-	}
+    private static final long serialVersionUID = -7346651515115520506L;
+
+    public MetaMoreUserInfoEvent(MoreUserInfoParser source) {
+        super(source);
+    }
+
+    public int getAge() {
+        return ((MoreUserInfoParser) getSource()).getAge();
+    }
+
+    public GenderEnum getGender() {
+        return ((MoreUserInfoParser) getSource()).getGender();
+    }
+
+    public String getHomePage() {
+        return ((MoreUserInfoParser) getSource()).getHomePage();
+    }
+
+    public Date getBirth() {
+        return ((MoreUserInfoParser) getSource()).getBirth();
+    }
+
+    public List getLanguages() {
+        return ((MoreUserInfoParser) getSource()).getLanguages();
+    }
+
+    public String getOriginalCity() {
+        return ((MoreUserInfoParser) getSource()).getOriginalCity();
+    }
+
+    public String getOriginalState() {
+        return ((MoreUserInfoParser) getSource()).getOriginalState();
+    }
+
+    public CountryEnum getOriginalCountry() {
+        return ((MoreUserInfoParser) getSource()).getOriginalCountry();
+    }
+
+    public MaritalStatusEnum getMaritalStatus() {
+        return ((MoreUserInfoParser) getSource()).getMaritalStatus();
+    }
 }

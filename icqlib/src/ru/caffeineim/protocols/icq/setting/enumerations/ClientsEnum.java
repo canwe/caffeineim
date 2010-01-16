@@ -141,7 +141,6 @@ public class ClientsEnum {
         this.caps = caps;
     }
 
-    @Override
     public String toString() {
         return clientNames[type];
     }

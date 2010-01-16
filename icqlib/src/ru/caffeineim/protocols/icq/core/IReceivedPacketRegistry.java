@@ -19,14 +19,14 @@ import java.util.Vector;
 
 /**
  * <p>Created by 25.01.2008
- *   @author Samolisov Pavel 
+ *   @author Samolisov Pavel
  */
 public interface IReceivedPacketRegistry {
-	
-	/**
-	 * Реест классов-обработчиков полученных пакетов представляет собой список
-	 * имен этих классов
-	 * @return
-	 */
-	public Vector<String> getClassNameVector();
+
+    /**
+     * Реест классов-обработчиков полученных пакетов представляет собой список
+     * имен этих классов
+     * @return
+     */
+    public Vector getClassNameVector();
 }

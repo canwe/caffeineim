@@ -25,17 +25,17 @@ import ru.caffeineim.protocols.icq.integration.events.SsiModifyingAckEvent;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public interface ContactListListener extends EventListener {
-	
-	public abstract void updateContactList(ContactListEvent event);
-	
-	public abstract void onSsiModifyingAck(SsiModifyingAckEvent event);
-	
-	public abstract void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent event);
-	
-	public abstract void onSsiAuthRequest(SsiAuthRequestEvent event);
-	
-	public abstract void onSsiAuthReply(SsiAuthReplyEvent event);
+
+	public void updateContactList(ContactListEvent event);
+
+	public void onSsiModifyingAck(SsiModifyingAckEvent event);
+
+	public void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent event);
+
+	public void onSsiAuthRequest(SsiAuthRequestEvent event);
+
+	public void onSsiAuthReply(SsiAuthReplyEvent event);
 }

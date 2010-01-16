@@ -18,34 +18,36 @@ package ru.caffeineim.protocols.icq.core;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.util.LinkedList;
-import java.util.Queue;
 
+import javax.net.SocketFactory;
+
+import ru.caffeineim.protocols.icq.core.queue.OscarQueue;
+import ru.caffeineim.protocols.icq.core.queue.Queue;
 import ru.caffeineim.protocols.icq.tool.Dumper;
 
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
  *   @author Samolisov Pavel
- *   @author Дмитрий Пролубников
+ *   @author Prolubnikov Dmitry
  */
 public class OscarClient implements Runnable {
 
-	public static final String THREAD_NAME = "OscarClientThread";
+    public static final String THREAD_NAME = "OscarClientThread";
 
     private OscarPacketAnalyser analyser;
+    private OscarPacketHandler handler;
     private String host;
     private int port;
     private Socket socketClient;
     private InputStream in;
-    private DataOutputStream out;
+    private OutputStream out;
     private Thread runner;
     private boolean running = true;
-    private Queue<byte[]> messagesQueue;
+    private Queue messagesQueue = null;
+    private SocketFactory factory;
 
     /**
      * This create a socket that will be connected to an Oscar Server.
@@ -60,29 +62,76 @@ public class OscarClient implements Runnable {
         this.host = host;
         this.port = port;
         runner = new Thread(this, THREAD_NAME);
-        messagesQueue = new LinkedList<byte[]>();
+        messagesQueue = new OscarQueue();
     }
 
     /**
-     * This function simply start the client.
-     */
-    public void connectToServer() {
-    	runner.start();
-
-    	// start packet handler thread
-        new OscarPacketHandler(this);
-    }
-
-    /**
-     * Simply stop the client.
+     * This create a socket that will be connected to an Oscar Server.
      *
+     * @param host The address of the server. <i>[i.e: <b>login.icq.com</b> for ICQ]</i>
+     * @param port The port on which the server is awaiting connection.
+     * @param analyser The instance of the analyser that should be called
+     * to parse the incoming packets.
+     * @param factory The instance of socket factory that make socket for
+     * connection to ICQ server
+     */
+    public OscarClient(String host, int port, OscarPacketAnalyser analyser, SocketFactory factory) {
+        this.analyser = analyser;
+        this.host = host;
+        this.port = port;
+        this.factory = factory;
+        runner = new Thread(this, THREAD_NAME);
+        messagesQueue = new OscarQueue();
+    }
+
+    /**
+     * Make socket for connection to ICQ server and connect to it:<ul>
+     * 	<li> if <code>factory</code> is null then make socket with <code>new Socket(host, port)</code>
+     *  <li> if <code>factory</code> is not null then make socket with {@link SocketFactory#createSocket(String, int)}
+     *  </ul>
+     */
+    public synchronized void connect() throws IOException {
+    	// make the socket
+    	if (factory == null) {
+    		socketClient = new Socket(host, port);
+    	} else {
+    		socketClient = factory.createSocket(host, port);
+    	}
+
+    	out = new DataOutputStream(socketClient.getOutputStream());
+    	in = socketClient.getInputStream();
+
+    	// starting our thread
+        runner.start();
+
+        // starting packet handler thread
+        handler = new OscarPacketHandler(this);
+    }
+
+    /**
+     * Stoping the client
      * @throws IOException
      */
     public synchronized void disconnect() throws IOException {
-        running = false;
-        // TODO разобраться
-        //socketClient.shutdownInput();
-        //socketClient.shutdownOutput();
+        try {
+        	if (socketClient != null)
+        		socketClient.shutdownInput();
+        }
+        finally {
+        	try {
+        		if (socketClient != null)
+        			socketClient.shutdownOutput();
+        	}
+        	finally {
+        		try {
+        			socketClient.close();
+        		}
+        		finally {
+        			running = false;
+        			handler.stop();
+        		}
+        	}
+        }
     }
 
     /**
@@ -102,52 +151,36 @@ public class OscarClient implements Runnable {
         boolean waitData = false;
 
         try {
-        	// TODO рефакторинг подсистемы прокси
-            if (System.getProperty("socks.proxyHost") != null) {
-
-            	SocketAddress addr = new InetSocketAddress(
-                		System.getProperty("socks.proxyHost"),
-                        Integer.parseInt(System.getProperty("socks.proxyPort")));
-
-                Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
-                socketClient = new Socket(proxy);
-                InetSocketAddress dest = new InetSocketAddress(host, port);
-                socketClient.connect(dest);
-            } else {
-                socketClient = new Socket(host, port);
-            }
-
-            out = new DataOutputStream(socketClient.getOutputStream());
-            in = socketClient.getInputStream();
-
             while (running) {
-                if (!waitData) {
-                    /* waiting for at least 6 bytes */
+            	if (!waitData) {
+                    // waiting for at least 6 bytes
                     if (in.available() >= 6) {
                         in.read(header, 0, 6);
-                        /* retreiving flap datafield len */
+                        // retreiving flap datafield len
                         packetLen = getPacketLen(header);
                         packet = new byte[packetLen + 6];
                         waitData = true;
                     }
                 } else {
-                    /* waiting for the entiere datafield */
+                    // waiting for the entiere datafield
                     if (in.available() >= packetLen) {
                         in.read(packet, 6, packetLen);
-                        /* adding the header to the packet */
+                        // adding the header to the packet
                         System.arraycopy(header, 0, packet, 0, 6);
-                        getMessageQueue().add(packet);
+                        getMessageQueue().push(packet);
                         waitData = false;
                     }
                 }
-                Thread.sleep(10);
+
+            	if (in.available() == 0)
+            		Thread.sleep(200);
             }
         }
         catch (IOException ex) {
+        	// TODO logging
             ex.printStackTrace();
         }
         catch (InterruptedException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -160,17 +193,15 @@ public class OscarClient implements Runnable {
         return socketClient.getLocalAddress().getAddress();
     }
 
-    public Queue<byte[]> getMessageQueue() {
-    	return messagesQueue;
+    public Queue getMessageQueue() {
+        return messagesQueue;
     }
 
     public OscarPacketAnalyser getAnalyser() {
-    	return analyser;
+        return analyser;
     }
 
     /**
-     * <b>MUST BE MOVED TO SOME UTILS IN PACKAGE JOscarLib.Utils</b>
-     * @todo MUST BE MOVED TO SOME UTILS IN PACKAGE JOscarLib.Utils
      * @param header
      * @return
      */
@@ -188,11 +219,11 @@ public class OscarClient implements Runnable {
      * @param packet The byte array representation of the packet to be sent.
      */
     public void sendPacket(byte[] packet) throws IOException {
-    	if (analyser.isDumping()) {
-    		System.out.println("Send: ");
-    		System.out.println(Dumper.dump(packet, true, 8, 16));
-    	}
-    	out.write(packet);
-    	out.flush();
+        if (analyser.isDumping()) {
+        	System.out.println("Send: ");
+            System.out.println(Dumper.dump(packet, true, 8, 16));
+        }
+        out.write(packet);
+        out.flush();
     }
 }

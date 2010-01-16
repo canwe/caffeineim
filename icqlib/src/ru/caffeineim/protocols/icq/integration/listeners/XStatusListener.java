@@ -22,12 +22,11 @@ import ru.caffeineim.protocols.icq.integration.events.XStatusResponseEvent;
 
 /**
  * <p>Created by 17.07.07
- *   @author Samolisov Pavel 
+ *   @author Samolisov Pavel
  */
 public interface XStatusListener extends EventListener {
 
-	public abstract void onXStatusRequest(XStatusRequestEvent e);
-	
-	public abstract void onXStatusChange(XStatusResponseEvent e);
-	
+	public void onXStatusRequest(XStatusRequestEvent e);
+
+	public void onXStatusResponse(XStatusResponseEvent e);
 }

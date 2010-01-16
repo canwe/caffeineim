@@ -19,29 +19,29 @@ import java.util.Vector;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class ReceivedPackedClassLoader {
-	private Vector<String> classNamesVector;
-	
-	public ReceivedPackedClassLoader(IReceivedPacketRegistry registry) {
-		this.classNamesVector = registry.getClassNameVector();
-	}
+    private Vector classNamesVector;
 
-	public Class<?> loadClass(int commandId, int subCommmandId) {
-		Class<?> ret = null;
-		String endString = "__" + commandId + "_" + subCommmandId;		
-		for (int i = 0; i < classNamesVector.size(); i++) {			
-			if (((String) classNamesVector.get(i)).endsWith(endString)) {
-				try {
-					ret = Class.forName((String) classNamesVector.get(i));
-				}
-				catch (ClassNotFoundException CNFE) {
-					System.out.println("Class not found " + CNFE.getMessage());
-				}
-			}
-		}
-		
-		return ret;
-	}
+    public ReceivedPackedClassLoader(IReceivedPacketRegistry registry) {
+        this.classNamesVector = registry.getClassNameVector();
+    }
+
+    public Class loadClass(int commandId, int subCommmandId) {
+        Class ret = null;
+        String endString = "__" + commandId + "_" + subCommmandId;
+        for (int i = 0; i < classNamesVector.size(); i++) {
+            if (((String) classNamesVector.get(i)).endsWith(endString)) {
+                try {
+                    ret = Class.forName((String) classNamesVector.get(i));
+                }
+                catch (ClassNotFoundException CNFE) {
+                    System.out.println("Class not found " + CNFE.getMessage());
+                }
+            }
+        }
+
+        return ret;
+    }
 }

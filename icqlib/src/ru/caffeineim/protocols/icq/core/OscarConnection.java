@@ -16,10 +16,10 @@
 package ru.caffeineim.protocols.icq.core;
 
 import java.io.IOException;
-import java.util.EventListener;
 import java.util.List;
-import java.util.Observable;
 import java.util.Vector;
+
+import javax.net.SocketFactory;
 
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Tlv;
@@ -27,7 +27,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.UserStatusListener;
 import ru.caffeineim.protocols.icq.integration.listeners.XStatusListener;
 import ru.caffeineim.protocols.icq.request.Request;
 import ru.caffeineim.protocols.icq.request.RequestKeeper;
@@ -36,241 +37,296 @@ import ru.caffeineim.protocols.icq.setting.Tweaker;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
  */
-public class OscarConnection extends Observable {
+public class OscarConnection {
+    private Tlv cookie;
+    private String userId;
+    private String password;
+    private boolean authorized = false;
+    private boolean connected = false;
 
-	private Tlv cookie;
-	private String userId;
-	private String password;
-	private boolean logged = false;
+    private OscarPingHandler pingHandler;
+    private Tweaker tweaker;
+    private OscarClient client;
+    private OscarPacketAnalyser analyser;
+    private RequestKeeper requestKeeper;
+    private List messagingListeners;
+    private List userStatusListeners;
+    private List ourStatusListeners;
+    private List xStatusListeners;
+    private List contactListListeners;
+    private List metaInfoListeners;
+    private List metaAckListeners;
 
-	private Tweaker tweaker;
-	private OscarClient client;
-	private OscarPacketAnalyser analyser;
-	private RequestKeeper requestKeeper;
-	private List<EventListener> messagingListeners;
-	private List<EventListener> statusListeners;
-	private List<EventListener> xStatusListeners;
-	private List<EventListener> contactListListeners;
-	private List<EventListener> metaInfoListeners;
-	private List<EventListener> metaAckListeners;
-  
-	private int flapSeqNrs;
+    private int flapSeqNrs;
 
-	public OscarConnection(String host, int port, String userId, String password) {
-		this(host, port, userId, password, new Tweaker());
-	}
+    public OscarConnection(String host, int port, String userId, String password) {
+        this(host, port, userId, password, new Tweaker());
+    }
 
-	public OscarConnection(String host, int port, String userId, String password, Tweaker tweaker) {
-		this.userId = userId;
-		this.password = password;
-		this.tweaker = tweaker;
-		this.flapSeqNrs = 0;
-		analyser = new OscarPacketAnalyser(this);
-		client = new OscarClient(host, port, analyser);
-		requestKeeper = new RequestKeeper();
-		messagingListeners = new Vector<EventListener>();
-		statusListeners  = new Vector<EventListener>();
-		xStatusListeners  = new Vector<EventListener>();
-		contactListListeners   = new Vector<EventListener>();
-		metaInfoListeners  = new Vector<EventListener>();
-		metaAckListeners = new Vector<EventListener>();
-    	
-		// Connect to Server
-		client.connectToServer();
-		
-		// Start ping Server for monitoring connection
-		new OscarPingHandler(this, 30000);
-	}
+    public OscarConnection(String host, int port, String userId, String password,
+    		Tweaker tweaker) {
+    	this(host, port, userId, password, new Tweaker(), null);
+    }
 
-	public void addMetaAckListener(MetaAckListener listener) {
-		metaAckListeners.add(listener);
-	}
-  
-	public boolean removeMetaAckListener(MetaAckListener listener) {
-		return metaAckListeners.remove(listener);
-	}
-	
-	public void addMetaInfoListener(MetaInfoListener listener) {
-		metaInfoListeners.add(listener);
-	}
-  
-	public boolean removeMetaInfoListener(MetaInfoListener listener) {
-		return metaInfoListeners.remove(listener);
-	}
-  
-	public void addContactListListener(ContactListListener listener) {
-		contactListListeners.add(listener);
-	}
-  
-	public boolean removeContactListListener(ContactListListener listener) {
-		return contactListListeners.remove(listener);
-	}
-  
-	public void addMessagingListener(MessagingListener listener) {
-		messagingListeners.add(listener);
-	}
+    public OscarConnection(String host, int port, String userId, String password,
+    		Tweaker tweaker, SocketFactory factory) {
+        this.userId = userId;
+        this.password = password;
+        this.tweaker = tweaker;
+        this.flapSeqNrs = 0;
+        analyser = new OscarPacketAnalyser(this);
+        client = new OscarClient(host, port, analyser, factory);
+        requestKeeper = new RequestKeeper();
+        messagingListeners = new Vector();
+        ourStatusListeners  = new Vector();
+        userStatusListeners = new Vector();
+        xStatusListeners  = new Vector();
+        contactListListeners   = new Vector();
+        metaInfoListeners  = new Vector();
+        metaAckListeners = new Vector();
+    }
 
-	public boolean removeMessagingListener(MessagingListener listener) {
-		return messagingListeners.remove(listener);
-	}
+    public void addMetaAckListener(MetaAckListener listener) {
+        metaAckListeners.add(listener);
+    }
 
-	public void addStatusListener(StatusListener listener) {
-		statusListeners.add(listener);
-	}
+    public boolean removeMetaAckListener(MetaAckListener listener) {
+        return metaAckListeners.remove(listener);
+    }
 
-	public boolean removeStatusListener(StatusListener listener) {
-		return statusListeners.remove(listener);
-	}
-	
-	public void addXStatusListener(XStatusListener listener) {
-		xStatusListeners.add(listener);
-	}
+    public void addMetaInfoListener(MetaInfoListener listener) {
+        metaInfoListeners.add(listener);
+    }
 
-	public boolean removeXStatusListener(XStatusListener listener) {
-		return xStatusListeners.remove(listener);
-	}
+    public boolean removeMetaInfoListener(MetaInfoListener listener) {
+        return metaInfoListeners.remove(listener);
+    }
 
-	/**
-	 * This method send a packet to the server.
-	 *
-	 * @param flapPacket The paquet to be sent.
-	 */
-	public synchronized void sendFlap(Flap flapPacket) {
-		if (flapPacket.getSequenceNumber() == Integer.MAX_VALUE) { // not assigned yet..
-			flapSeqNrs++;
+    public void addContactListListener(ContactListListener listener) {
+        contactListListeners.add(listener);
+    }
 
-			if (flapSeqNrs > 0xffff)
-				flapSeqNrs = 0;
-			
-			flapPacket.setSequenceNumber(flapSeqNrs);
+    public boolean removeContactListListener(ContactListListener listener) {
+        return contactListListeners.remove(listener);
+    }
+
+    public void addMessagingListener(MessagingListener listener) {
+        messagingListeners.add(listener);
+    }
+
+    public boolean removeMessagingListener(MessagingListener listener) {
+        return messagingListeners.remove(listener);
+    }
+
+    public void addUserStatusListener(UserStatusListener listener) {
+        userStatusListeners.add(listener);
+    }
+
+    public boolean removeUserStatusListener(UserStatusListener listener) {
+        return userStatusListeners.remove(listener);
+    }
+
+    public void addXStatusListener(XStatusListener listener) {
+        xStatusListeners.add(listener);
+    }
+
+    public boolean removeXStatusListener(XStatusListener listener) {
+        return xStatusListeners.remove(listener);
+    }
+
+    public void addOurStatusListener(OurStatusListener listener) {
+    	ourStatusListeners.add(listener);
+    }
+
+    public boolean removeOurStatusListener(OurStatusListener listener) {
+    	return ourStatusListeners.remove(listener);
+    }
+
+    /**
+     * Send a packet to the server.
+     * @param flapPacket The paquet to be sent.
+     */
+    public synchronized void sendFlap(Flap flapPacket) {
+        if (flapPacket.getSequenceNumber() == Integer.MAX_VALUE) { // not assigned yet..
+            flapSeqNrs++;
+
+            if (flapSeqNrs > 0xffff)
+                flapSeqNrs = 0;
+
+            flapPacket.setSequenceNumber(flapSeqNrs);
+        }
+
+        try {
+            client.sendPacket(flapPacket.getByteArray());
+        }
+        catch (IOException e) {
+            if (connected) {
+                // signal logout..
+                try {
+                    client.disconnect();
+                }
+                catch (IOException e1) {
+                	// TODO warn - не удалось дисконнектиться
+                }
+                finally {
+                	if (authorized)
+                		notifyOnLogout(e);
+                }
+            }
+        }
+    }
+
+    protected synchronized void notifyOnLogout(Exception exception) {
+    	for (int i = 0; i < getOurStatusListeners().size(); i++) {
+    		OurStatusListener l = (OurStatusListener) getOurStatusListeners().get(i);
+    		l.onLogout(exception);
+    	}
+    }
+
+    /**
+     * Send a packet to the server and start the monitoring system.<br/>
+     * The <b>listener</b> will be warned of the server reply by a <b>RequestAnswerEvent</b> event.
+     *
+     * @param flapPacket The paquet to be sent.
+     * @param listener The class that monitor the packet.
+     *
+     * @return The request object that has been created, null if the flap do not contains
+     * a Snac section.
+     */
+    public synchronized Request sendMonitoredFlap(Flap flapPacket, RequestListener listener) {
+        int requestId;
+        Request request = null;
+
+        if (flapPacket.hasSnac()) {
+            requestId = requestKeeper.nextAvailableRequestId();
+            flapPacket.getSnac().setRequestId(requestId);
+
+            request = new Request(flapPacket, listener);
+            requestKeeper.addRequest(request);
+        }
+        sendFlap(flapPacket);
+
+        return request;
+    }
+
+    /**
+     * Connect to the server
+     */
+    public synchronized void connect() {
+    	try {
+    		// connect to the server
+    		client.connect();
+            connected = true;
+
+            // starting the pinger thread
+            //pingHandler = new OscarPingHandler(this, 1000);
+    	}
+    	catch (IOException e) {
+    		notifyOnLogout(e);
 		}
+    }
 
-		try {			
-			client.sendPacket(flapPacket.getByteArray());
-		} 
-		catch (IOException e) {
-			if (logged) {
-				// signal logout..
-				try {
-					client.disconnect();
-				} catch (IOException e1) { }
-              
-				for (int i = 0; i < getStatusListeners().size(); i++) {
-					StatusListener l = (StatusListener) getStatusListeners().get(i);
-					l.onLogout();
-				}
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+    /**
+     * This will cause the connection to be closed.
+     *
+     * @throws IOException
+     */
+    public synchronized void close() {
+    	try {
+    		if (connected)
+    			client.disconnect();
+    	}
+    	catch (IOException e) {
+    		// warn - не удалось дисконнектится
 		}
-	}
+    	finally {
+    		connected = false;
+    		setAuthorized(false);
+    	}
+    }
 
+    protected synchronized void setAuthorized(boolean status) {
+        authorized = status;
+        if (authorized) {
+        	for (int i = 0; i < getOurStatusListeners().size(); i++) {
+        		OurStatusListener l = (OurStatusListener) getOurStatusListeners().get(i);
+        		l.onLogin();
+        	}
+        }
+    }
 
-	/**
-	 * This method send a packet to the server and start the monitoring system.<br/>
-	 * The <b>listener</b> will be warned of the server reply by a <b>RequestAnswerEvent</b> event.
-	 *
-	 * @param flapPacket The paquet to be sent.
-	 * @param listener The class that monitor the packet.
-	 *
-	 * @return The request object that has been created, null if the flap do not contains
-	 * a Snac section.
-	 */
-	public Request sendMonitoredFlap(Flap flapPacket, RequestListener listener) {
-		int requestId;
-		Request request = null;
+    public boolean isAuthorized() {
+        return authorized;
+    }
 
-		if (flapPacket.hasSnac()) {
-			requestId = requestKeeper.nextAvailableRequestId();
-			flapPacket.getSnac().setRequestId(requestId);
+    public boolean isDebugging() {
+    	return analyser.isDebugging();
+    }
 
-			request = new Request(flapPacket, listener);
-			requestKeeper.addRequest(request);
-		}
-		sendFlap(flapPacket);
+    public String getUserId() {
+        return userId;
+    }
 
-		return request;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * This will cause the connection to be closed.
-	 *
-	 * @throws IOException
-	 */
-	public void close() throws IOException {
-		client.disconnect();
-		setLogged(false);
-	}
+    public Tlv getCookie() {
+        return cookie;
+    }
 
-	protected void setLogged(boolean status) {
-		logged = status;
-		setChanged();
-		notifyObservers();
-	}
+    public void setCookie(Tlv cookie) {
+        this.cookie = cookie;
+    }
 
-	public boolean isLogged() {
-		return logged;
-	}
+    public OscarClient getClient() {
+        return client;
+    }
 
-	public String getUserId() {
-		return userId;
-	}
+    public void setClient(OscarClient client) {
+        this.client = client;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public Tweaker getTweaker() {
+        return tweaker;
+    }
 
-	public Tlv getCookie() {
-		return this.cookie;
-	}
+    public OscarPacketAnalyser getPacketAnalyser() {
+        return analyser;
+    }
 
-	public void setCookie(Tlv cookie) {
-		this.cookie = cookie;
-	}
+    public List getMessagingListeners() {
+        return messagingListeners;
+    }
 
-	public OscarClient getClient() {
-		return this.client;
-	}
+    public List getOurStatusListeners() {
+        return ourStatusListeners;
+    }
 
-	public void setClient(OscarClient client) {
-		this.client = client;
-	}
+    public List getUserStatusListeners() {
+    	return userStatusListeners;
+    }
 
-	public Tweaker getTweaker() {
-		return this.tweaker;
-	}
+    public List getXStatusListeners() {
+        return xStatusListeners;
+    }
 
-	public OscarPacketAnalyser getPacketAnalyser() {
-		return this.analyser;
-	}
+    public List getContactListListeners() {
+        return contactListListeners;
+    }
 
-	public List<EventListener> getMessagingListeners() {
-		return messagingListeners;
-	}
+    public List getMetaInfoListeners() {
+        return metaInfoListeners;
+    }
 
-	public List<EventListener> getStatusListeners() {
-		return statusListeners;
-	}
-	
-	public List<EventListener> getXStatusListeners() {
-		return xStatusListeners;
-	}
+    public List getMetaAckListeners() {
+        return metaAckListeners;
+    }
 
-	public List<EventListener> getContactListListeners() {
-		return contactListListeners;
-	}
-
-	public List<EventListener> getMetaInfoListeners() {
-		return metaInfoListeners;
-	}
-	
-	public List<EventListener> getMetaAckListeners() {
-		return metaAckListeners;
-	}
-	
-	public RequestKeeper getRequestKeeper() {
-		return requestKeeper;
-	}
+    public RequestKeeper getRequestKeeper() {
+        return requestKeeper;
+    }
 }

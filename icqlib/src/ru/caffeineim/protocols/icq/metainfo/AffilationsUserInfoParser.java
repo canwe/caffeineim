@@ -34,74 +34,72 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class AffilationsUserInfoParser extends BaseMetaInfoParser {
 
-	private Map<PostBackgroundEnum, String> postbackgrounds = new HashMap<PostBackgroundEnum, String>();
-	private Map<AffilationEnum, String> affilations = new HashMap<AffilationEnum, String>();
-	
-	@Override
-	protected EventObject getNewEvent() {
-		return new MetaAffilationsUserInfoEvent(this);
-	}
+    private Map postbackgrounds = new HashMap();
+    private Map affilations = new HashMap();
 
-	@Override
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaInfoListener) listener).onAffilationsUserInfo((MetaAffilationsUserInfoEvent) e);
-	}
+    protected EventObject getNewEvent() {
+        return new MetaAffilationsUserInfoEvent(this);
+    }
 
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
-		int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
-		position += RawData.BYTE_LENGHT;
-		
-		for (int i = 0; i < len; i++)
-		{
-			// Category code
-			RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;
-			int code = rStrLen.getValue();
-			
-			// PostBackground length
-			rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;;
-		
-			// PostBackground
-			String postbackground = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
-			position += rStrLen.getValue();
-			
-			postbackgrounds.put(new PostBackgroundEnum(code), postbackground);
-		}
-		
-		len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
-		position += RawData.BYTE_LENGHT;
-		
-		for (int i = 0; i < len; i++)
-		{
-			// Category code
-			RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;
-			int code = rStrLen.getValue();
-			
-			// Affilation length
-			rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;;
-		
-			// Affilation
-			String affilation = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
-			position += rStrLen.getValue();
-			
-			affilations.put(new AffilationEnum(code), affilation);
-		}		
-	}
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaInfoListener) listener).onAffilationsUserInfo((MetaAffilationsUserInfoEvent) e);
+    }
 
-	public Map<PostBackgroundEnum, String> getPostBackgrounds() {
-		return postbackgrounds;
-	}
-	
-	public Map<AffilationEnum, String> getAffilations() {
-		return affilations;
-	}
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        position += 3; // skip subtype and success byte (always 0x0A) and data size.
+
+        int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        for (int i = 0; i < len; i++)
+        {
+            // Category code
+            RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;
+            int code = rStrLen.getValue();
+
+            // PostBackground length
+            rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;;
+
+            // PostBackground
+            String postbackground = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+            position += rStrLen.getValue();
+
+            postbackgrounds.put(new PostBackgroundEnum(code), postbackground);
+        }
+
+        len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        for (int i = 0; i < len; i++)
+        {
+            // Category code
+            RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;
+            int code = rStrLen.getValue();
+
+            // Affilation length
+            rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;;
+
+            // Affilation
+            String affilation = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+            position += rStrLen.getValue();
+
+            affilations.put(new AffilationEnum(code), affilation);
+        }
+    }
+
+    public Map getPostBackgrounds() {
+        return postbackgrounds;
+    }
+
+    public Map getAffilations() {
+        return affilations;
+    }
 }

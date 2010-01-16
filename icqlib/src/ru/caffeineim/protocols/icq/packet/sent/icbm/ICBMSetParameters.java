@@ -21,18 +21,17 @@ import ru.caffeineim.protocols.icq.Snac;
 
 /**
  * Setting ICBM Server parameters
- * 
+ *
  * <p>Created by 22.06.2008
- *   @author Дмитрий Пролубников
+ *   @author Prolubnikov Dmitry
  */
 public class ICBMSetParameters extends Flap {
-	
+
 	public ICBMSetParameters() {
         super(2);
-        
         Snac snac = new Snac(0x04, 0x02, 0x0, 0x0, 0x00);
-        snac.addRawDataToSnac(new RawData(0, RawData.WORD_LENGHT));				//channel to setup
-        snac.addRawDataToSnac(new RawData(0x00000003, RawData.DWORD_LENGHT));	// message flags    
+        snac.addRawDataToSnac(new RawData(0, RawData.WORD_LENGHT));				// channel to setup
+        snac.addRawDataToSnac(new RawData(0x00000003, RawData.DWORD_LENGHT));	// message flags
         snac.addRawDataToSnac(new RawData(8000, RawData.WORD_LENGHT));			// max message snac size
         snac.addRawDataToSnac(new RawData(999, RawData.WORD_LENGHT));			// max sender warning level
         snac.addRawDataToSnac(new RawData(999, RawData.WORD_LENGHT));			// max receiver warning level

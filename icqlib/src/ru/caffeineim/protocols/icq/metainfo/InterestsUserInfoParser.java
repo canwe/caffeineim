@@ -33,44 +33,44 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class InterestsUserInfoParser extends BaseMetaInfoParser {
 
-	private Map<InterestsEnum, String> interests = new HashMap<InterestsEnum, String>();
-		
-	protected EventObject getNewEvent() {
-		return new MetaInterestsUserInfoEvent(this);
-	}
-	
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaInfoListener) listener).onInterestsUserInfo((MetaInterestsUserInfoEvent) e);	
-	}
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
-		int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
-		position += RawData.BYTE_LENGHT;
-		
-		for (int i = 0; i < len; i++)
-		{
-			// Category code
-			RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;
-			int code = rStrLen.getValue();
-			
-			// Interest length
-			rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-			rStrLen.invertIndianness();		
-			position += RawData.WORD_LENGHT;;
-		
-			// Interest
-			String interest = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
-			position += rStrLen.getValue();
-			
-			interests.put(new InterestsEnum(code), interest);
-		}		
-	}
+    private Map interests = new HashMap();
 
-	public Map<InterestsEnum, String> getInterests() {
-		return interests;
-	}
+    protected EventObject getNewEvent() {
+        return new MetaInterestsUserInfoEvent(this);
+    }
+
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaInfoListener) listener).onInterestsUserInfo((MetaInterestsUserInfoEvent) e);
+    }
+
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        position += 3; // skip subtype and success byte (always 0x0A) and data size.
+
+        int len = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
+        position += RawData.BYTE_LENGHT;
+
+        for (int i = 0; i < len; i++)
+        {
+            // Category code
+            RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;
+            int code = rStrLen.getValue();
+
+            // Interest length
+            rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+            rStrLen.invertIndianness();
+            position += RawData.WORD_LENGHT;;
+
+            // Interest
+            String interest = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+            position += rStrLen.getValue();
+
+            interests.put(new InterestsEnum(code), interest);
+        }
+    }
+
+    public Map getInterests() {
+        return interests;
+    }
 }
