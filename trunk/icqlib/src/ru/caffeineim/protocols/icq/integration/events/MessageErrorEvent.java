@@ -18,10 +18,11 @@ package ru.caffeineim.protocols.icq.integration.events;
 import java.util.EventObject;
 
 import ru.caffeineim.protocols.icq.packet.received.icbm.ServerICBMError__4_1;
+import ru.caffeineim.protocols.icq.setting.enumerations.GlobalErrorsEnum;
 
 /**
  * <p>Created by
- *   @author Onix 
+ *   @author Onix
  */
 public class MessageErrorEvent extends EventObject {
 
@@ -31,7 +32,7 @@ public class MessageErrorEvent extends EventObject {
 		super(source);
 	}
 
-	public int getErrorCode() {
-		return ((ServerICBMError__4_1) getSource()).getErrorCode();
+	public GlobalErrorsEnum getError() {
+		return ((ServerICBMError__4_1) getSource()).getError();
 	}
 }

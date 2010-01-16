@@ -26,52 +26,52 @@ import ru.caffeineim.protocols.icq.packet.received.ssi.SsiContactListReply__19_6
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class ContactListEvent extends EventObject {
     private static final long serialVersionUID = -3740165191665792396L;
-    
+
     private Group root;
-	
-	/** 
-	 * Creates a new instance of ContactListEvent 
-	 */
-	public ContactListEvent(SsiContactListReply__19_6 source) {
-		super(source);
-		
-		SortedMap<Short, Group> grpMap = new java.util.TreeMap<Short, Group>();
-		SortedMap<Short, Item> contMap = new java.util.TreeMap<Short, Item>();
-		
-		for(Iterator<Item> iter = source.getItemsIterator(); iter.hasNext();) {
-			Item item = iter.next();
-			switch(item.getType()) {
-				case Item.TYPE_IGNORE_LIST:
-				case Item.TYPE_CONTACT:
-					contMap.put(item.getId(), item);
-					break;
-				case Item.TYPE_GROUP:
-					grpMap.put(item.getGroup(), new Group(item));
-					break;
-				case Item.TYPE_CONTACT_ICON:
-					break;
-			}
-		}
-		
-		for(Iterator<Item> iter = contMap.values().iterator(); iter.hasNext();) {
-			Item item = iter.next();
-			Group grp = grpMap.get(item.getGroup());
-			grp.addItem(new Contact(item));
-		}
-		
-		root = (Group) grpMap.remove((short)0x0000);
-		
-		for(Iterator<Group> iter = grpMap.values().iterator(); iter.hasNext();) {
-			Group grp = iter.next();
-			root.addItem(grp);
-		}
-	}
-	
-	public Group getRoot() {
-		return root;
-	}
+
+    /**
+     * Creates a new instance of ContactListEvent
+     */
+    public ContactListEvent(SsiContactListReply__19_6 source) {
+        super(source);
+
+        SortedMap grpMap = new java.util.TreeMap();
+        SortedMap contMap = new java.util.TreeMap();
+
+        for (Iterator iter = source.getItemsIterator(); iter.hasNext();) {
+            Item item = (Item) iter.next();
+            switch(item.getType()) {
+                case Item.TYPE_IGNORE_LIST:
+                case Item.TYPE_CONTACT:
+                    contMap.put(new Short(item.getId()), item);
+                    break;
+                case Item.TYPE_GROUP:
+                    grpMap.put(new Short(item.getGroup()), new Group(item));
+                    break;
+                case Item.TYPE_CONTACT_ICON:
+                    break;
+            }
+        }
+
+        for (Iterator iter = contMap.values().iterator(); iter.hasNext();) {
+            Item item = (Item) iter.next();
+            Group grp = (Group) grpMap.get(new Short(item.getGroup()));
+            grp.addItem(new Contact(item));
+        }
+
+        root = (Group) grpMap.remove(new Short((short) 0x0000));
+
+        for(Iterator iter = grpMap.values().iterator(); iter.hasNext();) {
+            Group grp = (Group) iter.next();
+            root.addItem(grp);
+        }
+    }
+
+    public Group getRoot() {
+        return root;
+    }
 }

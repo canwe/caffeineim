@@ -54,44 +54,44 @@ import ru.caffeineim.protocols.icq.packet.received.usagestats.MinReportInterval_
  *   @author Samolisov Pavel
  */
 public class ReceivedPackedRegistry implements IReceivedPacketRegistry {
-	private static Vector<String> registry = new Vector<String>();
-	
-	static {
-		registry.add(BuddyListRightsReply__3_3.class.getName());
-		registry.add(IncomingUser__3_11.class.getName());
-		registry.add(OffgoingUser__3_12.class.getName());
-		registry.add(RefusedContact__3_10.class.getName());
-		registry.add(BOSMigration__1_18.class.getName());
-		registry.add(Motd__1_19.class.getName());
-		registry.add(OnlineInfoResp__1_15.class.getName());
-		registry.add(PauseReq__1_11.class.getName());
-		registry.add(RateReply__1_7.class.getName());
-		registry.add(ServerFamilies__1_24.class.getName());
-		registry.add(ServerReady__1_3.class.getName());
-		registry.add(ICBMParametersReply__4_5.class.getName());
-		registry.add(IncomingMessage__4_7.class.getName());
-		registry.add(MessageAck__4_12.class.getName());
-		registry.add(MessageAutoReply__4_11.class.getName());
-		registry.add(MissedMessage__4_10.class.getName());
-		registry.add(ServerICBMError__4_1.class.getName());
-		registry.add(TypingNotif__4_20.class.getName());
-		registry.add(LocationRightsReply__2_3.class.getName());
-		registry.add(BosRightReply__9_3.class.getName());
-		registry.add(SsiAuthReply__19_27.class.getName());
-		registry.add(SsiAuthRequest__19_25.class.getName());
-		registry.add(SsiContactListReply__19_6.class.getName());
-		registry.add(SsiModifyingAck__19_14.class.getName());
-		registry.add(SsiFutureAuthGranted__19_20.class.getName());
-		registry.add(MinReportInterval__11_2.class.getName());		
-		
-		registry.add(MetaError__21_1.class.getName());
-		registry.add(ServerMetaReply__21_3.class.getName());				
-	
-	    registry.add(UINRegistrationSuccess__23_5.class.getName());
-	    registry.add(UINRegistrationFailed__23_1.class.getName());
-	}
-		
-	public Vector<String> getClassNameVector() {
-		return registry;
-	}
+    private static Vector registry = new Vector();
+
+    static {
+        registry.add(BuddyListRightsReply__3_3.class.getName());
+        registry.add(IncomingUser__3_11.class.getName());
+        registry.add(OffgoingUser__3_12.class.getName());
+        registry.add(RefusedContact__3_10.class.getName());
+        registry.add(BOSMigration__1_18.class.getName());
+        registry.add(Motd__1_19.class.getName());
+        registry.add(OnlineInfoResp__1_15.class.getName());
+        registry.add(PauseReq__1_11.class.getName());
+        registry.add(RateReply__1_7.class.getName());
+        registry.add(ServerFamilies__1_24.class.getName());
+        registry.add(ServerReady__1_3.class.getName());
+        registry.add(ICBMParametersReply__4_5.class.getName());
+        registry.add(IncomingMessage__4_7.class.getName());
+        registry.add(MessageAck__4_12.class.getName());
+        registry.add(MessageAutoReply__4_11.class.getName());
+        registry.add(MissedMessage__4_10.class.getName());
+        registry.add(ServerICBMError__4_1.class.getName());
+        registry.add(TypingNotif__4_20.class.getName());
+        registry.add(LocationRightsReply__2_3.class.getName());
+        registry.add(BosRightReply__9_3.class.getName());
+        registry.add(SsiAuthReply__19_27.class.getName());
+        registry.add(SsiAuthRequest__19_25.class.getName());
+        registry.add(SsiContactListReply__19_6.class.getName());
+        registry.add(SsiModifyingAck__19_14.class.getName());
+        registry.add(SsiFutureAuthGranted__19_20.class.getName());
+        registry.add(MinReportInterval__11_2.class.getName());
+
+        registry.add(MetaError__21_1.class.getName());
+        registry.add(ServerMetaReply__21_3.class.getName());
+
+        registry.add(UINRegistrationSuccess__23_5.class.getName());
+        registry.add(UINRegistrationFailed__23_1.class.getName());
+    }
+
+    public Vector getClassNameVector() {
+        return registry;
+    }
 }

@@ -22,39 +22,39 @@ import ru.caffeineim.protocols.icq.Item;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class Group extends ContactListItem {
-	
-	private List<ContactListItem> contacts = new ArrayList<ContactListItem>();
-	
-	/** 
-	 * Creates a new instance of Group 
-	 */
-	public Group(Item item) {
-		super(item);
-	}
 
-	/** 
-	 * Creates a new instance of Group 
-	 */
-	public Group(short groupId, String name) {
-		super(new Item((short)0x00, groupId, name));		
-	}
+    private List contacts = new ArrayList();
 
-	public void addItem(ContactListItem item) {
-		if(item == null)
-			throw new NullPointerException();
-		contacts.add(item);		
-	}
-	
-	public void removeItem(ContactListItem item) {
-		if(item == null)
-			throw new NullPointerException();
-		contacts.remove(item);		
-	}
-	
-	public List<ContactListItem> getContainedItems() {
-		return contacts;
-	}	
+    /**
+     * Creates a new instance of Group
+     */
+    public Group(Item item) {
+        super(item);
+    }
+
+    /**
+     * Creates a new instance of Group
+     */
+    public Group(short groupId, String name) {
+        super(new Item((short)0x00, groupId, name));
+    }
+
+    public void addItem(ContactListItem item) {
+        if(item == null)
+            throw new NullPointerException();
+        contacts.add(item);
+    }
+
+    public void removeItem(ContactListItem item) {
+        if(item == null)
+            throw new NullPointerException();
+        contacts.remove(item);
+    }
+
+    public List getContainedItems() {
+        return contacts;
+    }
 }

@@ -30,31 +30,29 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class NotesUserInfoParser extends BaseMetaInfoParser {
 
-	private String note;
-	
-	@Override
-	protected EventObject getNewEvent() {
-		return new MetaNoteUserInfoEvent(this);
-	}
+    private String note;
 
-	@Override
-	protected void sendMessage(EventListener listener, EventObject e) {
-		((MetaInfoListener) listener).onNotesUserInfo((MetaNoteUserInfoEvent) e);
-	}
+    protected EventObject getNewEvent() {
+        return new MetaNoteUserInfoEvent(this);
+    }
 
-	public void parse(byte[] data, int position) throws ConvertStringException {
-		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
-		// Note string lenght
-		RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-		rStrLen.invertIndianness();
-		position += RawData.WORD_LENGHT;
-		
-		// Note String
-		note = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);		
-	}
+    protected void sendMessage(EventListener listener, EventObject e) {
+        ((MetaInfoListener) listener).onNotesUserInfo((MetaNoteUserInfoEvent) e);
+    }
 
-	public String getNote() {
-		return note;
-	}
+    public void parse(byte[] data, int position) throws ConvertStringException {
+        position += 3; // skip subtype and success byte (always 0x0A) and data size.
+
+        // Note string lenght
+        RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
+        rStrLen.invertIndianness();
+        position += RawData.WORD_LENGHT;
+
+        // Note String
+        note = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
+    }
+
+    public String getNote() {
+        return note;
+    }
 }

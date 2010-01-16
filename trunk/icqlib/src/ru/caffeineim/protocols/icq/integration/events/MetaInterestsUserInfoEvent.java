@@ -19,7 +19,6 @@ import java.util.EventObject;
 import java.util.Map;
 
 import ru.caffeineim.protocols.icq.metainfo.InterestsUserInfoParser;
-import ru.caffeineim.protocols.icq.setting.enumerations.InterestsEnum;
 
 /**
  * <p>Created by 26.03.2008
@@ -27,13 +26,13 @@ import ru.caffeineim.protocols.icq.setting.enumerations.InterestsEnum;
  */
 public class MetaInterestsUserInfoEvent extends EventObject {
 
-	private static final long serialVersionUID = -5349542463432171361L;
+    private static final long serialVersionUID = -5349542463432171361L;
 
-	public MetaInterestsUserInfoEvent(InterestsUserInfoParser source) {
-		super(source);
-	}
-	
-	public Map<InterestsEnum, String> getInterests() {
-		return ((InterestsUserInfoParser) getSource()).getInterests();
-	}
+    public MetaInterestsUserInfoEvent(InterestsUserInfoParser source) {
+        super(source);
+    }
+
+    public Map getInterests() {
+        return ((InterestsUserInfoParser) getSource()).getInterests();
+    }
 }

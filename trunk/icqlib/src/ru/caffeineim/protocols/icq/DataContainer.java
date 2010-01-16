@@ -23,61 +23,61 @@ import java.util.Vector;
  */
 public abstract class DataContainer extends DataField {
 
-	private Vector<DataField> dataFieldVector;
-	private byte[] dataFieldByteAray;
-	private int dataFieldLen;
-	private boolean dataFieldModified;
-	protected boolean headerModified;
+    private Vector dataFieldVector;
+    private byte[] dataFieldByteAray;
+    private int dataFieldLen;
+    private boolean dataFieldModified;
+    protected boolean headerModified;
 
-	public DataContainer() {
-		dataFieldVector = new Vector<DataField>(0);
-		dataFieldLen = 0;
-		dataFieldModified = true;
-		headerModified = true;
-	}
+    public DataContainer() {
+        dataFieldVector = new Vector(0);
+        dataFieldLen = 0;
+        dataFieldModified = true;
+        headerModified = true;
+    }
 
-	public abstract byte[] getHeaderByteArray();
+    public abstract byte[] getHeaderByteArray();
 
-	public void addDataField(DataField data) {
-		dataFieldVector.addElement(data);
-		dataFieldLen += data.getByteArray().length;
-		dataFieldModified = true;
-	}
+    public void addDataField(DataField data) {
+        dataFieldVector.addElement(data);
+        dataFieldLen += data.getByteArray().length;
+        dataFieldModified = true;
+    }
 
-	protected Object elementAt(int i) {
-		return dataFieldVector.elementAt(i);
-	}
+    protected Object elementAt(int i) {
+        return dataFieldVector.elementAt(i);
+    }
 
-	public byte[] getDataFieldByteArray() {
-		if (dataFieldModified) {
-			int position = 0;
-			dataFieldByteAray = new byte[dataFieldLen];
-			/* Adding data fields */
-			for (int i = 0; i < dataFieldVector.size(); i++) {
-				DataField obj = (DataField) dataFieldVector.elementAt(i);
-				System.arraycopy(obj.getByteArray(), 0, dataFieldByteAray, position,
+    public byte[] getDataFieldByteArray() {
+        if (dataFieldModified) {
+            int position = 0;
+            dataFieldByteAray = new byte[dataFieldLen];
+            /* Adding data fields */
+            for (int i = 0; i < dataFieldVector.size(); i++) {
+                DataField obj = (DataField) dataFieldVector.elementAt(i);
+                System.arraycopy(obj.getByteArray(), 0, dataFieldByteAray, position,
                          obj.getByteArray().length);
-				position += obj.getByteArray().length;
-			}
-			dataFieldModified = false;
-		}
-		
-		return dataFieldByteAray;
-	}
+                position += obj.getByteArray().length;
+            }
+            dataFieldModified = false;
+        }
 
-	public byte[] getByteArray() {
-		if (headerModified || dataFieldModified) {
-			byteArray = new byte[getHeaderByteArray().length + dataFieldLen];
-			/* Adding Header fields */
-			System.arraycopy(getHeaderByteArray(), 0, byteArray, 0,
+        return dataFieldByteAray;
+    }
+
+    public byte[] getByteArray() {
+        if (headerModified || dataFieldModified) {
+            byteArray = new byte[getHeaderByteArray().length + dataFieldLen];
+            /* Adding Header fields */
+            System.arraycopy(getHeaderByteArray(), 0, byteArray, 0,
                        getHeaderByteArray().length);
-			/* Adding data fields */
-			System.arraycopy(getDataFieldByteArray(), 0, byteArray,
+            /* Adding data fields */
+            System.arraycopy(getDataFieldByteArray(), 0, byteArray,
                        getHeaderByteArray().length,
                        getDataFieldByteArray().length);
-			headerModified = false;
-		}
-		
-		return byteArray;
-	}
+            headerModified = false;
+        }
+
+        return byteArray;
+    }
 }

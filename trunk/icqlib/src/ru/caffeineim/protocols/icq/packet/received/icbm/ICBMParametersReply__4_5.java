@@ -23,17 +23,16 @@ import ru.caffeineim.protocols.icq.packet.sent.privacy.BosRightsRequest;
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
- *   @author Дмитрий Пролубников 
+ *   @author Prolubnikov Dmitry
  */
 public class ICBMParametersReply__4_5 extends ReceivedPacket {
 
-	public ICBMParametersReply__4_5(byte[] array) {
-		super(array, true);
-	}
+    public ICBMParametersReply__4_5(byte[] array) {
+        super(array, true);
+    }
 
-	@Override
-	public void execute(OscarConnection connection) {
-		connection.sendFlap(new ICBMSetParameters());
-		connection.sendFlap(new BosRightsRequest());
-	}
+    public void execute(OscarConnection connection) {
+        connection.sendFlap(new ICBMSetParameters());
+        connection.sendFlap(new BosRightsRequest());
+    }
 }

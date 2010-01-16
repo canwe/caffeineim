@@ -20,19 +20,19 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class OnlineInfoResp__1_15 extends ReceivedPacket {
-	
+
 	private int status = 0;
-	
-	/** 
-	 * Creates a new instance of OnlineInfoResp__1_15 
+
+	/**
+	 * Creates a new instance of OnlineInfoResp__1_15
 	 */
 	public OnlineInfoResp__1_15(byte[] array) {
 		super(array, true);
@@ -59,23 +59,23 @@ public class OnlineInfoResp__1_15 extends ReceivedPacket {
 			index += (tlvi.getLength() + 4);
 		}
 	}
-	
+
 	public int getStatusFlag() {
 		return status & 0xFFFF0000;
 	}
-	
+
 	public int getStatusMode() {
 		return status & 0x0000FFFF;
 	}
-	
+
 	public void execute(OscarConnection connection) throws Exception {
 	}
-	
-	public void notifyEvent(OscarConnection connection) {		
+
+	public void notifyEvent(OscarConnection connection) {
 		StatusEvent e = new StatusEvent(this);
-		for (int i = 0; i < connection.getStatusListeners().size(); i++) {
-			StatusListener l = (StatusListener) connection.getStatusListeners().get(i);
-			l.onStatusChange(e);
-		}		
-	}	
+		for (int i = 0; i < connection.getOurStatusListeners().size(); i++) {
+			OurStatusListener l = (OurStatusListener) connection.getOurStatusListeners().get(i);
+			l.onStatusResponse(e);
+		}
+	}
 }

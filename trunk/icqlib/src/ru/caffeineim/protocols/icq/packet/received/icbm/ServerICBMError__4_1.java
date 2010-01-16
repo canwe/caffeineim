@@ -20,17 +20,16 @@ import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
+import ru.caffeineim.protocols.icq.setting.enumerations.GlobalErrorsEnum;
 
 /**
  * <p>Created by
- *   @author Onix 
+ *   @author Onix
+ *   @author Samolisov Pavel
  */
 public class ServerICBMError__4_1 extends ReceivedPacket {
-	// 4: user is offline
-	// 9: client does not understand type-2 messages.
-	// 14: packet was malformed
-	// 16: blocked
-	private int errCode;
+
+	private GlobalErrorsEnum error;
 
 	/**
 	 * @param array
@@ -43,11 +42,11 @@ public class ServerICBMError__4_1 extends ReceivedPacket {
 		// retrieve error code
 		RawData code = new RawData(data, 0, 2);
 
-		errCode = code.getValue();
+		error = new GlobalErrorsEnum(code.getValue());
 	}
 
-	public int getErrorCode() {
-		return errCode;
+	public GlobalErrorsEnum getError() {
+		return error;
 	}
 
 	public void notifyEvent(OscarConnection connection) {

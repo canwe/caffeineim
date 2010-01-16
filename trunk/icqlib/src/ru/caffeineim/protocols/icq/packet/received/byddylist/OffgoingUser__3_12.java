@@ -18,12 +18,12 @@ package ru.caffeineim.protocols.icq.packet.received.byddylist;
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.UserStatusListener;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class OffgoingUser__3_12 extends ReceivedPacket {
 
@@ -43,8 +43,8 @@ public class OffgoingUser__3_12 extends ReceivedPacket {
 
 	public void notifyEvent(OscarConnection connection) {
 		OffgoingUserEvent e = new OffgoingUserEvent(this);
-		for (int i = 0; i < connection.getStatusListeners().size(); i++) {
-			StatusListener l = (StatusListener) connection.getStatusListeners().get(i);
+		for (int i = 0; i < connection.getUserStatusListeners().size(); i++) {
+			UserStatusListener l = (UserStatusListener) connection.getUserStatusListeners().get(i);
 			l.onOffgoingUser(e);
 		}
 	}

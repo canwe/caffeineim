@@ -13,18 +13,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.protocols.icq.packet.sent.authorization;
+package ru.caffeineim.protocols.icq.integration.listeners;
 
-import ru.caffeineim.protocols.icq.Flap;
+import java.util.EventListener;
+
+import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
+import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
 
 /**
- * Ping icq-server for the monitoring network connection with ICQ Server
- * <p>Created by 22.06.2008
- *   @author Samolisov Pavel
+ * <p>Created by
+ *   @author Fabrice Michellonet
  */
-public class Ping extends Flap {
-	
-	public Ping() {
-		super(5);
-	}
+public interface UserStatusListener extends EventListener {
+
+	public void onIncomingUser(IncomingUserEvent e);
+
+	public void onOffgoingUser(OffgoingUserEvent e);
 }

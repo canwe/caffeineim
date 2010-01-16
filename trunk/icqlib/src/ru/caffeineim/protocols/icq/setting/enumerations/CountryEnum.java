@@ -17,7 +17,6 @@ package ru.caffeineim.protocols.icq.setting.enumerations;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,257 +25,257 @@ import java.util.Map;
  *   @author Samolisov Pavel
  */
 public class CountryEnum {
-	
-	public static final int UNSPECIFIED = 0;
-	public static final int OTHER = 9999;
-	public static final int AFGANISTAN = 93;
-	public static final int ALBANIA = 355;
-	public static final int ALGERIA = 213;
-	public static final int AMERICAN_SAMOA = 684;
-	public static final int ANDORRA = 376;
-	public static final int ANGOLA = 244;
-	public static final int ANGUILLA = 101;
-	public static final int ANTIGUA_AND_BARBUDA = 102;
-	public static final int ANTILLES = 5902;
-	public static final int ARGENTINA = 54;
-	public static final int ARMENIA = 374;
-	public static final int ARUBA = 297;
-	public static final int ASCENSION_ISLAND = 247;
-	public static final int AUSTRALIA = 61;
-	public static final int AUSTRIA = 43;
-	public static final int AZERBAIJAN = 994;
-	public static final int BAHAMAS = 103;
-	public static final int BAHRAIN = 973;
-	public static final int BANGLADESH = 880;
-	public static final int BARBADOS = 104;
-	public static final int BARBUDA = 120;
-	public static final int BELARUS = 375;
-	public static final int BELGIUM = 32;
-	public static final int BELIZE = 501;
-	public static final int BENIN = 229;
-	public static final int BERMUDA = 105;
-	public static final int BHUTAN = 975;
-	public static final int BOLIVIA = 591;
-	public static final int BOSNIA = 387;
-	public static final int BOTSWANA = 267;
-	public static final int BRAZIL = 55;
-	public static final int BRITISH_VIRGIN_ISLANDS = 106;
-	public static final int BRUNEI = 673;
-	public static final int BULGARIA = 359;
-	public static final int BURKINA_FASO = 226;
-	public static final int BURUNDI = 257;
-	public static final int CAMBODIA = 855;
-	public static final int CAMEROON = 237;
-	public static final int CANADA = 107;
-	public static final int CANARY_ISLANDS = 178;
-	public static final int CAPE_VERDE_ISLANDS = 238;
-	public static final int CAYMAN_ISLANDS = 108;
-	public static final int CENTRAL_AFRICAN_REPUBLIC = 236;
-	public static final int CHAD = 235;
-	public static final int CHILE = 56;
-	public static final int CHINA = 86;
-	public static final int CHRISTMAS_ISLAND = 672;
-	public static final int COCOS_KEELING_ISLANDS = 6101;
-	public static final int COCOS_ISLANDS = 6102;
-	public static final int COLOMBIA = 57;
-	public static final int COMOROS = 2691;
-	public static final int CONGO_ZAIRE = 243;
-	public static final int CONGO = 242;
-	public static final int COOK_ISLANDS = 682;
-	public static final int COSTA_RICA = 506;
-	public static final int COTE_D_IVOIRE = 225;
-	public static final int CROATIA = 385;
-	public static final int CUBA = 53;
-	public static final int CYPRUS = 357;
-	public static final int CZECH_REPUBLIC = 420;
-	public static final int DENMARK = 45;
-	public static final int DIEGO_CARCIA = 246;
-	public static final int DJIBOUTI = 253;
-	public static final int DOMINICA = 109;
-	public static final int DOMINICAN_REPUBLIC = 110;
-	public static final int ECUADOR = 593;
-	public static final int EGYPT = 20;
-	public static final int EL_SALVADOR = 503;
-	public static final int EQUATORIAL_GUINEA = 240;
-	public static final int ERITREA = 291;
-	public static final int ESTONIA = 372;
-	public static final int ETHIOPIA = 251;
-	public static final int FAEROE_ISLANDS = 298;
-	public static final int FALKLAND_ISLANDS = 500;
-	public static final int FIJI = 679;
-	public static final int FINLAND = 358;
-	public static final int FRANCE = 33;
-	public static final int FRENCH_ANTILLES = 5901;
-	public static final int FRENCH_GUIANA = 594;
-	public static final int FRENCH_POLYNESIA = 689;
-	public static final int GABON = 241;
-	public static final int GAMBIA = 220;
-	public static final int GEORGIA = 995;
-	public static final int GERMANY = 49;
-	public static final int GHANA = 233;
-	public static final int GIBRALTAR = 350;
-	public static final int GREECE = 30;
-	public static final int GREENLAND = 299;
-	public static final int GRENADA = 111;
-	public static final int GUADELOURE = 590;
-	public static final int GUAM = 671;
-	public static final int GUATEMALA = 502;
-	public static final int GUINEA = 224;
-	public static final int GUINEA_BISSAU = 245;
-	public static final int GUYANA = 592;
-	public static final int HAITI = 509;
-	public static final int HONDURAS = 504;
-	public static final int HONG_KONG = 858;
-	public static final int HUNGARY = 36;
-	public static final int ICELANG = 354;
-	public static final int INDIA = 91;
-	public static final int INDONESIA = 62;
-	public static final int IRAN = 98;
-	public static final int IRAQ = 964;
-	public static final int IRELAND = 353;
-	public static final int ISRAEL = 972;
-	public static final int ITALY = 39;
-	public static final int JAMAICA = 112;
-	public static final int JAPAN = 81;
-	public static final int JORDAN = 962;
-	public static final int KAZAKHSTAN = 705;
-	public static final int KENIA = 254;
-	public static final int KIRIBATI = 686;
-	public static final int KOREA_NORTH = 850;
-	public static final int KOREA_SOUTH = 82;
-	public static final int KUWAIT = 965;
-	public static final int KYRGYZSTAN = 706;
-	public static final int LAOS = 856;
-	public static final int LATVIA = 371;
-	public static final int LEBANON = 961;
-	public static final int LESOTHO = 266;
-	public static final int LIBERIA = 231;
-	public static final int LIBYAN = 218;
-	public static final int LIECHTENSTEIN = 4101;
-	public static final int LITHUANIA = 370;
-	public static final int LUXEMBOURG = 352;
-	public static final int MACAU = 853;
-	public static final int MACEDONIA = 389;
-	public static final int MADAGASCAR = 261;
-	public static final int MALAWI = 265;
-	public static final int MALAYSIA = 60;
-	public static final int MALDIVES = 960;
-	public static final int MALI = 223;
-	public static final int MALTA = 356;
-	public static final int MARSHALI_ISLANDS = 692;
-	public static final int MARTINIQUE = 596;
-	public static final int MAURITANIA = 222;
-	public static final int MAURITIUS = 230;
-	public static final int MAYOTTE_ISLAND = 269;
-	public static final int MEXICO = 52;
-	public static final int MICRONESIA = 691;
-	public static final int MOLDOVA = 373;
-	public static final int MONACO = 377;
-	public static final int MONGOLIA = 976;
-	public static final int MONTSERRAT = 113;
-	public static final int MOROCCO = 212;
-	public static final int MOZAMBIQUE = 258;
-	public static final int MYANMAR = 95;
-	public static final int NAMIBIA = 264;
-	public static final int NAURU = 674;
-	public static final int NEPAL = 977;
-	public static final int NETHERLANDS = 31;
-	public static final int NETHERLANDS_ANTILLES = 599;
-	public static final int NEVIS = 114;
-	public static final int NEW_CALEDONIA = 687;
-	public static final int NEW_ZEALAND = 64;
-	public static final int NICARAGUA = 509;
-	public static final int NIGER = 227;
-	public static final int NIGERIA = 234;
-	public static final int NIUE = 683;
-	public static final int NORFOLK_ISLAND = 6722;
-	public static final int NORWAY = 47;
-	public static final int OMAN = 968;
-	public static final int PAKISTAN = 92;
-	public static final int PALAU = 680;
-	public static final int PANAMA = 507;
-	public static final int PAPUA_NEW_GUINEA = 675;
-	public static final int PARAQUAY = 595;
-	public static final int PERU = 51;
-	public static final int PHILIPPINES = 63;
-	public static final int POLAND = 48;
-	public static final int PORTUGAL = 351;
-	public static final int PUERTO_RICO = 121;
-	public static final int QATAR = 974;
-	public static final int REUNION_ISLAND = 262;
-	public static final int ROMANIA = 40;
-	public static final int ROTA_ISLAND = 6701;
-	public static final int RUSSIA = 7;
-	public static final int RWANDA = 250;
-	public static final int SAINT_HELENA = 290;
-	public static final int SAINT_KITTS = 115;
-	public static final int SAINT_KITTS_AND_NEVIS = 1141;
-	public static final int SAINT_LUCIA = 122;
-	public static final int SAINT_PIERRE_AND_MIQUELON = 508;
-	public static final int SAINT_VINCENT = 116;
-	public static final int SAIPAN_ISLAND = 670;
-	public static final int SAN_MARINO = 378;
-	public static final int SAO_TOME_AND_PRINCIPE = 239;
-	public static final int SAUDI_ARABIA = 966;
-	public static final int SCOTLAND = 442;
-	public static final int SENEGAL = 221;
-	public static final int SEYCHELLES = 248;
-	public static final int SIERRA_LEONE = 232;
-	public static final int SINGAPORE = 65;
-	public static final int SLOVAKIA = 421;
-	public static final int SLOVENIA = 386;
-	public static final int SOLOMON_ISLANDS = 677;
-	public static final int SOMALIA = 252;
-	public static final int SOUTH_AFRICA = 27;
-	public static final int SPAIN = 34;
-	public static final int SRI_LANKA = 94;
-	public static final int SUDAN = 249;
-	public static final int SURINAME = 597;
-	public static final int SWAZILAND = 268;
-	public static final int SWEDEN = 46;
-	public static final int SWITZERLAND = 41;
-	public static final int SYRIAN_ARAB_REPUBLIC = 963;
-	public static final int TAIWAN = 886;
-	public static final int TAJIKISTAN = 708;
-	public static final int TANZANIA = 255;
-	public static final int THAILAND = 66;
-	public static final int TINIAN_ISLAND = 6702;
-	public static final int TOGO = 228;
-	public static final int TOKELAU = 690;
-	public static final int TONGA = 676;
-	public static final int TRINIDAD_AND_TOBAGO = 117;
-	public static final int TUNISIA = 216;
-	public static final int TURKEY = 90;
-	public static final int TURKMENISTAN = 709;
-	public static final int TURKS_AND_CAICOS_ISLANDS = 118;
-	public static final int TUVALU = 688;
-	public static final int UGANDA = 256;
-	public static final int UKRAIN = 380;
-	public static final int UNITED_ARAB_EMIRATES = 971;
-	public static final int UNITED_KINGDOM = 44;
-	public static final int URUGUAY = 598;
-	public static final int USA = 1;
-	public static final int UZBEKISTAN = 711;
-	public static final int VANUATU = 678;
-	public static final int VATICAN_CITY = 379;
-	public static final int VENEZUELA = 58;
-	public static final int VIETNAM = 84;
-	public static final int VIRGIN_ISLANDS = 123;
-	public static final int WALES = 441;
-	public static final int WALLIS_AND_FUTUNA_ISLANDS = 681;
-	public static final int WESTERN_SAMOA = 685;
-	public static final int YEMEN = 967;
-	public static final int YUGOSLAVIA = 381;
-	public static final int YUGOSLAVIA_SERBIA = 3811;
-	public static final int YUGOSLAVIA_MONTENEGRO = 382;
-	public static final int ZAMBIA = 260;
-	public static final int ZIMBABWE = 263;
 
-	private static Map<Integer, String> allCountries = new HashMap<Integer, String>();
+    public static final int UNSPECIFIED = 0;
+    public static final int OTHER = 9999;
+    public static final int AFGANISTAN = 93;
+    public static final int ALBANIA = 355;
+    public static final int ALGERIA = 213;
+    public static final int AMERICAN_SAMOA = 684;
+    public static final int ANDORRA = 376;
+    public static final int ANGOLA = 244;
+    public static final int ANGUILLA = 101;
+    public static final int ANTIGUA_AND_BARBUDA = 102;
+    public static final int ANTILLES = 5902;
+    public static final int ARGENTINA = 54;
+    public static final int ARMENIA = 374;
+    public static final int ARUBA = 297;
+    public static final int ASCENSION_ISLAND = 247;
+    public static final int AUSTRALIA = 61;
+    public static final int AUSTRIA = 43;
+    public static final int AZERBAIJAN = 994;
+    public static final int BAHAMAS = 103;
+    public static final int BAHRAIN = 973;
+    public static final int BANGLADESH = 880;
+    public static final int BARBADOS = 104;
+    public static final int BARBUDA = 120;
+    public static final int BELARUS = 375;
+    public static final int BELGIUM = 32;
+    public static final int BELIZE = 501;
+    public static final int BENIN = 229;
+    public static final int BERMUDA = 105;
+    public static final int BHUTAN = 975;
+    public static final int BOLIVIA = 591;
+    public static final int BOSNIA = 387;
+    public static final int BOTSWANA = 267;
+    public static final int BRAZIL = 55;
+    public static final int BRITISH_VIRGIN_ISLANDS = 106;
+    public static final int BRUNEI = 673;
+    public static final int BULGARIA = 359;
+    public static final int BURKINA_FASO = 226;
+    public static final int BURUNDI = 257;
+    public static final int CAMBODIA = 855;
+    public static final int CAMEROON = 237;
+    public static final int CANADA = 107;
+    public static final int CANARY_ISLANDS = 178;
+    public static final int CAPE_VERDE_ISLANDS = 238;
+    public static final int CAYMAN_ISLANDS = 108;
+    public static final int CENTRAL_AFRICAN_REPUBLIC = 236;
+    public static final int CHAD = 235;
+    public static final int CHILE = 56;
+    public static final int CHINA = 86;
+    public static final int CHRISTMAS_ISLAND = 672;
+    public static final int COCOS_KEELING_ISLANDS = 6101;
+    public static final int COCOS_ISLANDS = 6102;
+    public static final int COLOMBIA = 57;
+    public static final int COMOROS = 2691;
+    public static final int CONGO_ZAIRE = 243;
+    public static final int CONGO = 242;
+    public static final int COOK_ISLANDS = 682;
+    public static final int COSTA_RICA = 506;
+    public static final int COTE_D_IVOIRE = 225;
+    public static final int CROATIA = 385;
+    public static final int CUBA = 53;
+    public static final int CYPRUS = 357;
+    public static final int CZECH_REPUBLIC = 420;
+    public static final int DENMARK = 45;
+    public static final int DIEGO_CARCIA = 246;
+    public static final int DJIBOUTI = 253;
+    public static final int DOMINICA = 109;
+    public static final int DOMINICAN_REPUBLIC = 110;
+    public static final int ECUADOR = 593;
+    public static final int EGYPT = 20;
+    public static final int EL_SALVADOR = 503;
+    public static final int EQUATORIAL_GUINEA = 240;
+    public static final int ERITREA = 291;
+    public static final int ESTONIA = 372;
+    public static final int ETHIOPIA = 251;
+    public static final int FAEROE_ISLANDS = 298;
+    public static final int FALKLAND_ISLANDS = 500;
+    public static final int FIJI = 679;
+    public static final int FINLAND = 358;
+    public static final int FRANCE = 33;
+    public static final int FRENCH_ANTILLES = 5901;
+    public static final int FRENCH_GUIANA = 594;
+    public static final int FRENCH_POLYNESIA = 689;
+    public static final int GABON = 241;
+    public static final int GAMBIA = 220;
+    public static final int GEORGIA = 995;
+    public static final int GERMANY = 49;
+    public static final int GHANA = 233;
+    public static final int GIBRALTAR = 350;
+    public static final int GREECE = 30;
+    public static final int GREENLAND = 299;
+    public static final int GRENADA = 111;
+    public static final int GUADELOURE = 590;
+    public static final int GUAM = 671;
+    public static final int GUATEMALA = 502;
+    public static final int GUINEA = 224;
+    public static final int GUINEA_BISSAU = 245;
+    public static final int GUYANA = 592;
+    public static final int HAITI = 509;
+    public static final int HONDURAS = 504;
+    public static final int HONG_KONG = 858;
+    public static final int HUNGARY = 36;
+    public static final int ICELANG = 354;
+    public static final int INDIA = 91;
+    public static final int INDONESIA = 62;
+    public static final int IRAN = 98;
+    public static final int IRAQ = 964;
+    public static final int IRELAND = 353;
+    public static final int ISRAEL = 972;
+    public static final int ITALY = 39;
+    public static final int JAMAICA = 112;
+    public static final int JAPAN = 81;
+    public static final int JORDAN = 962;
+    public static final int KAZAKHSTAN = 705;
+    public static final int KENIA = 254;
+    public static final int KIRIBATI = 686;
+    public static final int KOREA_NORTH = 850;
+    public static final int KOREA_SOUTH = 82;
+    public static final int KUWAIT = 965;
+    public static final int KYRGYZSTAN = 706;
+    public static final int LAOS = 856;
+    public static final int LATVIA = 371;
+    public static final int LEBANON = 961;
+    public static final int LESOTHO = 266;
+    public static final int LIBERIA = 231;
+    public static final int LIBYAN = 218;
+    public static final int LIECHTENSTEIN = 4101;
+    public static final int LITHUANIA = 370;
+    public static final int LUXEMBOURG = 352;
+    public static final int MACAU = 853;
+    public static final int MACEDONIA = 389;
+    public static final int MADAGASCAR = 261;
+    public static final int MALAWI = 265;
+    public static final int MALAYSIA = 60;
+    public static final int MALDIVES = 960;
+    public static final int MALI = 223;
+    public static final int MALTA = 356;
+    public static final int MARSHALI_ISLANDS = 692;
+    public static final int MARTINIQUE = 596;
+    public static final int MAURITANIA = 222;
+    public static final int MAURITIUS = 230;
+    public static final int MAYOTTE_ISLAND = 269;
+    public static final int MEXICO = 52;
+    public static final int MICRONESIA = 691;
+    public static final int MOLDOVA = 373;
+    public static final int MONACO = 377;
+    public static final int MONGOLIA = 976;
+    public static final int MONTSERRAT = 113;
+    public static final int MOROCCO = 212;
+    public static final int MOZAMBIQUE = 258;
+    public static final int MYANMAR = 95;
+    public static final int NAMIBIA = 264;
+    public static final int NAURU = 674;
+    public static final int NEPAL = 977;
+    public static final int NETHERLANDS = 31;
+    public static final int NETHERLANDS_ANTILLES = 599;
+    public static final int NEVIS = 114;
+    public static final int NEW_CALEDONIA = 687;
+    public static final int NEW_ZEALAND = 64;
+    public static final int NICARAGUA = 509;
+    public static final int NIGER = 227;
+    public static final int NIGERIA = 234;
+    public static final int NIUE = 683;
+    public static final int NORFOLK_ISLAND = 6722;
+    public static final int NORWAY = 47;
+    public static final int OMAN = 968;
+    public static final int PAKISTAN = 92;
+    public static final int PALAU = 680;
+    public static final int PANAMA = 507;
+    public static final int PAPUA_NEW_GUINEA = 675;
+    public static final int PARAQUAY = 595;
+    public static final int PERU = 51;
+    public static final int PHILIPPINES = 63;
+    public static final int POLAND = 48;
+    public static final int PORTUGAL = 351;
+    public static final int PUERTO_RICO = 121;
+    public static final int QATAR = 974;
+    public static final int REUNION_ISLAND = 262;
+    public static final int ROMANIA = 40;
+    public static final int ROTA_ISLAND = 6701;
+    public static final int RUSSIA = 7;
+    public static final int RWANDA = 250;
+    public static final int SAINT_HELENA = 290;
+    public static final int SAINT_KITTS = 115;
+    public static final int SAINT_KITTS_AND_NEVIS = 1141;
+    public static final int SAINT_LUCIA = 122;
+    public static final int SAINT_PIERRE_AND_MIQUELON = 508;
+    public static final int SAINT_VINCENT = 116;
+    public static final int SAIPAN_ISLAND = 670;
+    public static final int SAN_MARINO = 378;
+    public static final int SAO_TOME_AND_PRINCIPE = 239;
+    public static final int SAUDI_ARABIA = 966;
+    public static final int SCOTLAND = 442;
+    public static final int SENEGAL = 221;
+    public static final int SEYCHELLES = 248;
+    public static final int SIERRA_LEONE = 232;
+    public static final int SINGAPORE = 65;
+    public static final int SLOVAKIA = 421;
+    public static final int SLOVENIA = 386;
+    public static final int SOLOMON_ISLANDS = 677;
+    public static final int SOMALIA = 252;
+    public static final int SOUTH_AFRICA = 27;
+    public static final int SPAIN = 34;
+    public static final int SRI_LANKA = 94;
+    public static final int SUDAN = 249;
+    public static final int SURINAME = 597;
+    public static final int SWAZILAND = 268;
+    public static final int SWEDEN = 46;
+    public static final int SWITZERLAND = 41;
+    public static final int SYRIAN_ARAB_REPUBLIC = 963;
+    public static final int TAIWAN = 886;
+    public static final int TAJIKISTAN = 708;
+    public static final int TANZANIA = 255;
+    public static final int THAILAND = 66;
+    public static final int TINIAN_ISLAND = 6702;
+    public static final int TOGO = 228;
+    public static final int TOKELAU = 690;
+    public static final int TONGA = 676;
+    public static final int TRINIDAD_AND_TOBAGO = 117;
+    public static final int TUNISIA = 216;
+    public static final int TURKEY = 90;
+    public static final int TURKMENISTAN = 709;
+    public static final int TURKS_AND_CAICOS_ISLANDS = 118;
+    public static final int TUVALU = 688;
+    public static final int UGANDA = 256;
+    public static final int UKRAIN = 380;
+    public static final int UNITED_ARAB_EMIRATES = 971;
+    public static final int UNITED_KINGDOM = 44;
+    public static final int URUGUAY = 598;
+    public static final int USA = 1;
+    public static final int UZBEKISTAN = 711;
+    public static final int VANUATU = 678;
+    public static final int VATICAN_CITY = 379;
+    public static final int VENEZUELA = 58;
+    public static final int VIETNAM = 84;
+    public static final int VIRGIN_ISLANDS = 123;
+    public static final int WALES = 441;
+    public static final int WALLIS_AND_FUTUNA_ISLANDS = 681;
+    public static final int WESTERN_SAMOA = 685;
+    public static final int YEMEN = 967;
+    public static final int YUGOSLAVIA = 381;
+    public static final int YUGOSLAVIA_SERBIA = 3811;
+    public static final int YUGOSLAVIA_MONTENEGRO = 382;
+    public static final int ZAMBIA = 260;
+    public static final int ZIMBABWE = 263;
 
-	static {
-		allCountries.put(CountryEnum.UNSPECIFIED, "Unspecified");
-		allCountries.put(CountryEnum.OTHER, "Other");
+    private static EnumerationsMap allCountries = new EnumerationsMap();
+
+    static {
+        allCountries.put(CountryEnum.UNSPECIFIED, "Unspecified");
+        allCountries.put(CountryEnum.OTHER, "Other");
         allCountries.put(CountryEnum.AFGANISTAN, "Afghanistan");
         allCountries.put(CountryEnum.ALBANIA, "Albania");
         allCountries.put(CountryEnum.ALGERIA, "Algeria");
@@ -519,51 +518,51 @@ public class CountryEnum {
         allCountries.put(CountryEnum.YUGOSLAVIA_MONTENEGRO, "Yugoslavia - Montenegro");
         allCountries.put(CountryEnum.ZAMBIA, "Zambia");
         allCountries.put(CountryEnum.ZIMBABWE, "Zimbabwe");
-	}
-	
-	private int country;
-	
-	/**
-	 * Create new CountriesEnum Instance
-	 * 
-	 * @param status
-	 */
-	public CountryEnum(int country) {
-		this.country = country;
-	}
+    }
 
-	/**
-	 * 
-	 * @return current country
-	 */
-	public int getCountry() {
-		return country;
-	}	
+    private int country;
 
-	public String toString() {
-		if (allCountries.containsKey(getCountry()))
-			return allCountries.get(getCountry());
-		else
-			return "";
-	}
-	
-	/**
-	 * 
-	 * @return all countries as map
-	 */
-	public static Map<Integer, String> getAllCountriesMap() {
-		return allCountries;
-	}
-	
-	/**
-	 * 
-	 * @return all countries as String array (sort by Alphabetical)
-	 */
-	public static String[] getAllCountries() {
-		List<String> countries = new ArrayList<String>();
-		countries.addAll(allCountries.values());
-		Collections.sort(countries);
-		
-		return countries.toArray(new String[countries.size()]);
-	}
+    /**
+     * Create new CountriesEnum Instance
+     *
+     * @param status
+     */
+    public CountryEnum(int country) {
+        this.country = country;
+    }
+
+    /**
+     *
+     * @return current country
+     */
+    public int getCountry() {
+        return country;
+    }
+
+    public String toString() {
+        if (allCountries.containsKey(getCountry()))
+            return (String) allCountries.get(getCountry());
+        else
+            return "";
+    }
+
+    /**
+     *
+     * @return all countries as map
+     */
+    public static Map getAllCountriesMap() {
+        return allCountries;
+    }
+
+    /**
+     *
+     * @return all countries as String array (sort by Alphabetical)
+     */
+    public static String[] getAllCountries() {
+        List countries = new ArrayList();
+        countries.addAll(allCountries.values());
+        Collections.sort(countries);
+
+        return (String[]) countries.toArray(new String[countries.size()]);
+    }
 }

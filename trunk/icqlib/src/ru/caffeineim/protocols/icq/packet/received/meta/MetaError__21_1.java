@@ -21,14 +21,14 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class MetaError__21_1 extends ReceivedPacket {
-	
+
 	private RawData errorCode;
-	
-	/** 
-	 * Creates a new instance of MetaError__21_1 
+
+	/**
+	 * Creates a new instance of MetaError__21_1
 	 */
 	public MetaError__21_1(byte[] array) {
 		super(array, true);

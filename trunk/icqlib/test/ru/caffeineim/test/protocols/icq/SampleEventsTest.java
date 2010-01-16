@@ -15,10 +15,8 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUrlEvent;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
@@ -30,19 +28,19 @@ import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.OfflineMessageEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.UserStatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
-import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
  * <p>Created by 22.03.2008
  *   @author Samolisov Pavel
  */
-public class SampleEventsTest implements MessagingListener, StatusListener, Observer {
+public class SampleEventsTest implements MessagingListener, UserStatusListener, OurStatusListener {
 
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
-    
+
     private OscarConnection connection;
 
     public SampleEventsTest(String uin, String password) {
@@ -50,27 +48,19 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
     	connection = new OscarConnection(SERVER, PORT, uin, password);
         connection.getPacketAnalyser().setDebug(true);
         //connection.getPacketAnalyser().setDump(true);
-               
+
         // Зарегестрируем класс как слушатель
         connection.addMessagingListener(this);
-        connection.addStatusListener(this);
-        
-        // Уведомим приложение об установленом соединении
-        connection.addObserver(this);
+        connection.addUserStatusListener(this);
+        connection.addOurStatusListener(this);
+
+        connection.connect();
     }
 
-    // Метод будет вызван при установке соединения
-    public void update(Observable obs, Object obj) {    	
-    	OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));    	
-    	
-    	// Запросим сообщения, присланные нам в оффлайн
-        OscarInterface.requestOfflineMessages(connection);                
-    }
-    
     public void onIncomingMessage(IncomingMessageEvent e) {
         System.out.println(e.getSenderID() + " sent : " + e.getMessage());
     }
-    
+
     public void onIncomingUrl(IncomingUrlEvent e) {
         System.out.println(e.getSenderID() + " sent : " + e.getUrl());
     }
@@ -80,7 +70,7 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
         System.out.println(" text: " + e.getMessage());
         System.out.println(" date: " + e.getSendDate());
         System.out.println(" type: " + e.getMessageType());
-        System.out.println(" flag: " + e.getMessageFlag());        
+        System.out.println(" flag: " + e.getMessageFlag());
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {
@@ -94,27 +84,15 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
     public void onMessageMissed(MessageMissedEvent e) {
 		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
 	}
-    
+
     public void onMessageError(MessageErrorEvent e) {
-        System.out.println("Message error code " + e.getErrorCode() + " occurred");
+        System.out.println("Message error code " + e.getError().getCode() + " occurred");
     }
 
-    public void onLogout() {
-        System.out.println("Logged out (possibly due to error)");
-    }
-    
     public void onMessageAck(MessageAckEvent e) {
     	System.out.println("MessageAck " + e.getRcptUin());
     }
 
-    public void onStatusChange(StatusEvent e) {
-    	System.out.println("StatusEvent: " + e.getStatusMode());
-    }
-    
-	public void onAuthorizationFailed(LoginErrorEvent e) {
-		System.out.println("Authorization Failed! You UIN or Password is not valid");
-	}
-    
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Use : SampleEventsTest MY_UIN MY_PASSWORD");
@@ -122,4 +100,28 @@ public class SampleEventsTest implements MessagingListener, StatusListener, Obse
             new SampleEventsTest(args[0], args[1]);
         }
     }
+
+	public void onLogin() {
+		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
+
+    	// Запросим сообщения, присланные нам в оффлайн
+        OscarInterface.requestOfflineMessages(connection);
+	}
+
+    public void onLogout(Exception e) {
+        System.out.println("Logged out (possibly due to error)");
+        e.printStackTrace();
+        connection.close();
+        System.exit(1);
+    }
+
+	public void onAuthorizationFailed(LoginErrorEvent e) {
+		System.out.println("Authorization Failed! You UIN or Password is not valid");
+		connection.close();
+		System.exit(1);
+	}
+
+	public void onStatusResponse(StatusEvent e) {
+		// XXX
+	}
 }

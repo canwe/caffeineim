@@ -26,13 +26,13 @@ import ru.caffeineim.protocols.icq.metainfo.EmailUserInfoParser;
  */
 public class MetaEmailUserInfoEvent extends EventObject {
 
-	private static final long serialVersionUID = -2549449467706651913L;
+    private static final long serialVersionUID = -2549449467706651913L;
 
-	public MetaEmailUserInfoEvent(EmailUserInfoParser source) {
-		super(source);
-	}	
-	
-	public List<String> getEmails() {
-		return ((EmailUserInfoParser) getSource()).getEmails();
-	}
+    public MetaEmailUserInfoEvent(EmailUserInfoParser source) {
+        super(source);
+    }
+
+    public List getEmails() {
+        return ((EmailUserInfoParser) getSource()).getEmails();
+    }
 }

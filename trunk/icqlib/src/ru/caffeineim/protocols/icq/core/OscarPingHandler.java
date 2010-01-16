@@ -15,45 +15,37 @@
  */
 package ru.caffeineim.protocols.icq.core;
 
-import ru.caffeineim.protocols.icq.packet.sent.authorization.Ping;
 
 /**
  * <p>Created by 22.06.2008
  *   @author Samolisov Pavel
  */
+// TODO найти другое решение, без пингующих пакетов. ICQ этого не любит
 public class OscarPingHandler implements Runnable {
 
-	public static final String THREAD_NAME = "OscarPingHandlerThread";	
-	
+	public static final String THREAD_NAME = "OscarPingHandlerThread";
+
+	private static long uin = 300300;
+
 	private Thread thread;
-	private int interval;
+	private long interval;
 	private OscarConnection connection;
-		
-	public OscarPingHandler(OscarConnection connection, int interval) {
+	private boolean running;
+
+	public OscarPingHandler(OscarConnection connection, long interval) {
 		this.connection = connection;
 		this.interval = interval;
-		
-		thread = new Thread(this);
+		this.running = true;
+
+		thread = new Thread(this, THREAD_NAME);
 		thread.start();
 	}
-		
+
 	public void run() {
-		try {
-			// TODO подумать как сдесь сделать перелогин при получении соединения
-            while(true) {
-            	if (connection.isLogged()) {
-            		
-            		if (connection.getClient().getAnalyser().isDebugging())
-            			System.out.println("ping...");
-            		
-            		connection.sendFlap(new Ping());
-            	}
-            	
-            	Thread.sleep(interval);
-            }
-		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+
 	}
+
+	public synchronized void stop() {
+    	running = false;
+    }
 }

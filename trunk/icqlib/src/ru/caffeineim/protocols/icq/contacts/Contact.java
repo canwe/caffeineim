@@ -24,151 +24,151 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class Contact extends ContactListItem implements Serializable {
-	
+
     private static final long serialVersionUID = -4126754352326743822L;
 
     private boolean isInVisibleList;
 
-	private boolean isInInvisibleList;
+    private boolean isInInvisibleList;
 
-	private String firstName = "";
+    private String firstName = "";
 
-	private String lastName = "";
+    private String lastName = "";
 
-	private String nickName = "";
+    private String nickName = "";
 
-	private String email = "";
+    private String email = "";
 
-	private String SMSNumber = "";
+    private String SMSNumber = "";
 
-	private String comment = "";
+    private String comment = "";
 
-	private transient StatusModeEnum currentStatus;
-
-
-	/**
-	 * Create a new minimalistic Contact. By default, the contact isn't in the
-	 * invisible list nor in the visible one.
-	 */
-	public Contact(Item item) {
-		super(item);
-		this.isInVisibleList = false;
-		this.isInInvisibleList = (item.getType() == Item.TYPE_IGNORE_LIST);
-		this.currentStatus = new StatusModeEnum(StatusModeEnum.OFFLINE);
-
-		Iterator<Tlv> tlvIter = item.getTlvsIterator();
-		while (tlvIter.hasNext()) {
-			Tlv tlv = (Tlv) tlvIter.next();
-			switch (tlv.getType()) {
-			case 0x006d:
-				break;
-			case 0x0131:
-				setNickName(tlv.getStringValue());
-				break;
-			case 0x0137:
-				setEmail(tlv.getStringValue());
-				break;
-			case 0x013a:
-				setSMS(tlv.getStringValue());
-				break;
-			case 0x013c:
-				setComment(tlv.getStringValue());
-			case 0x013d:
-			case 0x013e:
-			case 0x0145:
-			default:
-				break;
-			}
-		}
-	}
-	
-	public Contact(short itemid, short groupid, String uin) { 
-		super(new Item(itemid, groupid, uin));
-		setNickName(uin);
-	}
-
-	public boolean getIsInVisibleList() {
-		return isInVisibleList;
-	}
-
-	public void setIsInVisibleList(boolean isIn) {
-		this.isInVisibleList = isIn;
-	}
-
-	public boolean getIsInInvisibleList() {
-		return isInInvisibleList;
-	}
-
-	public void setIsInInvisibleList(boolean isIn) {
-		this.isInInvisibleList = isIn;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-	
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    private transient StatusModeEnum currentStatus;
 
 
+    /**
+     * Create a new minimalistic Contact. By default, the contact isn't in the
+     * invisible list nor in the visible one.
+     */
+    public Contact(Item item) {
+        super(item);
+        this.isInVisibleList = false;
+        this.isInInvisibleList = (item.getType() == Item.TYPE_IGNORE_LIST);
+        this.currentStatus = new StatusModeEnum(StatusModeEnum.OFFLINE);
 
-	public String getEmail() {
-		return email;
-	}
+        Iterator tlvIter = item.getTlvsIterator();
+        while (tlvIter.hasNext()) {
+            Tlv tlv = (Tlv) tlvIter.next();
+            switch (tlv.getType()) {
+            case 0x006d:
+                break;
+            case 0x0131:
+                setNickName(tlv.getStringValue());
+                break;
+            case 0x0137:
+                setEmail(tlv.getStringValue());
+                break;
+            case 0x013a:
+                setSMS(tlv.getStringValue());
+                break;
+            case 0x013c:
+                setComment(tlv.getStringValue());
+            case 0x013d:
+            case 0x013e:
+            case 0x0145:
+            default:
+                break;
+            }
+        }
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public Contact(short itemid, short groupid, String uin) {
+        super(new Item(itemid, groupid, uin));
+        setNickName(uin);
+    }
 
-	public String getNickName() {
-		return nickName;
-	}
+    public boolean getIsInVisibleList() {
+        return isInVisibleList;
+    }
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-	
-	public String getComment() {
-		return comment;
-	}
+    public void setIsInVisibleList(boolean isIn) {
+        this.isInVisibleList = isIn;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
-	public String getSMS() {
-		return SMSNumber;
-	}
+    public boolean getIsInInvisibleList() {
+        return isInInvisibleList;
+    }
 
-	public void setSMS(String sms) {
-		this.SMSNumber = sms;
-	}
+    public void setIsInInvisibleList(boolean isIn) {
+        this.isInInvisibleList = isIn;
+    }
 
-	public StatusModeEnum getCurrentStatus() {
-		return currentStatus;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setCurrentStatus(StatusModeEnum status) {
-		this.currentStatus = status;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public boolean equals(Object o) {
-		return getId().equals(((Contact) o).getId());
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public String toString() {
-		return getNickName() + "(" + getId() + ")";
-	}	
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getSMS() {
+        return SMSNumber;
+    }
+
+    public void setSMS(String sms) {
+        this.SMSNumber = sms;
+    }
+
+    public StatusModeEnum getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(StatusModeEnum status) {
+        this.currentStatus = status;
+    }
+
+    public boolean equals(Object o) {
+        return getId().equals(((Contact) o).getId());
+    }
+
+    public String toString() {
+        return getNickName() + "(" + getId() + ")";
+    }
 }

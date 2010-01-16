@@ -21,9 +21,7 @@ import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
 
 /**
- * <p>
- * Created by
- * 
+ * <p> Created by
  * @author Egor Baranov
  */
 public class UINRegistration extends Flap {

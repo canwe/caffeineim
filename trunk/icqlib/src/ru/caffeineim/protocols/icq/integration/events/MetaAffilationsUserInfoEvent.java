@@ -19,26 +19,24 @@ import java.util.EventObject;
 import java.util.Map;
 
 import ru.caffeineim.protocols.icq.metainfo.AffilationsUserInfoParser;
-import ru.caffeineim.protocols.icq.setting.enumerations.AffilationEnum;
-import ru.caffeineim.protocols.icq.setting.enumerations.PostBackgroundEnum;
 
 /**
  * <p>Created by 30.03.2008
  *   @author Samolisov Pavel
  */
 public class MetaAffilationsUserInfoEvent extends EventObject {
-	
-	private static final long serialVersionUID = -5924242976594062666L;
 
-	public MetaAffilationsUserInfoEvent(AffilationsUserInfoParser source) {
-		super(source);
-	}
-	
-	public Map<PostBackgroundEnum, String> getPostBackgrounds() {
-		return ((AffilationsUserInfoParser) getSource()).getPostBackgrounds();
-	}
-	
-	public Map<AffilationEnum, String> getAffilations() {
-		return ((AffilationsUserInfoParser) getSource()).getAffilations();
-	}
+    private static final long serialVersionUID = -5924242976594062666L;
+
+    public MetaAffilationsUserInfoEvent(AffilationsUserInfoParser source) {
+        super(source);
+    }
+
+    public Map getPostBackgrounds() {
+        return ((AffilationsUserInfoParser) getSource()).getPostBackgrounds();
+    }
+
+    public Map getAffilations() {
+        return ((AffilationsUserInfoParser) getSource()).getAffilations();
+    }
 }

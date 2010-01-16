@@ -15,69 +15,45 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
-import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
-
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
-import ru.caffeineim.protocols.icq.integration.listeners.StatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
+import ru.caffeineim.protocols.icq.integration.listeners.UserStatusListener;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
-import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 /**
  * <p>Created by 22.06.2008
  *   @author Samolisov Pavel
  */
-public class OnLogoutEventTest implements Observer, StatusListener {
+public class OnLogoutEventTest implements OurStatusListener, UserStatusListener {
 
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
-    
+
     private OscarConnection connection;
 
     public OnLogoutEventTest(String uin, String password) {
     	connection = new OscarConnection(SERVER, PORT, uin, password);
         connection.getPacketAnalyser().setDebug(true);
 
-        connection.addStatusListener(this);
+        connection.addUserStatusListener(this);
+        connection.addOurStatusListener(this);
 
-        // Уведомим приложение об установленом соединении
-        connection.addObserver(this);
+        connection.connect();
     }
-    
-	public void update(Observable o, Object arg) {
-		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));		
-	}
-
-	public void onAuthorizationFailed(LoginErrorEvent e) {
-		// TODO Auto-generated method stub		
-	}
 
 	public void onIncomingUser(IncomingUserEvent e) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
-	public void onLogout() {
-		System.out.println("--> On Logout");
-		try {
-			connection.close();
-		} catch (IOException e) {		
-			e.printStackTrace();
-		}
-	}
-	
 	public void onOffgoingUser(OffgoingUserEvent e) {
 		// TODO Auto-generated method stub
 	}
 
-	public void onStatusChange(StatusEvent e) {
-		System.out.println("--> onStatusChange, status = " + e.getStatusMode());
-	}
-	
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Use : OnLogoutEventsTest MY_UIN MY_PASSWORD");
@@ -85,4 +61,23 @@ public class OnLogoutEventTest implements Observer, StatusListener {
             new OnLogoutEventTest(args[0], args[1]);
         }
     }
+
+	public void onLogin() {
+		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
+	}
+
+	public void onLogout(Exception e) {
+		e.printStackTrace();
+		connection.close();
+		System.exit(1);
+	}
+
+	public void onAuthorizationFailed(LoginErrorEvent e) {
+		connection.close();
+		System.exit(1);
+	}
+
+	public void onStatusResponse(StatusEvent e) {
+		System.out.println("--> onStatusResponse, status = " + e.getStatusMode());
+	}
 }
