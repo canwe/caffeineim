@@ -62,6 +62,10 @@ public class OscarConnection {
 
     private int flapSeqNrs;
 
+    static {
+    	OscarConfiguration.load();
+    }
+
     public OscarConnection(String host, int port, String userId, String password) {
         this(host, port, userId, password, new Tweaker());
     }

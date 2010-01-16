@@ -15,6 +15,7 @@
  */
 package ru.caffeineim.protocols.icq.integration;
 
+import ru.caffeineim.protocols.icq.core.OscarConfiguration;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.sent.generic.SetICQStatus;
@@ -38,6 +39,14 @@ import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
  *   @author Samolisov Pavel
  */
 public class OscarInterface {
+
+    /**
+	 * Возвращаем текущую версию библиотеки
+	 * @return
+	 */
+	public static String getVersion() {
+		return OscarConfiguration.get(OscarConfiguration.VERSION);
+	}
 
 	/**
 	 * Отправляем сообщение <code>message</code> пользователю <code>userId</code>

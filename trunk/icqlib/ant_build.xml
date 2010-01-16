@@ -4,6 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="test.dir" value="test" />
 	<property name="build.dir" value="dist" />
+	<property file="${src.dir}/icqlib.properties"/>
 
 	<target name="build-lib">
 		<mkdir dir="${build.dir}" />
@@ -38,8 +39,9 @@
 	</target>
 
 	<target name="jar" depends="build-lib">
-		<jar destfile="${ant.project.name}.jar" duplicate="preserve" compress="true">
+		<jar destfile="${build.dir}/${ant.project.name}-${VERSION}.jar" duplicate="preserve" compress="true">
 			<fileset dir="${build.dir}" />
 		</jar>
+		<copy todir="${build.dir}" file="${src.dir}/icqlib.properties" />
 	</target>
 </project>
