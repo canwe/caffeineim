@@ -224,7 +224,9 @@ public class OscarClient implements Runnable {
      * @param packet The byte array representation of the packet to be sent.
      */
     public void sendPacket(byte[] packet) throws IOException {
-        log.trace("\n" + Dumper.dump(packet, true, 8, 16));
+        // tracing sended packets. Need set trace level
+        // for ru.caffeineim.protocols.icq.tool.Dumper
+    	Dumper.log(packet, true, 8, 16);
 
         out.write(packet);
         out.flush();

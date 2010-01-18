@@ -15,11 +15,16 @@
  */
 package ru.caffeineim.protocols.icq.tool;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
  */
 public class Dumper {
+
+	private static Log log = LogFactory.getLog(Dumper.class);
 
 	private Dumper() {}
 
@@ -73,7 +78,7 @@ public class Dumper {
 			hexa += align(i % breaker, breaker);
 			hexa += stringTranslation(lastLine);
 		}
-	
+
 		return hexa;
 	}
 
@@ -86,7 +91,7 @@ public class Dumper {
 	private static String toUnsignedHex(byte b) {
 		/* to get the unsigned value of the byte */
 		String hex = Integer.toHexString(b & 0xFF);
-		
+
 		/* Padding to 2 digits. */
 		if (hex.length() == 1)
 			hex = "0" + hex;
@@ -111,7 +116,7 @@ public class Dumper {
 			else
 				res += ent.charAt(i);
 		}
-		
+
 		return res;
 	}
 
@@ -130,7 +135,12 @@ public class Dumper {
 			result += "   ";
 		}
 		result += "  ";
-	
+
 		return result;
+	}
+
+	public static void log(byte[] packet, boolean stringTranslation,
+			int spacer, int breaker) {
+		log.trace("\n" + dump(packet, stringTranslation, spacer, breaker));
 	}
 }
