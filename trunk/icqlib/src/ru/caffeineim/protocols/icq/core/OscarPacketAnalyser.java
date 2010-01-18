@@ -92,7 +92,9 @@ public class OscarPacketAnalyser {
 
         log.debug("Received " + familyId + " - " + subTypeId);
 
-        log.trace("\n" + Dumper.dump(packet, true, 8, 16));
+        // tracing received packets. Need set trace level
+        // for ru.caffeineim.protocols.icq.tool.Dumper
+        Dumper.log(packet, true, 8, 16);
 
         Class loadedClass = receivedClassLoader.loadClass(familyId, subTypeId);
         if (loadedClass != null) {
