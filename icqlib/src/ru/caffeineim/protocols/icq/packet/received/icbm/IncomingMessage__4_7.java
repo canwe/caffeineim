@@ -161,6 +161,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		IncomingMessageEvent e = new IncomingMessageEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
 			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onIncomingMessage()");
 			l.onIncomingMessage(e);
 		}
 	}
@@ -169,6 +170,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		XStatusRequestEvent e = new XStatusRequestEvent(this);
 		for (int i = 0; i < connection.getXStatusListeners().size(); i++) {
 			XStatusListener l = (XStatusListener) connection.getXStatusListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onXStatusRequest()");
 			l.onXStatusRequest(e);
 		}
 	}
@@ -177,6 +179,7 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		IncomingUrlEvent e = new IncomingUrlEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
 			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onIncomingUrl()");
 			l.onIncomingUrl(e);
 		}
 	}
