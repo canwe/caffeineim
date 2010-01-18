@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.metainfo;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.setting.enumerations.MetaSubTypeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
 
@@ -23,6 +26,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MetaTypeEnum;
  *   @author Samolisov Pavel
  */
 public class MetaInfoParserFactory {
+
+	private static Log log = LogFactory.getLog(MetaInfoParserFactory.class);
 
 	/**
 	 * Строим конкретную реализацию интерфейса IMetaInfoParser для обработки
@@ -83,7 +88,6 @@ public class MetaInfoParserFactory {
 						parser = new AffilationsUserInfoParser();
 						break;
 
-					// create parser for server ack
 					case MetaSubTypeEnum.SERVER_SET_USER_PASSWORD:
 						parser = new MetaAckParser();
 						break;
@@ -91,6 +95,7 @@ public class MetaInfoParserFactory {
 				break;
 		}
 
+		log.debug("parser " + parser.getClass().getName() + " has been built");
 		return parser;
 	}
 }

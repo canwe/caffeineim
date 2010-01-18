@@ -15,14 +15,20 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.usagestats;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class MinReportInterval__11_2 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(MinReportInterval__11_2.class);
+
 	private short interval;
 
 	public MinReportInterval__11_2(byte array[]) {
@@ -35,6 +41,6 @@ public class MinReportInterval__11_2 extends ReceivedPacket {
 	}
 
 	public void notifyEvent(OscarConnection connection) {
-		System.out.println("Report interval : " + interval + "h");
+		log.info("Report interval: " + interval + "h");
 	}
 }

@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.metainfo;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.sent.meta.AckOfflineMessages;
@@ -25,16 +28,18 @@ import ru.caffeineim.protocols.icq.packet.sent.meta.AckOfflineMessages;
  */
 public class ServerEndOfOflineMessageParser implements IMetaInfoParser {
 
-	
+	private static Log log = LogFactory.getLog(ServerEndOfOflineMessageParser.class);
+
 	public void execute(OscarConnection connection) {
-		connection.sendFlap(new AckOfflineMessages(connection.getUserId()));	
+		connection.sendFlap(new AckOfflineMessages(connection.getUserId()));
 	}
 
-	
-	public void notifyEvent(OscarConnection connection) {		
+
+	public void notifyEvent(OscarConnection connection) {
+		log.debug("EOF Ofline message has been received");
 	}
 
-	
-	public void parse(byte[] data, int position) throws ConvertStringException {				
+
+	public void parse(byte[] data, int position) throws ConvertStringException {
 	}
 }

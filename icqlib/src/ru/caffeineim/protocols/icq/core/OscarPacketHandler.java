@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.exceptions.LoginException;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
@@ -25,6 +28,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
  *   @author Prolubnikov Dmitry
  */
 public class OscarPacketHandler implements Runnable {
+
+	private static Log log = LogFactory.getLog(OscarPacketHandler.class);
 
     public static final String THREAD_NAME = "OscarPacketHandlerThread";
 
@@ -50,7 +55,7 @@ public class OscarPacketHandler implements Runnable {
                 		Thread.sleep(100);
                 	}
                 	catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                		log.error(ex.getMessage(), ex);
                     }
                 }
             }
@@ -61,6 +66,10 @@ public class OscarPacketHandler implements Runnable {
             for (int i = 0; i < client.getAnalyser().getConnection().getOurStatusListeners().size(); i++) {
                 OurStatusListener l = (OurStatusListener) client.getAnalyser().getConnection()
                 		.getOurStatusListeners().get(i);
+
+                log.debug("notify listener " + l.getClass().getName() + " onAuthorizationFailed() '" +
+                		"because " + e.getErrorMessage());
+
                 l.onAuthorizationFailed(e);
             }
             runnable = false;
@@ -68,6 +77,7 @@ public class OscarPacketHandler implements Runnable {
     }
 
     public synchronized void stop() {
+    	log.debug("OscarPacketHandler thread has been stoped");
     	runnable = false;
     }
 }

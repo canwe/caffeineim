@@ -23,6 +23,9 @@ import java.net.Socket;
 
 import javax.net.SocketFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.queue.OscarQueue;
 import ru.caffeineim.protocols.icq.core.queue.Queue;
 import ru.caffeineim.protocols.icq.tool.Dumper;
@@ -34,6 +37,8 @@ import ru.caffeineim.protocols.icq.tool.Dumper;
  *   @author Prolubnikov Dmitry
  */
 public class OscarClient implements Runnable {
+
+	private static Log log = LogFactory.getLog(OscarClient.class);
 
     public static final String THREAD_NAME = "OscarClientThread";
 
@@ -177,10 +182,10 @@ public class OscarClient implements Runnable {
             }
         }
         catch (IOException ex) {
-        	// TODO logging
-            ex.printStackTrace();
+        	log.error(ex.getMessage(), ex);
         }
         catch (InterruptedException ex) {
+        	log.error(ex.getMessage(), ex);
         }
     }
 
@@ -219,10 +224,8 @@ public class OscarClient implements Runnable {
      * @param packet The byte array representation of the packet to be sent.
      */
     public void sendPacket(byte[] packet) throws IOException {
-        if (analyser.isDumping()) {
-        	System.out.println("Send: ");
-            System.out.println(Dumper.dump(packet, true, 8, 16));
-        }
+        log.trace("\n" + Dumper.dump(packet, true, 8, 16));
+
         out.write(packet);
         out.flush();
     }

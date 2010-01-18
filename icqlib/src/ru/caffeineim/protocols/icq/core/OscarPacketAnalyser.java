@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.exceptions.LoginException;
 import ru.caffeineim.protocols.icq.packet.received.AuthorizationReply;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPackedRegistry;
@@ -26,13 +29,15 @@ import ru.caffeineim.protocols.icq.tool.Dumper;
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
  */
 public class OscarPacketAnalyser {
-    private OscarConnection connection;
+
+	private static Log log = LogFactory.getLog(OscarPacketAnalyser.class);
+
+	private OscarConnection connection;
     private ReceivedPackedClassLoader receivedClassLoader;
     private int nbPacket = 0;
-    private boolean debug = false;
-    private boolean dump = false;
 
     public OscarPacketAnalyser(OscarConnection connection) {
         this.connection = connection;
@@ -60,8 +65,7 @@ public class OscarPacketAnalyser {
             try {
                 handleService(packet);
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("failed to service packet (continuing with other packets)");
+                log.error("failed to service packet (continuing with other packets)", e);
             }
         }
     }
@@ -86,11 +90,9 @@ public class OscarPacketAnalyser {
         int familyId = receivedFlap.getSnac().getFamilyId();
         int subTypeId = receivedFlap.getSnac().getSubTypeId();
 
-        if (debug)
-            System.out.println("Received " + familyId + " - " + subTypeId);
+        log.debug("Received " + familyId + " - " + subTypeId);
 
-        if (dump)
-            System.out.println(Dumper.dump(packet, true, 8, 16));
+        log.trace("\n" + Dumper.dump(packet, true, 8, 16));
 
         Class loadedClass = receivedClassLoader.loadClass(familyId, subTypeId);
         if (loadedClass != null) {
@@ -103,16 +105,13 @@ public class OscarPacketAnalyser {
                 receivedFlap.execute(connection);
                 receivedFlap.notifyEvent(connection);
 
-                if (debug) {
-                    System.out.println("--> Loaded class: " + loadedClass.getName());
-                    System.out.println("--> Executed method: " + receivedFlap.getClass().getName() + ".execute(connection)");
-                }
+                log.debug("--> Loaded class: " + loadedClass.getName());
+                log.debug("--> Executed method: " + receivedFlap.getClass().getName() + ".execute(connection)");
 
                 packet = null; // clean packet byte array
             }
             catch (Exception ex) {
-                System.out.println("Could not parse packet!");
-                ex.printStackTrace();
+            	log.error("Could not parse packet", ex);
             }
         }
 
@@ -122,42 +121,6 @@ public class OscarPacketAnalyser {
         if (familyId == 9 && subTypeId == 3) {
             connection.setAuthorized(true);
         }
-    }
-
-    /**
-     * Set or unset the debug mode.
-     *
-     * @param state True to enable debugging, false otherwise.
-     */
-    public void setDebug(boolean state) {
-        debug = state;
-    }
-
-    /**
-     * Set or unset the dumping mode.
-     *
-     * @param state True to enable packet dumping, false otherwise.
-     */
-    public void setDump(boolean state) {
-        dump = state;
-    }
-
-    /**
-     * This function give the debugging mode status.
-     *
-     * @return True if the debugging mode is enabled false in the other case.
-     */
-    public boolean isDebugging() {
-        return debug;
-    }
-
-    /**
-     * This function give the dumping mode status.
-     *
-     * @return True if the dumping mode is enabled false in the other case.
-     */
-    public boolean isDumping() {
-        return dump;
     }
 
     /**

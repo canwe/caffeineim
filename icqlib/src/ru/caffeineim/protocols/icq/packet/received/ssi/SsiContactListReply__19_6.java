@@ -19,6 +19,9 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Item;
 import ru.caffeineim.protocols.icq.RawData;
@@ -34,7 +37,10 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
  *   @author Lo�c Broquet
  */
 public final class SsiContactListReply__19_6 extends ReceivedPacket {
-    private int count;
+
+	private static Log log = LogFactory.getLog(SsiContactListReply__19_6.class);
+
+	private int count;
 
     private int timeStamp;
 
@@ -68,7 +74,8 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
         ContactListEvent e = new ContactListEvent(this);
         for (int i = 0; i < connection.getContactListListeners().size(); i++) {
             ContactListListener l = (ContactListListener) connection.getContactListListeners().get(i);
-            l.updateContactList(e);
+			log.debug("notify listener " + l.getClass().getName() + " onUpdateContactList()");
+            l.onUpdateContactList(e);
         }
     }
 

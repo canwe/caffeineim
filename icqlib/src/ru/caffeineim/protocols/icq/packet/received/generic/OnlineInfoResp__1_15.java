@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.generic;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.Tlv;
@@ -28,6 +31,8 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
  *   @author Lo�c Broquet
  */
 public class OnlineInfoResp__1_15 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(OnlineInfoResp__1_15.class);
 
 	private int status = 0;
 
@@ -75,6 +80,7 @@ public class OnlineInfoResp__1_15 extends ReceivedPacket {
 		StatusEvent e = new StatusEvent(this);
 		for (int i = 0; i < connection.getOurStatusListeners().size(); i++) {
 			OurStatusListener l = (OurStatusListener) connection.getOurStatusListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onStatusResponse()");
 			l.onStatusResponse(e);
 		}
 	}

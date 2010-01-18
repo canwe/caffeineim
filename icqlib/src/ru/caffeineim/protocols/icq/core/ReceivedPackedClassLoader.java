@@ -17,12 +17,18 @@ package ru.caffeineim.protocols.icq.core;
 
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
  */
 public class ReceivedPackedClassLoader {
-    private Vector classNamesVector;
+
+	private static Log log = LogFactory.getLog(ReceivedPackedClassLoader.class);
+
+	private Vector classNamesVector;
 
     public ReceivedPackedClassLoader(IReceivedPacketRegistry registry) {
         this.classNamesVector = registry.getClassNameVector();
@@ -37,7 +43,7 @@ public class ReceivedPackedClassLoader {
                     ret = Class.forName((String) classNamesVector.get(i));
                 }
                 catch (ClassNotFoundException CNFE) {
-                    System.out.println("Class not found " + CNFE.getMessage());
+                    log.error("Class not found " + CNFE.getMessage());
                 }
             }
         }

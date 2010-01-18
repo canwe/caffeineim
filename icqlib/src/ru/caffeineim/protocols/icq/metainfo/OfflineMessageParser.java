@@ -20,6 +20,9 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
@@ -36,6 +39,8 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class OfflineMessageParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(OfflineMessageParser.class);
+
     private String senderUin;
     private Date sendDate;
     private String message;
@@ -47,6 +52,7 @@ public class OfflineMessageParser extends BaseMetaInfoParser {
     }
 
     protected void sendMessage(EventListener listener, EventObject e) {
+    	log.debug("notify listener " + listener.getClass().getName() + " onOfflineMessage()");
         ((MessagingListener) listener).onOfflineMessage((OfflineMessageEvent) e);
     }
 

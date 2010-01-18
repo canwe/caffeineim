@@ -18,6 +18,9 @@ package ru.caffeineim.protocols.icq.metainfo;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaShortUserInfoEvent;
@@ -30,84 +33,84 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class ShortUserInfoParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(ShortUserInfoParser.class);
+
 	private String nickName;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private boolean authFlag;
-	
-	
+
 	protected EventObject getNewEvent() {
 		return new MetaShortUserInfoEvent(this);
 	}
 
-	
 	protected void sendMessage(EventListener listener, EventObject e) {
+		log.debug("notify listener " + listener.getClass().getName() + " onShortUserInfo()");
 		((MetaInfoListener) listener).onShortUserInfo((MetaShortUserInfoEvent) e);
 	}
 
-	
 	public void parse(byte[] data, int position) throws ConvertStringException {
 		position += 3; // skip subtype and success byte (always 0x0A) and data size.
-		
+
 		// Nickname lenght
 		RawData rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
-		rStrLen.invertIndianness();		
+		rStrLen.invertIndianness();
 		position += RawData.WORD_LENGHT;;
-		
+
 		// Nickname
 		nickName = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
-		
+
 		// First Name lenght
 		rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
 		rStrLen.invertIndianness();
 		position += RawData.WORD_LENGHT;
-		
+
 		// First Name
 		firstName = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
-		
+
 		// Last Name lenght
 		rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
 		rStrLen.invertIndianness();
 		position += RawData.WORD_LENGHT;
-		
+
 		// Last Name
 		lastName = StringTools.byteArrayToString(data, position, rStrLen.getValue() - 1);
 		position += rStrLen.getValue();
-		
-		// Email lenght 
+
+		// Email lenght
 		rStrLen = new RawData(data, position, RawData.WORD_LENGHT);
 		rStrLen.invertIndianness();
 		position += RawData.WORD_LENGHT;
-		
+
 		// Email
 		email = (new RawData(data, position, rStrLen.getValue() - 1)).getStringValue();
-		position += rStrLen.getValue();		
-		
+		position += rStrLen.getValue();
+
 		// Auth Flag
 		RawData authdata = new RawData(data, position, RawData.BYTE_LENGHT);
 		authFlag = (authdata.getValue() == 0);
 	}
-	
+
 	public String getNickName() {
 		return nickName;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
-	
+
 	public String getLastName() {
 		return lastName;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
-	
+
 	public boolean isAuthFlag() {
 		return authFlag;
-	}	
+	}
 }

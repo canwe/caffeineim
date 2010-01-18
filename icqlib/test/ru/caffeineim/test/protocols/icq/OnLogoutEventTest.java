@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.IncomingUserEvent;
@@ -31,6 +34,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
  */
 public class OnLogoutEventTest implements OurStatusListener, UserStatusListener {
 
+	private static Log log = LogFactory.getLog(OnLogoutEventTest.class);
+
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
 
@@ -38,7 +43,6 @@ public class OnLogoutEventTest implements OurStatusListener, UserStatusListener 
 
     public OnLogoutEventTest(String uin, String password) {
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
 
         connection.addUserStatusListener(this);
         connection.addOurStatusListener(this);
@@ -47,11 +51,11 @@ public class OnLogoutEventTest implements OurStatusListener, UserStatusListener 
     }
 
 	public void onIncomingUser(IncomingUserEvent e) {
-		// TODO Auto-generated method stub
+		// XXX
 	}
 
 	public void onOffgoingUser(OffgoingUserEvent e) {
-		// TODO Auto-generated method stub
+		// XXX
 	}
 
     public static void main(String[] args) {
@@ -67,17 +71,18 @@ public class OnLogoutEventTest implements OurStatusListener, UserStatusListener 
 	}
 
 	public void onLogout(Exception e) {
-		e.printStackTrace();
 		connection.close();
+		log.error("Logout ", e);
 		System.exit(1);
 	}
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
 		connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
 	public void onStatusResponse(StatusEvent e) {
-		System.out.println("--> onStatusResponse, status = " + e.getStatusMode());
+		log.info("--> onStatusResponse, status = " + e.getStatusMode());
 	}
 }

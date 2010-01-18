@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -28,6 +31,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.MessageMissedTypeEnum;
  *   @author Lo�c Broquet
  */
 public class MissedMessage__4_10 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(MissedMessage__4_10.class);
 
     private Tlv usrClass;
     private Tlv usrStatus;
@@ -99,6 +104,7 @@ public class MissedMessage__4_10 extends ReceivedPacket {
         MessageMissedEvent e = new MessageMissedEvent(this);
         for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
             MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
+            log.debug("notify listener " + l.getClass().getName() + " onMessageMissed()");
             l.onMessageMissed(e);
         }
     }

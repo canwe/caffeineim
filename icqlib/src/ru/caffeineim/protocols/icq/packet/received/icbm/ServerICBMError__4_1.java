@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.MessageErrorEvent;
@@ -28,6 +31,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.GlobalErrorsEnum;
  *   @author Samolisov Pavel
  */
 public class ServerICBMError__4_1 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(ServerICBMError__4_1.class);
 
 	private GlobalErrorsEnum error;
 
@@ -53,6 +58,7 @@ public class ServerICBMError__4_1 extends ReceivedPacket {
 		MessageErrorEvent e = new MessageErrorEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
 			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onMessageError()");
 			l.onMessageError(e);
 		}
 	}

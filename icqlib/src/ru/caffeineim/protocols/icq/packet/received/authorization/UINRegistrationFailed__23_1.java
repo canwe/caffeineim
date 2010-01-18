@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.authorization;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
@@ -22,18 +25,21 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Egor Baranov 
+ *   @author Egor Baranov
  */
 public class UINRegistrationFailed__23_1 extends ReceivedPacket {
-    public UINRegistrationFailed__23_1(byte array[]) {
+
+	private static Log log = LogFactory.getLog(UINRegistrationFailed__23_1.class);
+
+	public UINRegistrationFailed__23_1(byte array[]) {
         super(array, true);
     }
 
     public void notifyEvent(OscarConnection connection) {
         UINRegistrationFailedEvent e = new UINRegistrationFailedEvent(this);
         for (int i = 0; i < connection.getMetaInfoListeners().size(); i++) {
-            MetaInfoListener l = (MetaInfoListener) connection
-                    .getMessagingListeners().get(i);
+            MetaInfoListener l = (MetaInfoListener) connection.getMessagingListeners().get(i);
+            log.debug("notify listener " + l.getClass().getName() + " onRegisterNewUINFailed()");
             l.onRegisterNewUINFailed(e);
         }
     }

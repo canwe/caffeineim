@@ -15,30 +15,35 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class TypingNotif__4_20 extends ReceivedPacket {
-	
+
+	private static Log log = LogFactory.getLog(TypingNotif__4_20.class);
+
 	public static final short TYPING_FINISHED = 0;
 	public static final short TYPING_CURRENT  = 1;
 	public static final short TYPING_BEGIN    = 2;
-	
+
 	private RawData uin;
 	private RawData type;
-	
-	/** 
-	 * Creates a new instance of TypingNotif__4_20 
+
+	/**
+	 * Creates a new instance of TypingNotif__4_20
 	 */
 	public TypingNotif__4_20(byte[] array) {
 		super(array, true);
 		byte[] data = getSnac().getByteArray();
-		
+
 		int index = 0;
 		RawData id = new RawData(data, index, 8);
 		index += 8;
@@ -49,8 +54,9 @@ public class TypingNotif__4_20 extends ReceivedPacket {
 		index += uinLg.getValue();
 		type = new RawData(data, index, RawData.WORD_LENGHT);
 	}
-	
+
 	public void notifyEvent(OscarConnection connection) {
-		System.out.println(uin.getStringValue()+" is typing...");
-	}	
+		// TODO handle this event
+		log.info(uin.getStringValue() + " is typing...");
+	}
 }

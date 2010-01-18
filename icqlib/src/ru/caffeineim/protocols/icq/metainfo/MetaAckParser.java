@@ -19,6 +19,9 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
@@ -31,6 +34,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
  */
 public class MetaAckParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(MetaAckParser.class);
+
     private boolean isOk;
 
     protected EventObject getNewEvent() {
@@ -38,6 +43,7 @@ public class MetaAckParser extends BaseMetaInfoParser {
     }
 
     protected void sendMessage(EventListener listener, EventObject e) {
+    	log.debug("notify listener " + listener.getClass().getName() + " onMetaAck()");
         ((MetaAckListener) listener).onMetaAck((MetaAckEvent) e);
     }
 

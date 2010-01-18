@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
@@ -28,6 +31,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
  */
 public class MultiSendMessageTest implements OurStatusListener {
 
+	private static Log log = LogFactory.getLog(MultiSendMessageTest.class);
+
 	private static final String SERVER = "login.icq.com";
 	private static final int PORT = 5190;
 
@@ -39,7 +44,6 @@ public class MultiSendMessageTest implements OurStatusListener {
 	public MultiSendMessageTest(String login, String password, String receiver) {
 		this.receiver = receiver;
 		con = new OscarConnection(SERVER, PORT, login, password);
-		con.getPacketAnalyser().setDebug(true);
 
 		con.addOurStatusListener(this);
 
@@ -56,6 +60,7 @@ public class MultiSendMessageTest implements OurStatusListener {
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
 		con.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
@@ -65,17 +70,18 @@ public class MultiSendMessageTest implements OurStatusListener {
 				OscarInterface.sendBasicMessage(con, receiver, TEST_MESSAGE + " " + i);
 				Thread.sleep(100);
 			}
-		} catch (ConvertStringException ex) {
-			System.out.println(ex.getMessage());
+		}
+		catch (ConvertStringException ex) {
+			log.error(ex.getMessage(), ex);
 		}
 		catch (InterruptedException ex) {
-            ex.printStackTrace();
+			log.error(ex.getMessage(), ex);
         }
 	}
 
 	public void onLogout(Exception e) {
-		e.printStackTrace();
 		con.close();
+		log.error("Logout ", e);
 		System.exit(1);
 	}
 

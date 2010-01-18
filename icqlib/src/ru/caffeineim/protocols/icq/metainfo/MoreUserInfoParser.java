@@ -21,6 +21,9 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaMoreUserInfoEvent;
@@ -39,6 +42,8 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class MoreUserInfoParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(MoreUserInfoParser.class);
+
     private int age;
     private GenderEnum gender;
     private String homePage;
@@ -55,6 +60,7 @@ public class MoreUserInfoParser extends BaseMetaInfoParser {
     }
 
     protected void sendMessage(EventListener listener, EventObject e) {
+    	log.debug("notify listener " + listener.getClass().getName() + " onMoreUserInfo()");
         ((MetaInfoListener) listener).onMoreUserInfo((MetaMoreUserInfoEvent) e);
     }
 

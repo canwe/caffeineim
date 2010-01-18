@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * <p>Created by 22.06.2008
@@ -22,6 +25,8 @@ package ru.caffeineim.protocols.icq.core;
  */
 // TODO найти другое решение, без пингующих пакетов. ICQ этого не любит
 public class OscarPingHandler implements Runnable {
+
+	private static Log log = LogFactory.getLog(OscarPacketHandler.class);
 
 	public static final String THREAD_NAME = "OscarPingHandlerThread";
 
@@ -46,6 +51,7 @@ public class OscarPingHandler implements Runnable {
 	}
 
 	public synchronized void stop() {
+		log.debug("OscarPingHandler thread has been stoped");
     	running = false;
     }
 }

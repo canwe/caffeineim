@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.contacts.ContactList;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
@@ -51,6 +54,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 public class ContactListEventsTest implements MessagingListener, UserStatusListener,
 		OurStatusListener, ContactListListener {
 
+	private static Log log = LogFactory.getLog(ContactListEventsTest.class);
+
     private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
 
@@ -58,7 +63,6 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
 
     public ContactListEventsTest(String uin, String password) {
         connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
 
         connection.addMessagingListener(this);
         connection.addUserStatusListener(this);
@@ -69,50 +73,49 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {
-        System.out.println(e.getOffgoingUserId() + " went offline.");
+        log.info(e.getOffgoingUserId() + " went offline.");
     }
 
     public void onIncomingUser(IncomingUserEvent e) {
-        System.out.println(e.getIncomingUserId() + " has just signed on (" + e.getClientData() + ").");
-        //System.out.printf("Capabilites: 0x%X", new Object[]{new Integer(e.getClientData().getCaps())});
+        log.info(e.getIncomingUserId() + " has just signed on (" + e.getClientData() + ").");
     }
 
-    public void updateContactList(ContactListEvent e) {
-        System.out.println("\nMy Contact List");
-        System.out.println(ContactList.getInstance(e.getRoot()));
+    public void onUpdateContactList(ContactListEvent e) {
+        log.info("\nMy Contact List");
+        log.info(ContactList.getInstance(e.getRoot()));
     }
 
     public void onSsiModifyingAck(SsiModifyingAckEvent e) {
         for (int i = 0; i < e.getResults().length; i++) {
-            System.out.println("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
+            log.info("Result = " + e.getResults()[i] + " code = " + e.getResults()[i].getResult());
         }
 
         if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
-            System.out.println("\nMy Contact List");
-            System.out.println(ContactList.getInstance().toString());
+            log.info("\nMy Contact List");
+            log.info(ContactList.getInstance().toString());
         }
     }
 
     public void onIncomingMessage(IncomingMessageEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+        log.info(e.getSenderID() + " sent : " + e.getMessage());
 
         try {
             OscarInterface.sendBasicMessage(connection, e.getSenderID(), e.getMessage());
 
             String[] params = e.getMessage().split(" ");
             if (params[0].equals("add") && params.length > 1) {
-                System.out.println("Add new user!");
+                log.info("Added new user!");
                 ContactList.getInstance().addContact(connection, params[1],
                         (Group) ContactList.getRootGroup().getContainedItems().get(0));
                 ContactList.sendYouWereAdded(connection, params[1]);
             } else if (params[0].equals("addgrp") && params.length > 1) {
-                System.out.println("Add new group!");
+                log.info("Added new group!");
                 ContactList.getInstance().addGroup(connection, params[1]);
             } else if (params[0].equals("remove") && params.length > 1) {
-                System.out.println("Remove contact!");
+                log.info("Remove contact!");
                 ContactList.getInstance().removeContact(connection, params[1]);
             } else if (params[0].equals("remgrp")) {
-                System.out.println("Remove group "
+                log.info("Remove group "
                         + ((ContactListItem) ContactList.getRootGroup().getContainedItems().get(0)).getId() + "!");
                 ContactList.getInstance().removeGroup(connection,
                         (Group) ContactList.getRootGroup().getContainedItems().get(0));
@@ -126,30 +129,29 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
                 OscarInterface.sendBasicMessage(connection, params[2], params[1]);
             }
         } catch (ConvertStringException ex) {
-            System.out.println(ex.getMessage());
+        	log.error(ex.getMessage(), ex);
         }
     }
 
     public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
+        log.info(e.getSenderID() + " sent : " + e.getUrl());
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+        log.info(e.getSenderUin() + " sent : " + e.getMessage() + " while I was offline");
     }
 
     public void onMessageError(MessageErrorEvent e) {
-        System.out.println("Message error code " + e.getError().getCode() + " occurred");
+        log.warn("Message error code " + e.getError().getCode() + " occurred");
     }
 
     public void onMessageMissed(MessageMissedEvent e) {
-        System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
+        log.warn("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
     }
 
     public void onLogout(Exception e) {
-        System.out.println("Logged out (possibly due to error)");
-        e.printStackTrace();
         connection.close();
+        log.error("Logout ", e);
         System.exit(1);
     }
 
@@ -163,26 +165,26 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
     }
 
     public void onAuthorizationFailed(LoginErrorEvent e) {
-        System.out.println("Login Error " + e.getErrorMessage());
         connection.close();
+        log.error("Authorization failed: " + e.getErrorMessage());
         System.exit(1);
     }
 
     public void onSsiFutureAuthGrant(SsiFutureAuthGrantEvent e) {
-        System.out.println("FutureAuthGrant UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
+        log.info("FutureAuthGrant UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
     }
 
     public void onSsiAuthRequest(SsiAuthRequestEvent e) {
         try {
-            System.out.println("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
+            log.info("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
             ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
         } catch (ConvertStringException ex) {
-            System.out.println(ex.getMessage());
+            log.error(ex.getMessage(), ex);
         }
     }
 
     public void onSsiAuthReply(SsiAuthReplyEvent e) {
-        System.out.println("AuthReply UIN: " + e.getSenderUin() + " Mesage: "
+        log.info("AuthReply UIN: " + e.getSenderUin() + " Mesage: "
                 + e.getMessage() + " Flag: " + e.getAuthFlag());
     }
 
@@ -195,6 +197,6 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
     }
 
 	public void onStatusResponse(StatusEvent e) {
-        System.out.println("StatusEvent: " + e.getStatusMode());
+        log.info("StatusEvent: " + e.getStatusMode());
 	}
 }

@@ -20,6 +20,9 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaInterestsUserInfoEvent;
@@ -33,6 +36,8 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class InterestsUserInfoParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(InterestsUserInfoParser.class);
+
     private Map interests = new HashMap();
 
     protected EventObject getNewEvent() {
@@ -40,6 +45,7 @@ public class InterestsUserInfoParser extends BaseMetaInfoParser {
     }
 
     protected void sendMessage(EventListener listener, EventObject e) {
+    	log.debug("notify listener " + listener.getClass().getName() + " onInterestsUserInfo()");
         ((MetaInfoListener) listener).onInterestsUserInfo((MetaInterestsUserInfoEvent) e);
     }
 

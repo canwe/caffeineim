@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
@@ -40,6 +43,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
  */
 public class XStatusEventsTest implements MessagingListener, XStatusListener, OurStatusListener {
 
+	private static Log log = LogFactory.getLog(XStatusEventsTest.class);
+
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
 
@@ -50,7 +55,6 @@ public class XStatusEventsTest implements MessagingListener, XStatusListener, Ou
 
     public XStatusEventsTest(String uin, String password) {
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-		connection.getPacketAnalyser().setDebug(true);
 
         connection.addMessagingListener(this);
         connection.addXStatusListener(this);
@@ -60,51 +64,47 @@ public class XStatusEventsTest implements MessagingListener, XStatusListener, Ou
     }
 
     public void onIncomingMessage(IncomingMessageEvent e) {
-        // В ответ на входящее сообщение запросим расширенный статус пославшего
-    	System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+    	log.info("Incoming message from " + e.getSenderID() + ": " + e.getMessage());
         OscarInterface.sendXStatusRequest(connection, e.getSenderID());
     }
 
     public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
+    	log.info("Incoming url from " + e.getSenderID() + ": " + e.getUrl());
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
+        log.info(e.getSenderUin() + " sent : " + e.getMessage() + " while i was offline");
     }
 
     public void onMessageMissed(MessageMissedEvent e) {
-		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
+		log.warn("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
 	}
 
     public void onMessageError(MessageErrorEvent e) {
-        System.out.println("Message error code " + e.getError().getCode() + " occurred");
+        log.warn("Message error code " + e.getError().getCode() + " occurred");
     }
 
     public void onMessageAck(MessageAckEvent e) {
-    	System.out.println("Message Ack " + e.getMessageType() + " " + e.getRcptUin());
+    	log.info("Message Ack " + e.getMessageType() + " " + e.getRcptUin());
     }
 
     public void onXStatusRequest(XStatusRequestEvent e) {
-    	// Посылаем свой статус, если просят
     	try {
     		OscarInterface.sendXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE),
     				XSTATUS_BASE_STRING, XSTATUS_EXT_STRING, e.getTime(), e.getMsgID(), e.getSenderID(), e.getSenderTcpVersion());
     	}
-    	catch(ConvertStringException ex) {
-    		System.out.println(ex.getMessage());
+    	catch (ConvertStringException ex) {
+    		log.error(ex.getMessage(), ex);
     	}
     }
 
     public void onXStatusResponse(XStatusResponseEvent e) {
-    	// Если человек присылает статус - пошлем ему его собственный статус как сообщение
-    	// Да, да, вот такие мы коварные
     	try {
     		OscarInterface.sendExtendedMessage(connection, e.getSenderID(), "Title = " + e.getTitle() + " Description = " + e.getDescription() + " XStatus = " + e.getXStatus().toString());
     	}
     	catch (ConvertStringException ex) {
-    		System.out.println(ex.getMessage());
-		}
+    		log.error(ex.getMessage(), ex);
+    	}
     }
 
     public static void main(String[] args) {
@@ -116,19 +116,19 @@ public class XStatusEventsTest implements MessagingListener, XStatusListener, Ou
     }
 
 	public void onLogin() {
-    	// Устанавливаем себе расширенный статус
     	OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
     	OscarInterface.changeXStatus(connection, new XStatusModeEnum(XStatusModeEnum.LOVE));
 	}
 
 	public void onLogout(Exception e) {
-		e.printStackTrace();
 		connection.close();
+		log.error("Logout ", e);
     	System.exit(1);
 	}
 
     public void onAuthorizationFailed(LoginErrorEvent e) {
     	connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
     	System.exit(1);
     }
 
