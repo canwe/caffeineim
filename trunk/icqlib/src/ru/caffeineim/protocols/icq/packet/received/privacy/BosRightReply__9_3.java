@@ -31,15 +31,12 @@ public class BosRightReply__9_3 extends ReceivedPacket {
 	}
 
 	public void execute(OscarConnection connection) {
-		connection.sendFlap(new SetICQStatus(connection.getTweaker().
-				getInitialStatusMode(),
-				connection.getTweaker().
-				getInitialStatusFlags(),
-				connection.getTweaker().
-				getTcpConnectionFlag(),
+		connection.sendFlap(new SetICQStatus(
+				connection.getTweaker().getInitialStatusMode(),
+				connection.getTweaker().getInitialStatusFlags(),
+				connection.getTweaker().getTcpConnectionFlag(),
 				connection.getClient().getInetaddress(),
-				connection.getTweaker().
-				getP2PPortListening()));
+				connection.getTweaker().getP2PPortListening()));
 		connection.sendFlap(new ClientReady());
 	}
 }

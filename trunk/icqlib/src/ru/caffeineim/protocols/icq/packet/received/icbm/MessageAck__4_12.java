@@ -17,6 +17,9 @@ package ru.caffeineim.protocols.icq.packet.received.icbm;
 
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.MessageAckEvent;
@@ -25,9 +28,11 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class MessageAck__4_12 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(MessageAck__4_12.class);
 
 	private Iterator iter;
 	private RawData time;
@@ -50,7 +55,8 @@ public class MessageAck__4_12 extends ReceivedPacket {
 	public void notifyEvent(OscarConnection connection) {
 		MessageAckEvent e = new MessageAckEvent(this);
 		for (int i = 0; i < connection.getMessagingListeners().size(); i++) {
-			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);            		
+			MessagingListener l = (MessagingListener) connection.getMessagingListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onMessageAck()");
 			l.onMessageAck(e);
 		}
 	}

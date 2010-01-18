@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaAffilationsUserInfoEvent;
@@ -38,6 +41,8 @@ import ru.caffeineim.protocols.icq.packet.sent.meta.FindUsersByUIN;
  */
 public class FindUsersEventsTest implements MetaInfoListener, OurStatusListener {
 
+	private static Log log = LogFactory.getLog(FindUsersEventsTest.class);
+
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
     private static final String UIN = "426981083";
@@ -46,10 +51,8 @@ public class FindUsersEventsTest implements MetaInfoListener, OurStatusListener 
 
     public FindUsersEventsTest(String uin, String password) {
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        //connection.getPacketAnalyser().setDebug(true);
-        //connection.getPacketAnalyser().setDump(true);
 
-        connection.addMetaInfoListener(this);
+    	connection.addMetaInfoListener(this);
         connection.addOurStatusListener(this);
 
         connection.connect();
@@ -94,19 +97,19 @@ public class FindUsersEventsTest implements MetaInfoListener, OurStatusListener 
     }
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
-		System.out.println("AuthorizationFailed");
 		connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
 	public void onLogin() {
+		// TODO
 		connection.sendFlap(new FindUsersByUIN(UIN, connection.getUserId()));
 	}
 
 	public void onLogout(Exception e) {
-		System.out.println("OnLogout");
-		e.printStackTrace();
 		connection.close();
+		log.error("Logout ", e);
 		System.exit(1);
 	}
 

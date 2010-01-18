@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.ssi;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.SsiModifyingAckEvent;
@@ -27,6 +30,8 @@ import ru.caffeineim.protocols.icq.setting.enumerations.SsiResultModeEnum;
  *   @author Samolisov Pavel
  */
 public class SsiModifyingAck__19_14 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(SsiModifyingAck__19_14.class);
 
 	private SsiResultModeEnum[] results;
 
@@ -49,6 +54,7 @@ public class SsiModifyingAck__19_14 extends ReceivedPacket {
 		SsiModifyingAckEvent e = new SsiModifyingAckEvent(this);
 		for (int i = 0; i < connection.getContactListListeners().size(); i++) {
 			ContactListListener l = (ContactListListener) connection.getContactListListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onSsiModifyingAck()");
 			l.onSsiModifyingAck(e);
 		}
 	}

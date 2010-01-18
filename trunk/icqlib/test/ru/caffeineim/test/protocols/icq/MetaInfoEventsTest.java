@@ -18,6 +18,9 @@ package ru.caffeineim.test.protocols.icq;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
@@ -41,7 +44,9 @@ import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
  */
 public class MetaInfoEventsTest implements MetaInfoListener, OurStatusListener {
 
-    private static final String SERVER = "login.icq.com";
+	private static Log log = LogFactory.getLog(MetaInfoEventsTest.class);
+
+	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
 
     private static final String UIN1 = "217709";
@@ -50,8 +55,6 @@ public class MetaInfoEventsTest implements MetaInfoListener, OurStatusListener {
 
     public MetaInfoEventsTest(String uin, String password) {
         connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
-        connection.getPacketAnalyser().setDump(true);
 
         connection.addMetaInfoListener(this);
         connection.addOurStatusListener(this);
@@ -60,109 +63,106 @@ public class MetaInfoEventsTest implements MetaInfoListener, OurStatusListener {
     }
 
     public void onShortUserInfo(MetaShortUserInfoEvent e) {
-        System.out.println("Short User Info: ");
-        System.out.println("  Nick Name = "  + e.getNickName());
-        System.out.println("  First Name = " + e.getFirstName());
-        System.out.println("  Last Name = "  + e.getLastName());
-        System.out.println("  Email = "      + e.getEmail());
-        System.out.println("  Auth = "       + e.isAuth());
+        log.info("Short User Info: ");
+        log.info("  Nick Name = "  + e.getNickName());
+        log.info("  First Name = " + e.getFirstName());
+        log.info("  Last Name = "  + e.getLastName());
+        log.info("  Email = "      + e.getEmail());
+        log.info("  Auth = "       + e.isAuth());
     }
 
     public void onBasicUserInfo(MetaBasicUserInfoEvent e) {
-        System.out.println("Basic User Info: ");
-        System.out.println("  Nick Name = "  + e.getNickName());
-        System.out.println("  First Name = " + e.getFirstName());
-        System.out.println("  Last Name = "  + e.getLastName());
-        System.out.println("  Email = "      + e.getEmail());
-        System.out.println("  Home City = "  + e.getHomeCity());
-        System.out.println("  Home State = " + e.getHomeState());
-        System.out.println("  Home Phone = " + e.getHomePhone());
-        System.out.println("  Home Fax = "   + e.getHomeFax());
-        System.out.println("  Home Address = "  + e.getHomeAddress());
-        System.out.println("  Cell Phone = "  + e.getCellPhone());
-        System.out.println("  Zip = "         + e.getZipCode());
-        System.out.println("  Home Country = "  + e.getHomeCountry());
-        System.out.println("  GMT offset = "  + e.getTimeZone());
-
-        System.out.println("  Auth = "       + e.isAuth());
-        System.out.println("  WebAware = "       + e.isWebaware());
-        System.out.println("  DirectConnection = " + e.isDirectConnection());
-        System.out.println("  PublishPrimaryEmail = " + e.isPublishPrimaryEmail());
+        log.info("Basic User Info: ");
+        log.info("  Nick Name = "  + e.getNickName());
+        log.info("  First Name = " + e.getFirstName());
+        log.info("  Last Name = "  + e.getLastName());
+        log.info("  Email = "      + e.getEmail());
+        log.info("  Home City = "  + e.getHomeCity());
+        log.info("  Home State = " + e.getHomeState());
+        log.info("  Home Phone = " + e.getHomePhone());
+        log.info("  Home Fax = "   + e.getHomeFax());
+        log.info("  Home Address = "  + e.getHomeAddress());
+        log.info("  Cell Phone = "  + e.getCellPhone());
+        log.info("  Zip = "         + e.getZipCode());
+        log.info("  Home Country = "  + e.getHomeCountry());
+        log.info("  GMT offset = "  + e.getTimeZone());
+        log.info("  Auth = "       + e.isAuth());
+        log.info("  WebAware = "       + e.isWebaware());
+        log.info("  DirectConnection = " + e.isDirectConnection());
+        log.info("  PublishPrimaryEmail = " + e.isPublishPrimaryEmail());
     }
 
     public void onEmailUserInfo(MetaEmailUserInfoEvent e) {
-        System.out.println("Email User Info: ");
+        log.info("Email User Info: ");
         for (int i = 0; i < e.getEmails().size(); i++)
-        {
-            System.out.println("Email: " + e.getEmails().get(i));
-        }
+            log.info("Email: " + e.getEmails().get(i));
     }
 
     public void onWorkUserInfo(MetaWorkUserInfoEvent e) {
-        System.out.println("Work User Info: ");
-        System.out.println("  Work City = "  + e.getWorkCity());
-        System.out.println("  Work State = "  + e.getWorkState());
-        System.out.println("  Work Phone = "  + e.getWorkPhone());
-        System.out.println("  Work Fax = "  + e.getWorkFax());
-        System.out.println("  Work Address = "  + e.getWorkAddress());
-        System.out.println("  Work Zip = "  + e.getWorkZip());
-        System.out.println("  Work Country = "  + e.getWorkCountry());
-        System.out.println("  Work Company = "  + e.getWorkCompany());
-        System.out.println("  Work Department = "  + e.getWorkDepartment());
-        System.out.println("  Work Position = "  + e.getWorkPosition());
-        System.out.println("  Work WebPage = "  + e.getWorkWebPage());
-        System.out.println("  Work Occupation = "  + e.getWorkOccupation());
+        log.info("Work User Info: ");
+        log.info("  Work City = "  + e.getWorkCity());
+        log.info("  Work State = "  + e.getWorkState());
+        log.info("  Work Phone = "  + e.getWorkPhone());
+        log.info("  Work Fax = "  + e.getWorkFax());
+        log.info("  Work Address = "  + e.getWorkAddress());
+        log.info("  Work Zip = "  + e.getWorkZip());
+        log.info("  Work Country = "  + e.getWorkCountry());
+        log.info("  Work Company = "  + e.getWorkCompany());
+        log.info("  Work Department = "  + e.getWorkDepartment());
+        log.info("  Work Position = "  + e.getWorkPosition());
+        log.info("  Work WebPage = "  + e.getWorkWebPage());
+        log.info("  Work Occupation = "  + e.getWorkOccupation());
     }
 
     public void onMoreUserInfo(MetaMoreUserInfoEvent e) {
-        System.out.println("More User Info");
-        System.out.println(" age = " + e.getAge());
-        System.out.println(" gender = " + e.getGender());
-        System.out.println(" homePage = " + e.getHomePage());
-        System.out.println(" birth = " + e.getBirth());
-        System.out.println(" languages:");
+        log.info("More User Info");
+        log.info(" age = " + e.getAge());
+        log.info(" gender = " + e.getGender());
+        log.info(" homePage = " + e.getHomePage());
+        log.info(" birth = " + e.getBirth());
+        log.info(" languages:");
         for (int i = 0; i < e.getLanguages().size(); i++) {
-            System.out.println(e.getLanguages().get(i));
+            log.info(e.getLanguages().get(i));
         }
-        System.out.println(" original City = " + e.getOriginalCity());
-        System.out.println(" original State = " + e.getOriginalState());
-        System.out.println(" original Country = " + e.getOriginalCountry());
-        System.out.println(" marital Status = " + e.getMaritalStatus());
+        log.info(" original City = " + e.getOriginalCity());
+        log.info(" original State = " + e.getOriginalState());
+        log.info(" original Country = " + e.getOriginalCountry());
+        log.info(" marital Status = " + e.getMaritalStatus());
     }
 
     public void onNotesUserInfo(MetaNoteUserInfoEvent e) {
-        System.out.println(" About info = " + e.getNote());
+        log.info(" About info = " + e.getNote());
     }
 
     public void onInterestsUserInfo(MetaInterestsUserInfoEvent e) {
-        System.out.println("Interests User Info: ");
+        log.info("Interests User Info: ");
         for (Iterator iter = e.getInterests().entrySet().iterator(); iter.hasNext();) {
             Entry entry = (Entry) iter.next();
-            System.out.println("Category: " + entry.getKey() + " interest: " + entry.getValue());
+            log.info("Category: " + entry.getKey() + " interest: " + entry.getValue());
         }
     }
 
     public void onAffilationsUserInfo(MetaAffilationsUserInfoEvent e) {
-        System.out.println("PostBackgrounds User Info: ");
+        log.info("PostBackgrounds User Info: ");
         for (Iterator iter = e.getPostBackgrounds().entrySet().iterator(); iter.hasNext();) {
             Entry entry = (Entry) iter.next();
-            System.out.println("Category: " + entry.getKey() + " postbackground: " + entry.getValue());
+            log.info("Category: " + entry.getKey() + " postbackground: " + entry.getValue());
         }
 
-        System.out.println("Affilations User Info: ");
+        log.info("Affilations User Info: ");
         for (Iterator iter = e.getAffilations().entrySet().iterator(); iter.hasNext();) {
             Entry entry = (Entry) iter.next();
-            System.out.println("Category: " + entry.getKey() + " affilations: " + entry.getValue());
+            log.info("Category: " + entry.getKey() + " affilations: " + entry.getValue());
         }
     }
 
     public void onRegisterNewUINSuccess(UINRegistrationSuccessEvent e) {
-        System.out.println("Registration of new number complete");
-        System.out.println("New UIN: " + e.getNewUIN());
+        log.info("Registration of new number complete");
+        log.info("New UIN: " + e.getNewUIN());
     }
 
     public void onRegisterNewUINFailed(UINRegistrationFailedEvent e) {
-        System.out.println("UIN Registration filed!");
+        log.warn("UIN Registration filed!");
     }
 
     public static void main(String[] args) {
@@ -175,6 +175,7 @@ public class MetaInfoEventsTest implements MetaInfoListener, OurStatusListener {
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
 		connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
@@ -184,8 +185,8 @@ public class MetaInfoEventsTest implements MetaInfoListener, OurStatusListener {
 	}
 
 	public void onLogout(Exception e) {
-		e.printStackTrace();
 		connection.close();
+		log.error("Logout ", e);
 		System.exit(1);
 	}
 

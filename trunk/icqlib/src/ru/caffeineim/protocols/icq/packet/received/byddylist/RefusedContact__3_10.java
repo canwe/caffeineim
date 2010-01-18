@@ -15,14 +15,20 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.byddylist;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class RefusedContact__3_10 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(RefusedContact__3_10.class);
+
 	private String ref;
 
 	public RefusedContact__3_10(byte array[]) {
@@ -36,6 +42,6 @@ public class RefusedContact__3_10 extends ReceivedPacket {
 	}
 
 	public void notifyEvent(OscarConnection connection) {
-		System.out.println(ref);
+		log.warn(ref);
 	}
 }

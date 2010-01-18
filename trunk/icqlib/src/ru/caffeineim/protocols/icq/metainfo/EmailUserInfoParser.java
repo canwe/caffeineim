@@ -20,6 +20,9 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaEmailUserInfoEvent;
@@ -30,7 +33,10 @@ import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
  *   @author Samolisov Pavel
  */
 public class EmailUserInfoParser extends BaseMetaInfoParser {
-    private List emails = new ArrayList();
+
+	private static Log log = LogFactory.getLog(EmailUserInfoParser.class);
+
+	private List emails = new ArrayList();
 
     protected EventObject getNewEvent() {
         return new MetaEmailUserInfoEvent(this);
@@ -38,6 +44,7 @@ public class EmailUserInfoParser extends BaseMetaInfoParser {
 
 
     protected void sendMessage(EventListener listener, EventObject e) {
+    	log.debug("notify listener " + listener.getClass().getName() + " onEmailUserInfo()");
         ((MetaInfoListener) listener).onEmailUserInfo((MetaEmailUserInfoEvent) e);
     }
 

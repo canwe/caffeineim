@@ -18,11 +18,16 @@ package ru.caffeineim.protocols.icq.core;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <p>Created by 16.01.2010
  *   @author Samolisov Pavel
  */
 public class OscarConfiguration {
+
+	private static Log log = LogFactory.getLog(OscarConfiguration.class);
 
 	private static final String CONFIG_FILE = "/icqlib.properties";
 
@@ -39,9 +44,7 @@ public class OscarConfiguration {
 			loaded = true;
 		}
 		catch (IOException e) {
-			// TODO logging
-			System.out.println("Could not load properties from file " + CONFIG_FILE);
-			e.printStackTrace();
+			log.error("Could not load properties from file " + CONFIG_FILE, e);
 			System.exit(1);
 		}
 	}

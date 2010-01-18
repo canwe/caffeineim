@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
@@ -30,6 +33,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
  */
 public class ChangePasswordTest implements OurStatusListener, MetaAckListener{
 
+	private static Log log = LogFactory.getLog(ChangePasswordTest.class);
+
 	private static final String SERVER = "login.icq.com";
 	private static final int PORT = 5190;
 
@@ -40,9 +45,6 @@ public class ChangePasswordTest implements OurStatusListener, MetaAckListener{
 		this.newPassword = newPassword;
 		con = new OscarConnection(SERVER, PORT, login, password);
 
-		con.getPacketAnalyser().setDebug(true);
-		con.getPacketAnalyser().setDump(true);
-
 		con.addMetaAckListener(this);
 		con.addOurStatusListener(this);
 
@@ -50,7 +52,7 @@ public class ChangePasswordTest implements OurStatusListener, MetaAckListener{
 	}
 
 	public void onMetaAck(MetaAckEvent e) {
-		System.out.println("Result = " + e.isOk());
+
 	}
 
 	public static void main(String[] args) {
@@ -63,6 +65,7 @@ public class ChangePasswordTest implements OurStatusListener, MetaAckListener{
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
 		con.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
@@ -71,13 +74,13 @@ public class ChangePasswordTest implements OurStatusListener, MetaAckListener{
 			OscarInterface.changePassword(con, newPassword);
 		}
 		catch (ConvertStringException ex) {
-			System.out.println(ex.getMessage());
+			log.error(ex.getMessage(), ex);
 		}
 	}
 
 	public void onLogout(Exception e) {
-		e.printStackTrace();
 		con.close();
+		log.error("Logout ", e);
 		System.exit(1);
 	}
 

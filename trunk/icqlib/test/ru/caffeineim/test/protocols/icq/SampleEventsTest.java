@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.IncomingMessageEvent;
@@ -38,18 +41,16 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
  */
 public class SampleEventsTest implements MessagingListener, UserStatusListener, OurStatusListener {
 
+	private static Log log = LogFactory.getLog(SampleEventsTest.class);
+
 	private static final String SERVER = "login.icq.com";
     private static final int PORT = 5190;
 
     private OscarConnection connection;
 
     public SampleEventsTest(String uin, String password) {
-        System.out.println("Login to ICQ server");
     	connection = new OscarConnection(SERVER, PORT, uin, password);
-        connection.getPacketAnalyser().setDebug(true);
-        //connection.getPacketAnalyser().setDump(true);
 
-        // Зарегестрируем класс как слушатель
         connection.addMessagingListener(this);
         connection.addUserStatusListener(this);
         connection.addOurStatusListener(this);
@@ -58,39 +59,39 @@ public class SampleEventsTest implements MessagingListener, UserStatusListener, 
     }
 
     public void onIncomingMessage(IncomingMessageEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getMessage());
+        log.info("Incoming message from " + e.getSenderID() + ": " + e.getMessage());
     }
 
     public void onIncomingUrl(IncomingUrlEvent e) {
-        System.out.println(e.getSenderID() + " sent : " + e.getUrl());
+    	log.info("Incoming url from " + e.getSenderID() + ": " + e.getUrl());
     }
 
     public void onOfflineMessage(OfflineMessageEvent e) {
-        System.out.println(e.getSenderUin() + " sent new offline message");
-        System.out.println(" text: " + e.getMessage());
-        System.out.println(" date: " + e.getSendDate());
-        System.out.println(" type: " + e.getMessageType());
-        System.out.println(" flag: " + e.getMessageFlag());
+        log.info(e.getSenderUin() + " sent new offline message");
+        log.info(" text: " + e.getMessage());
+        log.info(" date: " + e.getSendDate());
+        log.info(" type: " + e.getMessageType());
+        log.info(" flag: " + e.getMessageFlag());
     }
 
     public void onOffgoingUser(OffgoingUserEvent e) {
-        System.out.println(e.getOffgoingUserId() + " went offline.");
+    	log.info(e.getOffgoingUserId() + " went offline.");
     }
 
     public void onIncomingUser(IncomingUserEvent e) {
-        System.out.println(e.getIncomingUserId() + " has just signed on.");
+    	log.info(e.getIncomingUserId() + " has signed on.");
     }
 
     public void onMessageMissed(MessageMissedEvent e) {
-		System.out.println("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
+    	log.warn("Message from " + e.getUin() + " can't be recieved because " + e.getReason());
 	}
 
     public void onMessageError(MessageErrorEvent e) {
-        System.out.println("Message error code " + e.getError().getCode() + " occurred");
+        log.warn("Message error code " + e.getError().getCode() + " occurred");
     }
 
     public void onMessageAck(MessageAckEvent e) {
-    	System.out.println("MessageAck " + e.getRcptUin());
+    	log.info("MessageAck " + e.getRcptUin());
     }
 
     public static void main(String[] args) {
@@ -103,21 +104,18 @@ public class SampleEventsTest implements MessagingListener, UserStatusListener, 
 
 	public void onLogin() {
 		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
-
-    	// Запросим сообщения, присланные нам в оффлайн
         OscarInterface.requestOfflineMessages(connection);
 	}
 
     public void onLogout(Exception e) {
-        System.out.println("Logged out (possibly due to error)");
-        e.printStackTrace();
         connection.close();
+        log.error("Logout ", e);
         System.exit(1);
     }
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
-		System.out.println("Authorization Failed! You UIN or Password is not valid");
 		connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 

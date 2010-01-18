@@ -18,6 +18,9 @@ package ru.caffeineim.protocols.icq.metainfo;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.MetaNoteUserInfoEvent;
@@ -30,6 +33,8 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class NotesUserInfoParser extends BaseMetaInfoParser {
 
+	private static Log log = LogFactory.getLog(NotesUserInfoParser.class);
+
     private String note;
 
     protected EventObject getNewEvent() {
@@ -37,7 +42,8 @@ public class NotesUserInfoParser extends BaseMetaInfoParser {
     }
 
     protected void sendMessage(EventListener listener, EventObject e) {
-        ((MetaInfoListener) listener).onNotesUserInfo((MetaNoteUserInfoEvent) e);
+    	log.debug("notify listener " + listener.getClass().getName() + " onNotesUserInfo()");
+    	((MetaInfoListener) listener).onNotesUserInfo((MetaNoteUserInfoEvent) e);
     }
 
     public void parse(byte[] data, int position) throws ConvertStringException {

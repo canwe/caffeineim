@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.icbm;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -36,6 +39,8 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  *   @author Fabrice Michellonet
  */
 public class IncomingMessage__4_7 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(IncomingMessage__4_7.class);
 
 	public static final int UCS2BE_ENCODING_MASK = 0x00020000;
 
@@ -146,8 +151,9 @@ public class IncomingMessage__4_7 extends ReceivedPacket {
 		else if (getMessageType().getType() == MessageTypeEnum.XSTATUS_MESSAGE)
 			notifyXStatusRequest(connection);
 		else {
-			System.out.println("UNRECOGNIZED IncomingMessage__4_7 TYPE: " + getMessageType().getType() + " (norm " +
-					MessageTypeEnum.PLAIN_MESSAGE + ", url " + MessageTypeEnum.URL + ", xstatusreq " + MessageTypeEnum.XSTATUS_MESSAGE + ")");
+			log.error("UNRECOGNIZED IncomingMessage__4_7 TYPE: " + getMessageType().getType() +
+					" (norm " + MessageTypeEnum.PLAIN_MESSAGE + ", url " + MessageTypeEnum.URL + "," +
+					" xstatusreq " + MessageTypeEnum.XSTATUS_MESSAGE + ")");
 		}
 	}
 

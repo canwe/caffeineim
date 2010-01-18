@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.byddylist;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.OffgoingUserEvent;
@@ -26,6 +29,8 @@ import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
  *   @author Fabrice Michellonet
  */
 public class OffgoingUser__3_12 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(OffgoingUser__3_12.class);
 
 	private RawData userId;
 
@@ -45,6 +50,7 @@ public class OffgoingUser__3_12 extends ReceivedPacket {
 		OffgoingUserEvent e = new OffgoingUserEvent(this);
 		for (int i = 0; i < connection.getUserStatusListeners().size(); i++) {
 			UserStatusListener l = (UserStatusListener) connection.getUserStatusListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onOffgoingUser()");
 			l.onOffgoingUser(e);
 		}
 	}

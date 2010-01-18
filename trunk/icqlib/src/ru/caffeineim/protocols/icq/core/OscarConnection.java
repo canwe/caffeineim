@@ -21,6 +21,9 @@ import java.util.Vector;
 
 import javax.net.SocketFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Tlv;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
@@ -41,7 +44,10 @@ import ru.caffeineim.protocols.icq.setting.Tweaker;
  *   @author Samolisov Pavel
  */
 public class OscarConnection {
-    private Tlv cookie;
+
+	private static Log log = LogFactory.getLog(OscarConnection.class);
+
+	private Tlv cookie;
     private String userId;
     private String password;
     private boolean authorized = false;
@@ -64,6 +70,7 @@ public class OscarConnection {
 
     static {
     	OscarConfiguration.load();
+    	log.debug("OscarConfiguration has been loaded");
     }
 
     public OscarConnection(String host, int port, String userId, String password) {
@@ -94,58 +101,72 @@ public class OscarConnection {
     }
 
     public void addMetaAckListener(MetaAckListener listener) {
+    	log.debug("MetaAckListener " + listener.getClass().getName() + " has been added");
         metaAckListeners.add(listener);
     }
 
     public boolean removeMetaAckListener(MetaAckListener listener) {
+    	log.debug("MetaAckListener " + listener.getClass().getName() + " has been removed");
         return metaAckListeners.remove(listener);
     }
 
     public void addMetaInfoListener(MetaInfoListener listener) {
+    	log.debug("MetaInfoListener " + listener.getClass().getName() + " has been added");
         metaInfoListeners.add(listener);
     }
 
     public boolean removeMetaInfoListener(MetaInfoListener listener) {
+    	log.debug("MetaInfoListener " + listener.getClass().getName() + " has been removed");
         return metaInfoListeners.remove(listener);
     }
 
     public void addContactListListener(ContactListListener listener) {
+    	log.debug("ContactListListener " + listener.getClass().getName() + " has been added");
         contactListListeners.add(listener);
     }
 
     public boolean removeContactListListener(ContactListListener listener) {
+    	log.debug("ContactListListener " + listener.getClass().getName() + " has been removed");
         return contactListListeners.remove(listener);
     }
 
     public void addMessagingListener(MessagingListener listener) {
+    	log.debug("MessagingListener " + listener.getClass().getName() + " has been added");
         messagingListeners.add(listener);
     }
 
     public boolean removeMessagingListener(MessagingListener listener) {
+    	log.debug("MessagingListener " + listener.getClass().getName() + " has been removed");
         return messagingListeners.remove(listener);
     }
 
     public void addUserStatusListener(UserStatusListener listener) {
+    	log.debug("UserStatusListener " + listener.getClass().getName() + " has been added");
         userStatusListeners.add(listener);
     }
 
     public boolean removeUserStatusListener(UserStatusListener listener) {
+    	log.debug("UserStatusListener " + listener.getClass().getName() + " has been removed");
         return userStatusListeners.remove(listener);
     }
 
     public void addXStatusListener(XStatusListener listener) {
+    	log.debug("XStatusListener " + listener.getClass().getName() + " has been added");
         xStatusListeners.add(listener);
     }
 
     public boolean removeXStatusListener(XStatusListener listener) {
+    	log.debug("XStatusListener " + listener.getClass().getName() + " has been removed");
         return xStatusListeners.remove(listener);
     }
 
     public void addOurStatusListener(OurStatusListener listener) {
+    	log.debug("OurStatusListener " + listener.getClass().getName() + " has been added");
     	ourStatusListeners.add(listener);
     }
 
     public boolean removeOurStatusListener(OurStatusListener listener) {
+    	log.debug("OurStatusListener " + listener.getClass().getName() + " has been removed");
     	return ourStatusListeners.remove(listener);
     }
 
@@ -173,7 +194,7 @@ public class OscarConnection {
                     client.disconnect();
                 }
                 catch (IOException e1) {
-                	// TODO warn - не удалось дисконнектиться
+                	log.debug(e1.getMessage(), e1);
                 }
                 finally {
                 	if (authorized)
@@ -186,6 +207,7 @@ public class OscarConnection {
     protected synchronized void notifyOnLogout(Exception exception) {
     	for (int i = 0; i < getOurStatusListeners().size(); i++) {
     		OurStatusListener l = (OurStatusListener) getOurStatusListeners().get(i);
+    		log.debug("notify listener " + l.getClass().getName() + " onLogout(" + exception + ")");
     		l.onLogout(exception);
     	}
     }
@@ -227,8 +249,11 @@ public class OscarConnection {
 
             // starting the pinger thread
             //pingHandler = new OscarPingHandler(this, 1000);
+
+            log.debug("OscarConnection has been connected");
     	}
     	catch (IOException e) {
+    		log.error(e.getMessage(), e);
     		notifyOnLogout(e);
 		}
     }
@@ -240,13 +265,15 @@ public class OscarConnection {
      */
     public synchronized void close() {
     	try {
-    		if (connected)
+    		if (connected) {
     			client.disconnect();
+    		}
     	}
     	catch (IOException e) {
-    		// warn - не удалось дисконнектится
+    		log.debug(e.getMessage(), e);
 		}
     	finally {
+    		log.debug("OscarConnection has been disconnected");
     		connected = false;
     		setAuthorized(false);
     	}
@@ -257,6 +284,7 @@ public class OscarConnection {
         if (authorized) {
         	for (int i = 0; i < getOurStatusListeners().size(); i++) {
         		OurStatusListener l = (OurStatusListener) getOurStatusListeners().get(i);
+        		log.debug("notify listener " + l.getClass().getName() + " onLogin()");
         		l.onLogin();
         	}
         }
@@ -264,10 +292,6 @@ public class OscarConnection {
 
     public boolean isAuthorized() {
         return authorized;
-    }
-
-    public boolean isDebugging() {
-    	return analyser.isDebugging();
     }
 
     public String getUserId() {

@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.ssi;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.RawData;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
@@ -29,10 +32,12 @@ import ru.caffeineim.protocols.icq.tool.StringTools;
  */
 public class SsiAuthReply__19_27 extends ReceivedPacket {
 
+	private static Log log = LogFactory.getLog(SsiAuthReply__19_27.class);
+
 	private String senderUin;
-	
+
 	private String message;
-	
+
 	private boolean authFlag;
 
 	public SsiAuthReply__19_27(byte[] array) throws ConvertStringException {
@@ -48,21 +53,22 @@ public class SsiAuthReply__19_27 extends ReceivedPacket {
 		RawData len = new RawData(data[position++]);
 		senderUin = new String(data, position, len.getValue());
 		position += len.getValue();
-		
+
 		// auth flag
 		RawData flag = new RawData(data[position++]);
 		authFlag = flag.getValue() == 1;
-		
+
 		// message
 		len = new RawData(data, position, RawData.WORD_LENGHT);
 		position += 2;
 		message = StringTools.utf8ByteArrayToString(data, position, len.getValue());
 	}
 
-	public void notifyEvent(OscarConnection connection) {		
+	public void notifyEvent(OscarConnection connection) {
 		SsiAuthReplyEvent e = new SsiAuthReplyEvent(this);
 		for (int i = 0; i < connection.getContactListListeners().size(); i++) {
 			ContactListListener l = (ContactListListener) connection.getContactListListeners().get(i);
+			log.debug("notify listener " + l.getClass().getName() + " onSsiAuthReply()");
 			l.onSsiAuthReply(e);
 		}
 	}
@@ -70,11 +76,11 @@ public class SsiAuthReply__19_27 extends ReceivedPacket {
 	public String getSenderUin() {
 		return senderUin;
 	}
-	
+
 	public String getMessage() {
 		return message;
 	}
-	
+
 	public boolean getAuthFlag() {
 		return authFlag;
 	}

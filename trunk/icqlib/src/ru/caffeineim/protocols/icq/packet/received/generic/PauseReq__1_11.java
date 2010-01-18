@@ -15,15 +15,20 @@
  */
 package ru.caffeineim.protocols.icq.packet.received.generic;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 import ru.caffeineim.protocols.icq.packet.sent.generic.PauseAck;
 
 /**
  * <p>Created by
- *   @author Lo�c Broquet 
+ *   @author Lo�c Broquet
  */
 public class PauseReq__1_11 extends ReceivedPacket {
+
+	private static Log log = LogFactory.getLog(PauseReq__1_11.class);
 
 	public PauseReq__1_11(byte array[]) {
 		super(array, true);
@@ -34,6 +39,6 @@ public class PauseReq__1_11 extends ReceivedPacket {
 	}
 
 	public void notifyEvent(OscarConnection oscarconnection) {
-		System.out.println("Server requires a pause");
+		log.info("Server requires a pause");
 	}
 }

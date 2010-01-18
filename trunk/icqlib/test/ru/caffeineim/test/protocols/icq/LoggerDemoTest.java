@@ -18,17 +18,17 @@ package ru.caffeineim.test.protocols.icq;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ru.caffeineim.protocols.icq.integration.OscarInterface;
-
 /**
- * <p>Created by 16.01.2010
+ * <p>Created by 17.01.2010
  *   @author Samolisov Pavel
  */
-public class GetVersionTest {
+public class LoggerDemoTest {
 
-	private static Log log = LogFactory.getLog(GetVersionTest.class);
+	private static Log log = LogFactory.getLog(LoggerDemoTest.class);
 
 	public static void main(String[] args) {
-		log.info("Version: " + OscarInterface.getVersion());
+		log.info("message info");
+		Exception ex = new Exception("Demo message");
+		log.error(ex.getMessage(), ex);
 	}
 }

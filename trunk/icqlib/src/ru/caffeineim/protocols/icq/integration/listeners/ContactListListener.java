@@ -29,7 +29,7 @@ import ru.caffeineim.protocols.icq.integration.events.SsiModifyingAckEvent;
  */
 public interface ContactListListener extends EventListener {
 
-	public void updateContactList(ContactListEvent event);
+	public void onUpdateContactList(ContactListEvent event);
 
 	public void onSsiModifyingAck(SsiModifyingAckEvent event);
 

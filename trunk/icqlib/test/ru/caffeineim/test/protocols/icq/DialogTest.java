@@ -15,6 +15,9 @@
  */
 package ru.caffeineim.test.protocols.icq;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
@@ -38,6 +41,8 @@ import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
  */
 public class DialogTest implements MessagingListener, OurStatusListener {
 
+	private static Log log = LogFactory.getLog(DialogTest.class);
+
 	private static final String SERVER = "login.icq.com";
 	private static final int PORT = 5190;
 
@@ -52,7 +57,6 @@ public class DialogTest implements MessagingListener, OurStatusListener {
 		this.start = start;
 
 		connection = new OscarConnection(SERVER, PORT, uin, password);
-        //connection.getPacketAnalyser().setDebug(true);
 
         connection.addMessagingListener(this);
         connection.addOurStatusListener(this);
@@ -61,11 +65,11 @@ public class DialogTest implements MessagingListener, OurStatusListener {
 	}
 
 	public void onIncomingMessage(IncomingMessageEvent e) {
-		System.out.println("Message from " + e.getSenderID() + ": " + e.getMessage());
+		log.info("Incoming message from " + e.getSenderID() + ": " + e.getMessage());
 		try {
 			OscarInterface.sendBasicMessage(connection, e.getSenderID(), "Hi!");
 		} catch (ConvertStringException e1) {
-			e1.printStackTrace();
+			log.error(e1.getMessage(), e1);
 		}
 	}
 
@@ -90,15 +94,15 @@ public class DialogTest implements MessagingListener, OurStatusListener {
 	}
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
-		System.out.println("Authorization for UIN " + connection.getUserId() + " failed");
 		connection.close();
+		log.error("Authorization failed: " + e.getErrorMessage());
 		System.exit(1);
 	}
 
 	public void onLogin() {
 		if (start)
 			try {
-				Thread.sleep(1000); // Ждем пока залогинится второй
+				Thread.sleep(1000); // Ждем пока залогинится второй аккаунт
 				OscarInterface.sendBasicMessage(connection, recepient, "Hello");
 			} catch (ConvertStringException e) {
 				e.printStackTrace();
@@ -108,8 +112,7 @@ public class DialogTest implements MessagingListener, OurStatusListener {
 	}
 
 	public void onLogout(Exception e) {
-		System.out.println("UIN " + connection.getUserId() + " has logouted");
-		e.printStackTrace();
+		log.error("UIN " + connection.getUserId() + " has logouted", e);
 		connection.close();
 		System.exit(1);
 	}

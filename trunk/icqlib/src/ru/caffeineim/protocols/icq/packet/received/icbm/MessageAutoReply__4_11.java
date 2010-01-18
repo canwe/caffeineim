@@ -156,9 +156,6 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 			// Пропускаем 24 байта - заголовок вложенного Type 1 сообщения
 			index += 24;
 
-			System.out.println("Log: ");
-			System.out.println("  index = " + index);
-			System.out.println("  data.length - index = " + (data.length - index));
 			message = StringTools.utf8ByteArrayToString(data, index, data.length - index);
 		}
 
@@ -167,11 +164,10 @@ public class MessageAutoReply__4_11 extends ReceivedPacket {
 			index += RawData.DWORD_LENGHT;
 			RawData backgroundColor = new RawData(data, index, RawData.DWORD_LENGHT);
 			index += RawData.DWORD_LENGHT;
-			//TODO fix this invocation exception
+			// TODO fix this invocation exception
 			/*RawData guidLg = new RawData(data, index, RawData.DWORD_LENGHT);
 			index += RawData.DWORD_LENGHT;
-			RawData guid = new RawData(data, index, guidLg.getValue());
-			System.out.println("guid = " + guid.getValue());*/
+			RawData guid = new RawData(data, index, guidLg.getValue());*/
 		}
 
 		return message;
