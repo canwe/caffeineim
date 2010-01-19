@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaAffilationsUserInfoEvent;
 import ru.caffeineim.protocols.icq.integration.events.MetaBasicUserInfoEvent;
@@ -33,7 +34,6 @@ import ru.caffeineim.protocols.icq.integration.events.UINRegistrationFailedEvent
 import ru.caffeineim.protocols.icq.integration.events.UINRegistrationSuccessEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaInfoListener;
 import ru.caffeineim.protocols.icq.integration.listeners.OurStatusListener;
-import ru.caffeineim.protocols.icq.packet.sent.meta.FindUsersByUIN;
 
 /**
  * <p>Created by 30.03.2008
@@ -103,8 +103,7 @@ public class FindUsersEventsTest implements MetaInfoListener, OurStatusListener 
 	}
 
 	public void onLogin() {
-		// TODO
-		connection.sendFlap(new FindUsersByUIN(UIN, connection.getUserId()));
+		OscarInterface.findUsersByUIN(connection, UIN);
 	}
 
 	public void onLogout(Exception e) {
