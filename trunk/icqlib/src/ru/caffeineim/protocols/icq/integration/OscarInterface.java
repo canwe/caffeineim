@@ -26,6 +26,7 @@ import ru.caffeineim.protocols.icq.packet.sent.icbm.SendXStatus;
 import ru.caffeineim.protocols.icq.packet.sent.icbm.XStatusRequest;
 import ru.caffeineim.protocols.icq.packet.sent.location.SetLocationInformation;
 import ru.caffeineim.protocols.icq.packet.sent.meta.ChangePassword;
+import ru.caffeineim.protocols.icq.packet.sent.meta.FindUsersByUIN;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestOfflineMessages;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
@@ -179,5 +180,14 @@ public class OscarInterface {
 	 */
 	public static void changePassword(OscarConnection connection, String password) throws ConvertStringException {
 		connection.sendFlap(new ChangePassword(connection.getUserId(), password));
+	}
+
+	/**
+	 * Ищем пользователя, UIN которого равен <code>userId</code>
+	 * @param connection соединение
+	 * @param userId UIN пользователя, по которому осуществляется поиск
+	 */
+	public static void findUsersByUIN(OscarConnection connection, String userId) {
+		connection.sendFlap(new FindUsersByUIN(userId, connection.getUserId()));
 	}
 }
