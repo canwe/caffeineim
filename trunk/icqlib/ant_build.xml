@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="icqlib" default="build-lib" basedir=".">
 
-	<property name="src.dir" value="src" />
-	<property name="lib.dir" value="lib" />
-	<property name="test.dir" value="test" />
-	<property name="build.dir" value="dist" />
-	<property file="${src.dir}/icqlib.properties"/>
+    <property name="src.dir" value="src" />
+    <property name="lib.dir" value="lib" />
+    <property name="test.dir" value="test" />
+    <property name="build.dir" value="dist" />
+    <property file="${src.dir}/icqlib.properties"/>
 
-	<path id="classpath">
-	    <fileset dir="${lib.dir}">
-	    	<include name="**/*.jar" />
-	    </fileset>
-	</path>
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
 
-	<target name="build-lib">
-		<mkdir dir="${build.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.dir}" source="1.4" target="1.4" debug="true" deprecation="true"
-			   includes="**/*.java" classpathref="classpath">
-			<classpath>
-				<pathelement location="." />
-			</classpath>
-		</javac>
-	</target>
+    <target name="build-lib" depends="clean">
+        <mkdir dir="${build.dir}" />
+        <javac srcdir="${src.dir}" destdir="${build.dir}" source="1.4" target="1.4" debug="true"
+               includes="**/*.java" classpathref="classpath">
+            <classpath>
+                <pathelement location="." />
+            </classpath>
+        </javac>
+    </target>
 
-	<target name="build-tests" depends="build-lib">
-		<javac srcdir="${test.dir}" destdir="${build.dir}" source="1.4" target="1.4" deprecation="true"
-		       includes="**/*.java" classpathref="classpath">
-			<classpath>
-				<pathelement location="${test.dir}" />
-				<pathelement location="${build.dir}" />
-			</classpath>
-		</javac>
-	</target>
+    <target name="build-tests" depends="build-lib">
+        <javac srcdir="${test.dir}" destdir="${build.dir}" source="1.4" target="1.4"
+               includes="**/*.java" classpathref="classpath">
+            <classpath>
+                <pathelement location="${test.dir}" />
+                <pathelement location="${build.dir}" />
+            </classpath>
+        </javac>
+    </target>
 
-	<target name="clean">
-		<delete dir="${build.dir}">
-		</delete>
-	</target>
+    <target name="clean">
+        <delete dir="${build.dir}">
+        </delete>
+    </target>
 
-	<target name="build">
-		<antcall target="build-lib">
-		</antcall>
-		<antcall target="build-tests">
-		</antcall>
-	</target>
+    <target name="build">
+        <antcall target="build-lib">
+        </antcall>
+        <antcall target="build-tests">
+        </antcall>
+    </target>
 
-	<target name="jar" depends="build-lib">
-		<jar destfile="${build.dir}/${ant.project.name}-${VERSION}.jar" duplicate="preserve"
-			 compress="true" manifest="${src.dir}/META-INF/MANIFEST.MF">
-			<fileset dir="${build.dir}" />
-		</jar>
-		<copy todir="${build.dir}" file="${src.dir}/icqlib.properties" />
-		<copy todir="${build.dir}" file="${src.dir}/commons-logging.properties" />
-		<copy todir="${build.dir}" file="${src.dir}/log4j.properties" />
-	</target>
+    <target name="jar" depends="build-lib">
+        <jar destfile="${build.dir}/${ant.project.name}-${VERSION}.jar" duplicate="preserve"
+             compress="true">
+            <fileset dir="${build.dir}" />
+        </jar>
+        <copy todir="${build.dir}" file="${src.dir}/icqlib.properties" />
+        <copy todir="${build.dir}" file="${src.dir}/commons-logging.properties" />
+        <copy todir="${build.dir}" file="${src.dir}/log4j.properties" />
+    </target>
 </project>
