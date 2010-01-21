@@ -2,14 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ru.caffeineim.protocols</groupId>
-  <artifactId>icqlib</artifactId>
+  <artifactId>icqlib-examples</artifactId>
   <packaging>jar</packaging>
   <version>0.6-SNAPSHOT</version>
-  <name>icqlib</name>
-  <description>Pure Java implementation of AIM/ICQ protocol</description>
+  <name>icqlib-examples</name>
+  <description>Code samples of using icqlib implementation of AOL/ICQ protocol</description>
   <url>http://code.google.com/p/caffeineim/</url>
   <scm>
-    <developerConnection>scm:svn:https://caffeineim.googlecode.com/svn/trunk/icqlib</developerConnection>
+    <developerConnection>scm:svn:https://caffeineim.googlecode.com/svn/trunk/icqlib-examples</developerConnection>
   </scm>
   <build>
     <plugins>
@@ -25,17 +25,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <encoding>UTF-8</encoding>
@@ -45,21 +34,18 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>2.0-beta-9</version>
         <configuration>
-          <tagBase>https://caffeineim.googlecode.com/svn/tags/icqlib</tagBase>
+          <tagBase>https://caffeineim.googlecode.com/svn/tags/icqlib-examples</tagBase>
         </configuration>
       </plugin>
     </plugins>
-
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>ru.caffeineim.protocols</groupId>
+      <artifactId>icqlib</artifactId>
+      <version>0.6-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
