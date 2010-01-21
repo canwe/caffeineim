@@ -1,0 +1,5 @@
+#summary Проекты, использующие библиотеку icqlib.
+#labels icqlib,users
+
+== JimBot ==
+[http://code.google.com/p/jimbot/ JimBot] - Java IM Bot, it's a bot framework for instant messager
