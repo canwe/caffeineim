@@ -13,7 +13,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package ru.caffeineim.test.protocols.icq;
+package ru.caffeineim.protocols.icq.examples;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,7 +122,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
             } else if (params[0].equals("remme") && params.length > 1) {
                 ContactList.removeYourself(connection, params[1]);
             } else if (params[0].equals("auth") && params.length > 1) {
-                ContactList.sendAuthRequestMessage(connection, params[1], "Авторизуй меня!");
+                ContactList.sendAuthRequestMessage(connection, params[1], "Ð�Ð²Ñ‚Ð¾Ñ€Ð¸Ð·ÑƒÐ¹ Ð¼ÐµÐ½Ñ�!");
             } else if (params[0].equals("msge") && params.length > 2) {
                 OscarInterface.sendExtendedMessage(connection, params[2], params[1]);
             } else if (params[0].equals("msgb")) {
