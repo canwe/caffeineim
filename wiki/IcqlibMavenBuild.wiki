@@ -31,3 +31,5 @@ _mvn clean compile package_
 _mvn clean compile package install_
 
 Maven выполнит сборку библиотеки в jar-файл и скопирует в ваш локальный maven-репозиторий.
+
+Для удобства работы с библиотекой предоставляются демонстрационные .properties файлы commons-logging.properties и log4j.properties, расположенные в директории src/main/props.
