@@ -15,6 +15,7 @@
  */
 package ru.caffeineim.protocols.icq.contacts;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
@@ -24,7 +25,6 @@ import ru.caffeineim.protocols.icq.packet.sent.buddylist.RemoveFromContactList;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiAddItem;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiBeginEdit;
-import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiContactListRequest;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiEndEdit;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiRemoveItem;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiRemoveYourself;
@@ -32,26 +32,32 @@ import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendAuthReplyMessage;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendAuthRequestMessage;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiSendYouWereAdded;
 import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiUpdateGroupHeader;
+import ru.caffeineim.protocols.icq.tool.StringTools;
 
 /**
  * <p>Created by 15.08.2007
  *   @author Samolisov Pavel
  */
-public class ContactList {
-    // TODO needs complete refactoring!
-    private short maxGroupId = 0;
-    private short maxContactId = 0;
-    private Group rootGroup;
-    private static ContactList impl = null;
+public class ContactList implements IContactList {
 
-    /**
-     * private constructor - implements pattern singleton
-     *
-     * @param rootGroup
-     */
-    private ContactList(Group rootGroup) {
+	private static final String GROUP_TITLE_FMT = "{0}:\n";
+
+	private static final String CONTACT_TITLE_FMT = "   {0} ({1})\n";
+
+    private short maxGroupId = 0;
+
+    private short maxContactId = 0;
+
+    private OscarConnection connection;
+
+    private Group rootGroup;
+
+    private int count;
+
+    public ContactList(OscarConnection connection, Group rootGroup, int count) {
+    	this.connection = connection;
         this.rootGroup = rootGroup;
-        // load maxGroupId and maxContactId
+        this.count = count;
 
         for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
             ContactListItem item = (ContactListItem) iter.next();
@@ -73,137 +79,135 @@ public class ContactList {
         }
     }
 
-    private ContactList() {}
-
-    /**
-     * Add new contact to contact's list
-     *
-     * @param connection
-     * @param uin
-     * @param grp
-     * @throws ConvertStringException
-     */
-    public void addContact(OscarConnection connection, String uin, Group grp)
-            throws ConvertStringException {
-        Contact cnt = new Contact(++maxContactId, grp.getGroupId(), uin);
-        addContact(connection, cnt, grp);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addContact(java.lang.String, ru.caffeineim.protocols.icq.contacts.Group)
+	 */
+    public void addContact(String userId, Group group) throws ConvertStringException {
+        Contact contact = new Contact(++ maxContactId, group.getGroupId(), userId);
+        addContact(contact, group);
     }
 
-    /**
-     * Add new contact to contact's list
-     *
-     * @param connection
-     * @param contact
-     * @param grp
-     * @throws ConvertStringException
-     */
-    public void addContact(OscarConnection connection, Contact contact, Group grp)
-            throws ConvertStringException {
-        grp.addItem(contact);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addContact(ru.caffeineim.protocols.icq.contacts.Contact, ru.caffeineim.protocols.icq.contacts.Group)
+	 */
+    public void addContact(Contact contact, Group group) throws ConvertStringException {
+        group.addItem(contact);
+        count++;
 
         connection.sendFlap(new SsiBeginEdit());
         connection.sendFlap(new SsiAddItem(contact));
-        connection.sendFlap(new SsiUpdateGroupHeader(grp));
+        connection.sendFlap(new SsiUpdateGroupHeader(group));
         connection.sendFlap(new SsiEndEdit());
 
         connection.sendFlap(new AddToContactList(contact.getId()));
 
-        if (contact.getNickName() != null && contact.getNickName() != "") {
+        if (StringTools.isEmpty(contact.getNickName())) {
             connection.sendFlap(new RequestShortUserInfo(contact.getId(), connection.getUserId()));
         }
     }
 
-    /**
-     * Remove contact from contact's list
-     *
-     * @param connection
-     * @param uin contact uin
-     * @throws ConvertStringException
-     */
-    public void removeContact(OscarConnection connection, String uin)
-            throws ConvertStringException {
-        Contact cnt = getContactByUIN(uin);
-        if (cnt != null) {
-            removeContact(connection, cnt);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeContact(java.lang.String)
+	 */
+    public void removeContact(String userId) throws ConvertStringException {
+        Contact contact = getContactById(userId);
+        if (contact != null) {
+            removeContact(contact);
         }
     }
 
-    /**
-     * Remove contact from contact's list
-     *
-     * @param connection
-     * @param contact
-     * @throws ConvertStringException
-     */
-    public void removeContact(OscarConnection connection, Contact contact)
-            throws ConvertStringException {
-        Group grp = getGroupById(contact.getGroupId());
-        if (grp != null)
-            grp.removeItem(contact);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeContact(ru.caffeineim.protocols.icq.contacts.Contact)
+	 */
+    public void removeContact(Contact contact) throws ConvertStringException {
+        Group group = getGroupById(contact.getGroupId());
+        if (group != null)
+            group.removeItem(contact);
 
         connection.sendFlap(new SsiBeginEdit());
         connection.sendFlap(new SsiRemoveItem(contact));
-        connection.sendFlap(new SsiUpdateGroupHeader(grp));
+        connection.sendFlap(new SsiUpdateGroupHeader(group));
         connection.sendFlap(new SsiEndEdit());
 
         connection.sendFlap(new RemoveFromContactList(contact.getId()));
     }
 
-    /**
-     * Add group to contact's list
-     *
-     * @param connection
-     * @param grpName name of group
-     * @throws ConvertStringException
-     */
-    public void addGroup(OscarConnection connection, String grpName) throws ConvertStringException {
-        addGroup(connection, new Group(++maxGroupId, grpName));
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addGroup(java.lang.String)
+	 */
+    public void addGroup(String group) throws ConvertStringException {
+        addGroup(new Group(++ maxGroupId, group));
     }
 
-    /**
-     * Add group to contact's list
-     *
-     * @param connection
-     * @param grp
-     * @throws ConvertStringException
-     */
-    public void addGroup(OscarConnection connection, Group grp)
-            throws ConvertStringException {
-        rootGroup.addItem(grp);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addGroup(ru.caffeineim.protocols.icq.contacts.Group)
+	 */
+    public void addGroup(Group group) throws ConvertStringException {
+        rootGroup.addItem(group);
 
         connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiAddItem(grp));
+        connection.sendFlap(new SsiAddItem(group));
         connection.sendFlap(new SsiEndEdit());
     }
 
-    /**
-     * Remove group from contact's list
-     *
-     * @param connection
-     * @param grp
-     * @throws ConvertStringException
-     */
-    public void removeGroup(OscarConnection connection, Group grp)
-            throws ConvertStringException {
-        rootGroup.removeItem(grp);
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeGroup(ru.caffeineim.protocols.icq.contacts.Group)
+	 */
+    public void removeGroup(Group group) throws ConvertStringException {
+    	rootGroup.removeItem(group);
 
         connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiRemoveItem(grp));
+        connection.sendFlap(new SsiRemoveItem(group));
         connection.sendFlap(new SsiEndEdit());
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeYourself(java.lang.String)
+	 */
+    public void removeYourself(String userId) {
+        connection.sendFlap(new SsiRemoveYourself(userId));
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendAuthRequestMessage(java.lang.String, java.lang.String)
+	 */
+    public void sendAuthRequestMessage(String userId, String request) throws ConvertStringException {
+        connection.sendFlap(new SsiSendAuthRequestMessage(userId, request));
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendAuthReplyMessage(java.lang.String, java.lang.String, boolean)
+	 */
+    public void sendAuthReplyMessage(String userId, String reply, boolean auth) throws ConvertStringException {
+        connection.sendFlap(new SsiSendAuthReplyMessage(userId, reply, auth));
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendYouWereAdded(java.lang.String)
+	 */
+    public void sendYouWereAdded(String userId) {
+        connection.sendFlap(new SsiSendYouWereAdded(userId));
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#getRootGroup()
+	 */
+    public Group getRootGroup() {
+        return rootGroup;
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
             ContactListItem item = (ContactListItem) iter.next();
-            sb.append(item.getId() + ":\n");
+            sb.append(MessageFormat.format(GROUP_TITLE_FMT, new Object[]{item.getId()}));
             if (item instanceof Group) {
                 Group grp = (Group) item;
                 for (Iterator grpiter = grp.getContainedItems().iterator(); grpiter.hasNext();) {
                     ContactListItem grpitem = (ContactListItem) grpiter.next();
                     if (grpitem instanceof Contact) {
                         Contact cnt = (Contact) grpitem;
-                        sb.append("   " + cnt.getNickName() + " (" + cnt.getId() + ")\n");
+                        sb.append(MessageFormat.format(CONTACT_TITLE_FMT, new Object[]{cnt.getNickName(), cnt.getId()}));
                     }
                 }
             }
@@ -213,10 +217,8 @@ public class ContactList {
     }
 
     /**
-     * Find group by group id
-     *
-     * @param id
-     * @return
+     * @param id идентификатор группы
+     * @return группу по ее идентификатору
      */
     private Group getGroupById(short id) {
         for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
@@ -230,111 +232,21 @@ public class ContactList {
     }
 
     /**
-     * Find contact by uin
-     *
-     * @param uin
-     * @return
+     * @param userId
+     * @return контакт по его идентификатору
      */
-    private Contact getContactByUIN(String uin) {
+    private Contact getContactById(String userId) {
         for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
             ContactListItem item = (ContactListItem) iter.next();
             if (item instanceof Group) {
                 Group grp = (Group) item;
                 for (Iterator grpiter = grp.getContainedItems().iterator(); grpiter.hasNext();) {
                     ContactListItem cntct = (ContactListItem) grpiter.next();
-                    if (cntct.getId().equals(uin))
+                    if (cntct.getId().equals(userId))
                         return (Contact) cntct;
                 }
             }
         }
-
-        return null;
-    }
-
-
-    /**
-     * return instance of ContactList
-     * if instance not exists - create new
-     *
-     * @param rootGroup
-     * @return
-     */
-    public static ContactList getInstance(Group rootGroup) {
-        if (impl == null) {
-            impl = new ContactList(rootGroup);
-        }
-        return impl;
-    }
-
-    /**
-     * return created instance of ContactList
-     * if instance not exists - return null!
-     *
-     * @return
-     */
-    public static ContactList getInstance() {
-        return impl;
-    }
-
-    /**
-     * Remove me from uin's contact's list
-     *
-     * @param connection
-     * @param uin
-     */
-    public static void removeYourself(OscarConnection connection, String uin) {
-        connection.sendFlap(new SsiRemoveYourself(uin));
-    }
-
-    /**
-     * Send Authorization Request message
-     *
-     * @param connection
-     * @param uin
-     * @param message
-     * @throws ConvertStringException
-     */
-    public static void sendAuthRequestMessage(OscarConnection connection, String uin, String message)
-            throws ConvertStringException {
-        connection.sendFlap(new SsiSendAuthRequestMessage(uin, message));
-    }
-
-    /**
-     * Send Authorization Reply message
-     *
-     * @param connection
-     * @param uin
-     * @param message
-     * @param auth - auth flag
-     * @throws ConvertStringException
-     */
-    public static void sendAuthReplyMessage(OscarConnection connection, String uin, String message,
-            boolean auth) throws ConvertStringException {
-        connection.sendFlap(new SsiSendAuthReplyMessage(uin, message, auth));
-    }
-
-    /**
-     * Send "You were added" message
-     *
-     * @param connection
-     * @param uin
-     */
-    public static void sendYouWereAdded(OscarConnection connection, String uin) {
-        connection.sendFlap(new SsiSendYouWereAdded(uin));
-    }
-
-    /**
-     * Send contact's list request
-     *
-     * @param connection
-     */
-    public static void sendContatListRequest(OscarConnection connection) {
-        connection.sendFlap(new SsiContactListRequest());
-    }
-
-    public static Group getRootGroup() {
-        if (impl != null)
-            return impl.rootGroup;
 
         return null;
     }

@@ -28,7 +28,7 @@ public class LoggerDemoTest {
 
 	public static void main(String[] args) {
 		log.info("message info");
-		Exception ex = new Exception("Demo message");
+		Exception ex = new Exception("Demo  message");
 		log.error(ex.getMessage(), ex);
 	}
 }

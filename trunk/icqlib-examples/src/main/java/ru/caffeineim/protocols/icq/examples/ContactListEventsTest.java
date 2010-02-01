@@ -82,7 +82,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
 
     public void onUpdateContactList(ContactListEvent e) {
         log.info("\nMy Contact List");
-        log.info(ContactList.getInstance(e.getRoot()));
+        log.info(new ContactList(connection, e.getRoot(), e.getCount()));
     }
 
     public void onSsiModifyingAck(SsiModifyingAckEvent e) {
@@ -92,7 +92,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
 
         if (e.getResults()[e.getResults().length - 1].getResult() == SsiResultModeEnum.NO_ERRORS) {
             log.info("\nMy Contact List");
-            log.info(ContactList.getInstance().toString());
+            log.info(connection.getContactList());
         }
     }
 
@@ -105,24 +105,24 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
             String[] params = e.getMessage().split(" ");
             if (params[0].equals("add") && params.length > 1) {
                 log.info("Added new user!");
-                ContactList.getInstance().addContact(connection, params[1],
-                        (Group) ContactList.getRootGroup().getContainedItems().get(0));
-                ContactList.sendYouWereAdded(connection, params[1]);
+                connection.getContactList().addContact(params[1],
+                		(Group) connection.getContactList().getRootGroup().getContainedItems().get(0));
+                connection.getContactList().sendYouWereAdded(params[1]);
             } else if (params[0].equals("addgrp") && params.length > 1) {
                 log.info("Added new group!");
-                ContactList.getInstance().addGroup(connection, params[1]);
+                connection.getContactList().addGroup(params[1]);
             } else if (params[0].equals("remove") && params.length > 1) {
                 log.info("Remove contact!");
-                ContactList.getInstance().removeContact(connection, params[1]);
+                connection.getContactList().removeContact(params[1]);
             } else if (params[0].equals("remgrp")) {
                 log.info("Remove group "
-                        + ((ContactListItem) ContactList.getRootGroup().getContainedItems().get(0)).getId() + "!");
-                ContactList.getInstance().removeGroup(connection,
-                        (Group) ContactList.getRootGroup().getContainedItems().get(0));
+                		+ ((ContactListItem) connection.getContactList().getRootGroup().getContainedItems().get(0)).getId() + "!");
+                connection.getContactList().removeGroup((Group) connection.getContactList().getRootGroup()
+                		.getContainedItems().get(0));
             } else if (params[0].equals("remme") && params.length > 1) {
-                ContactList.removeYourself(connection, params[1]);
+                connection.getContactList().removeYourself(params[1]);
             } else if (params[0].equals("auth") && params.length > 1) {
-                ContactList.sendAuthRequestMessage(connection, params[1], "Ð�Ð²Ñ‚Ð¾Ñ€Ð¸Ð·ÑƒÐ¹ Ð¼ÐµÐ½Ñ�!");
+                connection.getContactList().sendAuthRequestMessage(params[1], "Авторизуй меня!");
             } else if (params[0].equals("msge") && params.length > 2) {
                 OscarInterface.sendExtendedMessage(connection, params[2], params[1]);
             } else if (params[0].equals("msgb")) {
@@ -157,7 +157,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
 
     public void onLogin() {
         OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
-        ContactList.sendContatListRequest(connection);
+        OscarInterface.sendContatListRequest(connection);
     }
 
     public void onMessageAck(MessageAckEvent e) {
@@ -177,7 +177,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
     public void onSsiAuthRequest(SsiAuthRequestEvent e) {
         try {
             log.info("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
-            ContactList.sendAuthReplyMessage(connection, e.getSenderUin(), "Welcome!", true);
+            connection.getContactList().sendAuthReplyMessage(e.getSenderUin(), "Welcome!", true);
         } catch (ConvertStringException ex) {
             log.error(ex.getMessage(), ex);
         }

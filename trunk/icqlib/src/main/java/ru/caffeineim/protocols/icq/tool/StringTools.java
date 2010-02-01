@@ -306,4 +306,13 @@ public class StringTools {
 
     	return res;
     }
+
+    /**
+     * Return <code>true</code> if string <code>string</code> is null or empty
+     * @param string
+     * @return
+     */
+    public static boolean isEmpty(String string) {
+    	return string == null || string.length() < 1;
+    }
 }
