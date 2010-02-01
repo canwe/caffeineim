@@ -22,10 +22,8 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Item;
 import ru.caffeineim.protocols.icq.RawData;
-import ru.caffeineim.protocols.icq.Snac;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
@@ -67,11 +65,14 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
     }
 
     public void execute(OscarConnection connection) {
-        connection.sendFlap(new Flap(2, new Snac(19, 7, 0, 0, 0)));
     }
 
     public void notifyEvent(OscarConnection connection) {
         ContactListEvent e = new ContactListEvent(this);
+
+        log.debug("fetched contact-list");
+        connection.buildContactList(e.getRoot(), getCount());
+
         for (int i = 0; i < connection.getContactListListeners().size(); i++) {
             ContactListListener l = (ContactListListener) connection.getContactListListeners().get(i);
 			log.debug("notify listener " + l.getClass().getName() + " onUpdateContactList()");

@@ -30,6 +30,7 @@ import ru.caffeineim.protocols.icq.packet.sent.meta.FindUsersByUIN;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestFullUserInfo;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestOfflineMessages;
 import ru.caffeineim.protocols.icq.packet.sent.meta.RequestShortUserInfo;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiContactListRequest;
 import ru.caffeineim.protocols.icq.setting.enumerations.IdleTimeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.setting.enumerations.XStatusModeEnum;
@@ -80,7 +81,7 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Изменяем свой статус на <code>newStatus</code>
+	 * Меняем свой статус на <code>newStatus</code>
 	 *
 	 * @param connection соединение
 	 * @param newStatus новый статус
@@ -94,7 +95,7 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Изменяем свой X-статус на <code>newStatus</code>
+	 * Меняем свой X-статус на <code>newStatus</code>
 	 *
 	 * @param connection соедиенение
 	 * @param newStatus новый X-статус
@@ -183,11 +184,19 @@ public class OscarInterface {
 	}
 
 	/**
-	 * Ищем пользователя, UIN которого равен <code>userId</code>
+	 * Находим пользователя, UIN которого равен <code>userId</code>
 	 * @param connection соединение
 	 * @param userId UIN пользователя, по которому осуществляется поиск
 	 */
 	public static void findUsersByUIN(OscarConnection connection, String userId) {
 		connection.sendFlap(new FindUsersByUIN(userId, connection.getUserId()));
 	}
+
+	/**
+     * Запрашиваем контакт-лист с сервера ICQ
+     * @param connection
+     */
+    public static void sendContatListRequest(OscarConnection connection) {
+        connection.sendFlap(new SsiContactListRequest());
+    }
 }

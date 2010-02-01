@@ -26,6 +26,10 @@ import org.apache.commons.logging.LogFactory;
 
 import ru.caffeineim.protocols.icq.Flap;
 import ru.caffeineim.protocols.icq.Tlv;
+import ru.caffeineim.protocols.icq.contacts.ContactList;
+import ru.caffeineim.protocols.icq.contacts.Group;
+import ru.caffeineim.protocols.icq.contacts.IContactList;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MessagingListener;
 import ru.caffeineim.protocols.icq.integration.listeners.MetaAckListener;
@@ -53,6 +57,7 @@ public class OscarConnection {
     private boolean authorized = false;
     private boolean connected = false;
 
+    private IContactList contactList;
     private OscarPingHandler pingHandler;
     private Tweaker tweaker;
     private OscarClient client;
@@ -65,6 +70,8 @@ public class OscarConnection {
     private List contactListListeners;
     private List metaInfoListeners;
     private List metaAckListeners;
+
+    private Object contactListLock;
 
     private int flapSeqNrs;
 
@@ -98,6 +105,7 @@ public class OscarConnection {
         contactListListeners   = new Vector();
         metaInfoListeners  = new Vector();
         metaAckListeners = new Vector();
+        contactListLock = new Object();
     }
 
     public void addMetaAckListener(MetaAckListener listener) {
@@ -356,5 +364,24 @@ public class OscarConnection {
 
     public RequestKeeper getRequestKeeper() {
         return requestKeeper;
+    }
+
+    public IContactList getContactList() {
+    	// Если контакст-листа нет, то необходимо запросить его с сервера
+    	if (contactList == null) {
+    		OscarInterface.sendContatListRequest(this);
+    		log.debug("ContactListRequest has been sent");
+    		log.warn("ContactList is not fetched");
+    	}
+
+    	return contactList;
+    }
+
+    public void buildContactList(Group rootGroup, int count) {
+    	synchronized (contactListLock) {
+    		contactList = new ContactList(this, rootGroup, count);
+        	// Уведомим ожидающие потоки
+    		contactListLock.notifyAll();
+		}
     }
 }

@@ -74,4 +74,8 @@ public class ContactListEvent extends EventObject {
     public Group getRoot() {
         return root;
     }
+
+    public int getCount() {
+    	return ((SsiContactListReply__19_6) getSource()).getCount();
+    }
 }

@@ -18,10 +18,11 @@ package ru.caffeineim.protocols.icq.packet.received.generic;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.packet.received.ReceivedPacket;
 import ru.caffeineim.protocols.icq.packet.sent.generic.ClientFamilies;
+import ru.caffeineim.protocols.icq.packet.sent.ssi.SsiContactListLoad;
 
 /**
  * <p>Created by
- *   @author Fabrice Michellonet 
+ *   @author Fabrice Michellonet
  */
 public class ServerReady__1_3 extends ReceivedPacket {
 
@@ -31,5 +32,6 @@ public class ServerReady__1_3 extends ReceivedPacket {
 
 	public void execute(OscarConnection connection) throws Exception {
 		connection.sendFlap(new ClientFamilies());
+		connection.sendFlap(new SsiContactListLoad());
 	}
 }

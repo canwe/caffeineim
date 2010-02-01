@@ -25,6 +25,7 @@ import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 /**
  * <p>Created by
  *   @author Fabrice Michellonet
+ *   @author Samolisov Pavel
  */
 public class Contact extends ContactListItem implements Serializable {
 
