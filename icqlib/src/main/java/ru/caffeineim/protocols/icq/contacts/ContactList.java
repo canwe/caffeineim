@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ContactListOperationException;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.packet.sent.buddylist.AddToContactList;
 import ru.caffeineim.protocols.icq.packet.sent.buddylist.RemoveFromContactList;
@@ -80,36 +81,51 @@ public class ContactList implements IContactList {
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addContact(java.lang.String, ru.caffeineim.protocols.icq.contacts.Group)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#addContact(java.lang.String, java.lang.String)
 	 */
-    public void addContact(String userId, Group group) throws ConvertStringException {
+    public void addContact(String userId, String groupName) throws ContactListOperationException {
+    	addContact(userId, getGroupByName(groupName));
+    }
+
+    /* (non-Javadoc)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#addContact(java.lang.String, ru.caffeineim.protocols.icq.contacts.Group)
+	 */
+    public void addContact(String userId, Group group) throws ContactListOperationException {
         Contact contact = new Contact(++ maxContactId, group.getGroupId(), userId);
         addContact(contact, group);
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addContact(ru.caffeineim.protocols.icq.contacts.Contact, ru.caffeineim.protocols.icq.contacts.Group)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#addContact(ru.caffeineim.protocols.icq.contacts.Contact, ru.caffeineim.protocols.icq.contacts.Group)
 	 */
-    public void addContact(Contact contact, Group group) throws ConvertStringException {
-        group.addItem(contact);
+    public void addContact(Contact contact, Group group) throws ContactListOperationException {
+    	if (group == null)
+    		throw new ContactListOperationException("Group could not be null");
+
+    	group.addItem(contact);
         count++;
 
-        connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiAddItem(contact));
-        connection.sendFlap(new SsiUpdateGroupHeader(group));
-        connection.sendFlap(new SsiEndEdit());
+        try {
+        	connection.sendFlap(new SsiBeginEdit());
+        	connection.sendFlap(new SsiAddItem(contact));
+        	connection.sendFlap(new SsiUpdateGroupHeader(group));
+        	connection.sendFlap(new SsiEndEdit());
 
-        connection.sendFlap(new AddToContactList(contact.getId()));
+        	connection.sendFlap(new AddToContactList(contact.getId()));
 
-        if (StringTools.isEmpty(contact.getNickName())) {
-            connection.sendFlap(new RequestShortUserInfo(contact.getId(), connection.getUserId()));
+        	if (StringTools.isEmpty(contact.getNickName())) {
+        		connection.sendFlap(new RequestShortUserInfo(contact.getId(), connection.getUserId()));
+        	}
         }
+        catch (ConvertStringException e) {
+        	throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeContact(java.lang.String)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#removeContact(java.lang.String)
 	 */
-    public void removeContact(String userId) throws ConvertStringException {
+    public void removeContact(String userId) throws ContactListOperationException {
         Contact contact = getContactById(userId);
         if (contact != null) {
             removeContact(contact);
@@ -117,80 +133,113 @@ public class ContactList implements IContactList {
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeContact(ru.caffeineim.protocols.icq.contacts.Contact)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#removeContact(ru.caffeineim.protocols.icq.contacts.Contact)
 	 */
-    public void removeContact(Contact contact) throws ConvertStringException {
+    public void removeContact(Contact contact) throws ContactListOperationException {
         Group group = getGroupById(contact.getGroupId());
-        if (group != null)
-            group.removeItem(contact);
+        if (group == null)
+        	throw new ContactListOperationException("Group could not be null");
 
-        connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiRemoveItem(contact));
-        connection.sendFlap(new SsiUpdateGroupHeader(group));
-        connection.sendFlap(new SsiEndEdit());
+        group.removeItem(contact);
 
-        connection.sendFlap(new RemoveFromContactList(contact.getId()));
+        try {
+        	connection.sendFlap(new SsiBeginEdit());
+        	connection.sendFlap(new SsiRemoveItem(contact));
+        	connection.sendFlap(new SsiUpdateGroupHeader(group));
+        	connection.sendFlap(new SsiEndEdit());
+
+        	connection.sendFlap(new RemoveFromContactList(contact.getId()));
+        }
+        catch (ConvertStringException e) {
+        	throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addGroup(java.lang.String)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#addGroup(java.lang.String)
 	 */
-    public void addGroup(String group) throws ConvertStringException {
+    public void addGroup(String group) throws ContactListOperationException {
         addGroup(new Group(++ maxGroupId, group));
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#addGroup(ru.caffeineim.protocols.icq.contacts.Group)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#addGroup(ru.caffeineim.protocols.icq.contacts.Group)
 	 */
-    public void addGroup(Group group) throws ConvertStringException {
-        rootGroup.addItem(group);
+    public void addGroup(Group group) throws ContactListOperationException {
+    	if (group == null)
+        	throw new ContactListOperationException("Group could not be null");
 
-        connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiAddItem(group));
-        connection.sendFlap(new SsiEndEdit());
+    	rootGroup.addItem(group);
+
+        try {
+        	connection.sendFlap(new SsiBeginEdit());
+        	connection.sendFlap(new SsiAddItem(group));
+        	connection.sendFlap(new SsiEndEdit());
+        }
+        catch (ConvertStringException e) {
+			throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeGroup(ru.caffeineim.protocols.icq.contacts.Group)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#removeGroup(ru.caffeineim.protocols.icq.contacts.Group)
 	 */
-    public void removeGroup(Group group) throws ConvertStringException {
+    public void removeGroup(Group group) throws ContactListOperationException {
+    	if (group == null)
+        	throw new ContactListOperationException("Group could not be null");
+
     	rootGroup.removeItem(group);
 
-        connection.sendFlap(new SsiBeginEdit());
-        connection.sendFlap(new SsiRemoveItem(group));
-        connection.sendFlap(new SsiEndEdit());
+    	try {
+    		connection.sendFlap(new SsiBeginEdit());
+    		connection.sendFlap(new SsiRemoveItem(group));
+    		connection.sendFlap(new SsiEndEdit());
+    	}
+    	catch (ConvertStringException e) {
+    		throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#removeYourself(java.lang.String)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#removeYourself(java.lang.String)
 	 */
     public void removeYourself(String userId) {
         connection.sendFlap(new SsiRemoveYourself(userId));
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendAuthRequestMessage(java.lang.String, java.lang.String)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#sendAuthRequestMessage(java.lang.String, java.lang.String)
 	 */
-    public void sendAuthRequestMessage(String userId, String request) throws ConvertStringException {
-        connection.sendFlap(new SsiSendAuthRequestMessage(userId, request));
+    public void sendAuthRequestMessage(String userId, String request) throws ContactListOperationException {
+    	try {
+    		connection.sendFlap(new SsiSendAuthRequestMessage(userId, request));
+    	}
+    	catch (ConvertStringException e) {
+    		throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendAuthReplyMessage(java.lang.String, java.lang.String, boolean)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#sendAuthReplyMessage(java.lang.String, java.lang.String, boolean)
 	 */
-    public void sendAuthReplyMessage(String userId, String reply, boolean auth) throws ConvertStringException {
-        connection.sendFlap(new SsiSendAuthReplyMessage(userId, reply, auth));
+    public void sendAuthReplyMessage(String userId, String reply, boolean auth) throws ContactListOperationException {
+    	try {
+    		connection.sendFlap(new SsiSendAuthReplyMessage(userId, reply, auth));
+    	}
+    	catch (ConvertStringException e) {
+    		throw new ContactListOperationException(e);
+		}
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#sendYouWereAdded(java.lang.String)
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#sendYouWereAdded(java.lang.String)
 	 */
     public void sendYouWereAdded(String userId) {
         connection.sendFlap(new SsiSendYouWereAdded(userId));
     }
 
     /* (non-Javadoc)
-	 * @see ru.caffeineim.protocols.icq.contacts.IContactList1#getRootGroup()
+	 * @see ru.caffeineim.protocols.icq.contacts.IContactList#getRootGroup()
 	 */
     public Group getRootGroup() {
         return rootGroup;
@@ -224,6 +273,24 @@ public class ContactList implements IContactList {
         for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
             ContactListItem item = (ContactListItem) iter.next();
             if (item.getGroupId() == id) {
+                return (Group) item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param name название группы
+     * @return группу по ее названию
+     */
+    private Group getGroupByName(String name) {
+    	if (name == null)
+    		return null;
+
+        for (Iterator iter = rootGroup.getContainedItems().iterator(); iter.hasNext();) {
+            ContactListItem item = (ContactListItem) iter.next();
+            if (name.equals(item.getId())) {
                 return (Group) item;
             }
         }

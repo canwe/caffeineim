@@ -22,6 +22,7 @@ import ru.caffeineim.protocols.icq.contacts.ContactList;
 import ru.caffeineim.protocols.icq.contacts.ContactListItem;
 import ru.caffeineim.protocols.icq.contacts.Group;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ContactListOperationException;
 import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.ContactListEvent;
@@ -128,9 +129,11 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
             } else if (params[0].equals("msgb")) {
                 OscarInterface.sendBasicMessage(connection, params[2], params[1]);
             }
+        } catch (ContactListOperationException ex) {
+        	log.error(ex.getMessage(), ex);
         } catch (ConvertStringException ex) {
         	log.error(ex.getMessage(), ex);
-        }
+		}
     }
 
     public void onIncomingUrl(IncomingUrlEvent e) {
@@ -178,7 +181,7 @@ public class ContactListEventsTest implements MessagingListener, UserStatusListe
         try {
             log.info("AuthRequest UIN: " + e.getSenderUin() + " Mesage: " + e.getMessage());
             connection.getContactList().sendAuthReplyMessage(e.getSenderUin(), "Welcome!", true);
-        } catch (ConvertStringException ex) {
+        } catch (ContactListOperationException ex) {
             log.error(ex.getMessage(), ex);
         }
     }

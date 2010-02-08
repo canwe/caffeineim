@@ -15,7 +15,7 @@
  */
 package ru.caffeineim.protocols.icq.contacts;
 
-import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
+import ru.caffeineim.protocols.icq.exceptions.ContactListOperationException;
 
 /**
  * <p>Created by 21.01.2010
@@ -25,64 +25,75 @@ public interface IContactList {
 
 	/**
 	 * Добавляем новый контакт с UIN'ом <code>userId</code> в
+	 * группу с названием <code>groupName</code>
+	 *
+	 * @param userId идентификатор добавляемого контакта
+	 * @param groupName название группы, в которую добавляется контакт
+	 * @throws ContactListOperationException
+	 */
+	public void addContact(String userId, String groupName)
+			throws ContactListOperationException;
+
+	/**
+	 * Добавляем новый контакт с UIN'ом <code>userId</code> в
 	 * группу <code>group</code>
 	 *
 	 * @param userId идентификатор добавляемого контакта
 	 * @param group группа, в которую добавляется контакт
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
 	public void addContact(String userId, Group group)
-			throws ConvertStringException;
+			throws ContactListOperationException;
 
 	/**
 	 * Добавляем новый контакт <code>contact</code> в группу <code>group</code>
 	 *
 	 * @param contact добавляемый контакт
 	 * @param group группа, в которую добавляется контакт
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
 	public void addContact(Contact contact, Group group)
-			throws ConvertStringException;
+			throws ContactListOperationException;
 
 	/**
 	 * Удаляем контакт с UIN'ом <code>userId</code> из контакт-листа
 	 *
 	 * @param userId идентификатор удаляемого контакта
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
-	public void removeContact(String userId) throws ConvertStringException;
+	public void removeContact(String userId) throws ContactListOperationException;
 
 	/**
 	 * Удаляем контакт <code>contact</code> из контакт-листа
 	 *
 	 * @param contact удаляемый контакт
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
-	public void removeContact(Contact contact) throws ConvertStringException;
+	public void removeContact(Contact contact) throws ContactListOperationException;
 
 	/**
 	 * Добавляем группу с именем <code>group</code> в контакт-лист
 	 *
 	 * @param group имя добавляемой группы
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
-	public void addGroup(String group) throws ConvertStringException;
+	public void addGroup(String group) throws ContactListOperationException;
 
 	/**
 	 * Добавляем группу <code>group</code> в контакт-лист
 	 *
 	 * @param group добавляемая группа
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
-	public void addGroup(Group group) throws ConvertStringException;
+	public void addGroup(Group group) throws ContactListOperationException;
 
 	/**
 	 * Удаляем группу <code>group</code> из контакт-листа
 	 *
 	 * @param group удаляемая группа
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
-	public void removeGroup(Group group) throws ConvertStringException;
+	public void removeGroup(Group group) throws ContactListOperationException;
 
 	/**
 	 * Удаляем себя из контакт-листа пользователя с UIN <code>userId</code>
@@ -96,10 +107,10 @@ public interface IContactList {
 	 *
 	 * @param userId UIN контакт, которому отправляем запрос авторизации
 	 * @param request текст запроса авторизации
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
 	public void sendAuthRequestMessage(String userId, String request)
-			throws ConvertStringException;
+			throws ContactListOperationException;
 
 	/**
 	 * Отправляем ответ <code>auth</code> с текстом <code>reply</code> на запрос авторизации от пользователя
@@ -108,10 +119,10 @@ public interface IContactList {
 	 * @param userId UIN пользователя, который запросил авторизацию
 	 * @param reply текст ответа
 	 * @param auth результат авторизации, если <code>true</code>, то пользователь считается авторизованым
-	 * @throws ConvertStringException
+	 * @throws ContactListOperationException
 	 */
 	public void sendAuthReplyMessage(String userId, String reply, boolean auth)
-			throws ConvertStringException;
+			throws ContactListOperationException;
 
 	/**
 	 * Отправляем пользователю с UIN <code>userId</code> сообщение <i>"You were added"</i>
@@ -125,5 +136,4 @@ public interface IContactList {
 	 * @return корневая группа
 	 */
 	public Group getRootGroup();
-
 }
