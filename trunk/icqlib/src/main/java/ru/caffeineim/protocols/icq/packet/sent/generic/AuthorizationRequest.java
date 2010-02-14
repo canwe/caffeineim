@@ -34,7 +34,7 @@ public class AuthorizationRequest extends Flap {
 	 * Create the Authorization Request packet giving the sequence number, the
 	 * user's UIN and the corresponding password, but this constructor will use
 	 * some default settings such as language and country.
-	 * 
+	 *
 	 * @param Uin The user's UIN.
 	 * @param password The password.
 	 */
@@ -45,7 +45,7 @@ public class AuthorizationRequest extends Flap {
 
 	/**
 	 * Full customiseabble constructor for the Authorization Request packet.
-	 * 
+	 *
 	 * @param Uin The user's UIN.
 	 * @param password The password.
 	 * @param clientProfile A string that could identify your client.
@@ -75,7 +75,7 @@ public class AuthorizationRequest extends Flap {
 		addTlvToFlap(new Tlv(0x010A, 0x16));
 		// TLV(17) WORD major version
 		addTlvToFlap(new Tlv(majorVersion, RawData.WORD_LENGHT, 0x17));
-		// TLV(18) WORD minor version	
+		// TLV(18) WORD minor version
 		addTlvToFlap(new Tlv(minorVersion, RawData.WORD_LENGHT, 0x18));
 		// TLV(19) WORD lesser version
 		addTlvToFlap(new Tlv(lesserVersion, RawData.WORD_LENGHT, 0x19));
@@ -92,13 +92,13 @@ public class AuthorizationRequest extends Flap {
 	/**
 	 * This function encrypt the password using the weak :-) icq encryption
 	 * scheme.
-	 * 
+	 *
 	 * @param password The password to be encrypted.
 	 * @return Your encrypted password.
 	 */
 	private String encryptPassword(String password) {
-		char charPass[] = new char[password.length()];
 		byte bytePassword[] = password.getBytes();
+		char charPass[] = new char[bytePassword.length];
 		final byte[] xorValues = { (byte) 0xF3, (byte) 0x26, (byte) 0x81,
 				(byte) 0xC4, (byte) 0x39, (byte) 0x86, (byte) 0xDB, (byte) 0x92 };
 
@@ -108,6 +108,7 @@ public class AuthorizationRequest extends Flap {
 			}
 			charPass[i] = (char) ((char) (bytePassword[i]) ^ (char) (xorValues[j]));
 		}
+
 		return new String(charPass);
 	}
 }
