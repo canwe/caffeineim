@@ -38,9 +38,11 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
 
 	private static Log log = LogFactory.getLog(SsiContactListReply__19_6.class);
 
+	private int version;
+
 	private int count;
 
-    private int timeStamp;
+    private int lastChangeTime;
 
     private SortedMap items = new TreeMap();
 
@@ -48,19 +50,19 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
         super(array, true);
         int position = 8;
         byte data[] = getSnac().getDataFieldByteArray();
-        //int ver = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
+        version = (new RawData(data, position, RawData.BYTE_LENGHT)).getValue();
         position++;
         count = (new RawData(data, position, RawData.WORD_LENGHT)).getValue();
         position += RawData.WORD_LENGHT;
 
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             Item item = new Item(data, position);
             int id = (item.getGroup() << 16) + item.getId();
             items.put(new Integer(id), item);
             position += item.getLength();
         }
 
-        timeStamp = (new RawData(data, position, RawData.DWORD_LENGHT)).getValue();
+        lastChangeTime = (new RawData(data, position, RawData.DWORD_LENGHT)).getValue();
         position += RawData.DWORD_LENGHT;
     }
 
@@ -84,8 +86,8 @@ public final class SsiContactListReply__19_6 extends ReceivedPacket {
         return count;
     }
 
-    public int getTimeStamp() {
-        return timeStamp;
+    public int getLastChangeTime() {
+        return lastChangeTime;
     }
 
     public Iterator getItemsIterator() {

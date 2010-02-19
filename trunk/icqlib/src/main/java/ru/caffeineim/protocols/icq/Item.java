@@ -56,18 +56,18 @@ public class Item extends DataField {
         this.id = id;
         this.group = groupid;
         this.name = name;
-        this.nameLen = (short)name.length();
+        this.nameLen = (short) name.length();
     }
 
     public Item(byte data[], int offset) throws ConvertStringException {
         int index = offset;
-        nameLen = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();
+        nameLen = (short) new RawData(data, index, RawData.WORD_LENGHT).getValue();
         index += RawData.WORD_LENGHT;
         name = StringTools.utf8ByteArrayToString(data, index, nameLen);
         index += nameLen;
-        group = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();
+        group = (short) new RawData(data, index, RawData.WORD_LENGHT).getValue();
         index += RawData.WORD_LENGHT;
-        id = (short)new RawData(data, index, RawData.WORD_LENGHT).getValue();
+        id = (short) new RawData(data, index, RawData.WORD_LENGHT).getValue();
         index += RawData.WORD_LENGHT;
         itemTlv = new Tlv(data, index);
         byteArray = new byte[getLength()];

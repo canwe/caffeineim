@@ -59,8 +59,11 @@ public class SsiUpdateGroupHeader extends Flap {
 
         // Add group items
         if (grp.getContainedItems() != null && grp.getContainedItems().size() > 0) {
-            // lenght of addition data
-            snac.addRawDataToSnac(new RawData(4+grp.getContainedItems().size()*RawData.WORD_LENGHT, RawData.WORD_LENGHT));
+
+        	// lenght of addition data
+            snac.addRawDataToSnac(new RawData(4 + grp.getContainedItems().size() * RawData.WORD_LENGHT,
+            		RawData.WORD_LENGHT));
+
             Tlv tlv = new Tlv(0x00C8);
             for (Iterator iter = grp.getContainedItems().iterator(); iter.hasNext();) {
                 tlv.appendRawDataToTlv(new RawData(((ContactListItem) iter.next()).getItemId(), RawData.WORD_LENGHT));

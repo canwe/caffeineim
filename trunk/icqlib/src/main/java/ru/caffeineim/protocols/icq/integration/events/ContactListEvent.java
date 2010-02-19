@@ -29,7 +29,10 @@ import ru.caffeineim.protocols.icq.packet.received.ssi.SsiContactListReply__19_6
  *   @author Lo�c Broquet
  */
 public class ContactListEvent extends EventObject {
-    private static final long serialVersionUID = -3740165191665792396L;
+
+	private static final long serialVersionUID = -3740165191665792396L;
+
+	private static final String EMPTY = "";
 
     private Group root;
 
@@ -64,10 +67,12 @@ public class ContactListEvent extends EventObject {
         }
 
         root = (Group) grpMap.remove(new Short((short) 0x0000));
+        if (root == null)
+        	root = new Group((short) 0x0000, EMPTY);
 
-        for(Iterator iter = grpMap.values().iterator(); iter.hasNext();) {
-            Group grp = (Group) iter.next();
-            root.addItem(grp);
+        for (Iterator iter = grpMap.values().iterator(); iter.hasNext();) {
+        	Group grp = (Group) iter.next();
+        	root.addItem(grp);
         }
     }
 
