@@ -1,0 +1,1 @@
+Java-based Cross-Platform Internet Messenger. In Plans AIM/ICQ and Jabber support. This IM will have a new features not realized in other IM. About this features will be reported later.
